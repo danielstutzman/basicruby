@@ -1,0 +1,241 @@
+<html>
+  <head>
+    <style>
+      body {
+        font-family: sans-serif;
+      }
+      .machine {
+        position: absolute;
+        left: 300px;
+        border: 1px black solid;
+        width: 500px;
+        height: 1000px;
+        background-color: #666;
+        padding-left: 20px;
+      }
+      .machine label {
+        color: #555;
+        text-shadow: 0px 1px #777;
+        font-weight: bold;
+      }
+      .next-instruction label {
+        text-transform: uppercase;
+        font-family: 20pt;
+      }
+      .section {
+        border: 3px #555 solid;
+        border-bottom: 3px #777 solid;
+        width: 300px;
+        height: 60px;
+        font-family: monospace;
+        font-size: 20pt;
+        overflow: scroll;
+        background-color: #333;
+        color: #0f0;
+        font-family: "CristoLikid Tryout";
+        position: relative;
+      }
+      .section.instructions .current {
+        position: absolute:
+        top: 30px;
+        width: 30px;
+        height: 30px;
+      }
+      .section.instructions .highlight {
+        display: inline-block;
+        visibility: hidden;
+        width: 0; 
+        height: 0; 
+        border-top: 14px solid transparent;
+        border-bottom: 14px solid transparent;
+        border-left: 14px solid #0f0;
+      }
+      .section.instructions .highlight.on {
+        visibility: visible;
+        position: relative;
+        top: 6px;
+      }
+      .line-num {
+        display: inline-block;
+        width: 30px;
+        color: #0f0;
+        font-size: 8pt;
+        height: 20px;
+      }
+      .section.memory .variable {
+        color: #0f0;
+        float: left;
+        margin-left: 5px;
+        background-color: #333;
+        color: #0f0;
+        margin-top: -10px;
+      }
+      .section.memory .variable .type {
+        font-size: 6pt;
+        font-family: "Arial";
+        margin-bottom: -5px;
+        padding: 0;
+      }
+
+      .section.memory .variable .value {
+        background-color: #0f0;
+        color: #333;
+      }
+      .power.on {
+        border: 2px #0f0 solid;
+        background-color: #cfc;
+      }
+
+      .section.printout .cursor {
+        background-color: #0f0;
+        width: 4px;
+        height: 25px;
+        display: inline-block;
+      }
+    </style>
+    <script>
+      document.addEventListener('DOMContentLoaded', function(){
+        var powerButton = document.querySelectorAll('.power')[0];
+        var stepButton = document.querySelectorAll('.step')[0];
+        var runButton = document.querySelectorAll('.run')[0];
+        var variables = document.querySelectorAll('.memory')[0];
+        var instructions = document.querySelectorAll('.instructions')[0];
+        var printout = document.querySelectorAll('.printout')[0];
+        var currentLineNum = 0;
+        var isPowerOn = false;
+        var output = '';
+
+        var setLineNum = function(newLineNum) {
+          if (currentLineNum > 0 && currentLineNum <= 4 && isPowerOn) {
+            var selector = '.line' + currentLineNum + ' .highlight';
+            var highlight = document.querySelectorAll(selector)[0];
+            highlight.classList.remove('on');
+          }
+
+          instructions.scrollTop = newLineNum * 30 - 10;
+          currentLineNum = newLineNum;
+
+          if (currentLineNum > 0 && currentLineNum <= 4 && isPowerOn) {
+            var selector = '.line' + currentLineNum + ' .highlight';
+            var highlight = document.querySelectorAll(selector)[0];
+            highlight.classList.add('on');
+          }
+        };
+
+        var scrollPrintout = function() {
+          printout.scrollTop = (output.split("\n").length * 30) + 95;
+        };
+
+        instructions.scrollTop = 18;
+        powerButton.addEventListener('click', function() {
+          if (!isPowerOn) {
+            isPowerOn = true;
+            powerButton.classList.add('on');
+            stepButton.disabled = false;
+            runButton.disabled = false;
+            printout.innerHTML = "<br><br><br><div class='cursor'></div>";
+            scrollPrintout();
+            setLineNum(1);
+          } else {
+            isPowerOn = false;
+            instructions.innerHTML = '';
+            variables.innerHTML = '';
+            printout.innerHTML = '';
+            powerButton.classList.remove('on');
+            stepButton.disabled = true;
+            runButton.disabled = true;
+            scrollPrintout();
+            setLineNum(currentLineNum);
+          }
+        });
+
+        stepButton.addEventListener('click', function() {
+          if (currentLineNum > 0 && currentLineNum <= 4) {
+            output += (currentLineNum * 10) + "\n";
+            printout.innerHTML = '';
+            for (var i = 0; i < output.split("\n").length; i++) {
+              var outputLine = output.split("\n")[i];
+              var maybeCursor = (i == output.split("\n").length - 1) ?
+                "<div class='cursor'>.</div>" : "";
+              printout.innerHTML += "<div class='line'>" +
+                outputLine + maybeCursor + "</div>\n";
+            }
+            scrollPrintout();
+            setLineNum(currentLineNum + 1);
+
+            stepButton.disabled = (currentLineNum == 4);
+            runButton.disabled = (currentLineNum == 4);
+          }
+        });
+
+      }, false );
+    </script>
+  </head>
+  <body>
+    Outside machine:
+    <ul>
+      <li>Scenario table that controls the machine
+      <li>Results and pass/fail are in LCD font to show they're changeable
+      <li>Power button quick scans the program and complains about syntax errors</li>
+      <li>
+    </ul>
+
+    <div class='machine'>
+      <div class='next-instruction'>
+        <br>
+        <label>Next Instruction</label>
+        <div class='section instructions'>
+          <br>
+          <div class='line line1'>
+            <div class='highlight'></div>
+            puts 10
+          </div>
+          <div class='line line2'>
+            <div class='highlight'></div>
+            puts 20
+          </div>
+          <div class='line line3'>
+            <div class='highlight'></div>
+            puts 30
+          </div>
+          <div class='line line4'>
+            <div class='highlight'></div>
+          </div>
+          <br> <br> <br> <br>
+        </div>
+
+
+        <br>
+        <label>Variables</label>
+        <div class='section memory'>
+          <div class='variable'>
+            x<br>
+            <div class='value'>
+              <div class='type'>String</div>
+              a
+            </div>
+          </div>
+          <div class='variable'>
+            y<br>
+            <div class='value'>
+              <div class='type'>Fixnum</div>
+              6
+            </div>
+          </div>
+        </div>
+
+        <br>
+        <label>Input and Output</label>
+        <div class='section printout'>
+        </div>
+        
+      </div>
+
+      <br> <br>
+
+      <button class='power'>Power (|)</button>
+      <button class='step' disabled='disabled'>Step &gt;</button>
+      <button class='run' disabled='disabled'>Run &gt;&gt;</button>
+    </div>
+  </body>
+</html>
