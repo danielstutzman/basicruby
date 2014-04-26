@@ -1,0 +1,203 @@
+<html>
+  <head>
+    <style>
+      body {
+        font-family: sans-serif;
+      }
+      h1 {
+        margin: 0;
+      }
+      .section {
+      }
+      .section.section1 {
+        background-color: #ff8;
+      }
+      .section.section2 {
+        background-color: #ccf;
+      }
+      .section.section3 {
+        background-color: #afa;
+      }
+      .section .code {
+        margin: 10px 10px;
+        width: 30%;
+        height: 300px;
+        float: left;
+        background-color: white;
+        border: 1px gray solid;
+        margin-right: 10px;
+      }
+      .section .next-line {
+        width: 50px;
+        height: 160px;
+        float: left;
+        background-color: black;
+        border: 1px gray solid;
+        margin-right: 10px;
+      }
+      .section .vars-and-console {
+        width: 200px;
+        height: 300px;
+        float: left;
+        border: 1px gray solid;
+      }
+      .section label {
+        color: white;
+        text-shadow: 1px 1px black;
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+      .section .vars-and-console .variables {
+        width: 200px;
+        height: 60px;
+        background-color: black;
+      }
+      .section .vars-and-console .console {
+        width: 200px;
+        height: 60px;
+        background-color: black;
+      }
+      .section.section1 .code {
+        height: 20px;
+        background-color: transparent;
+        border: 0;
+      }
+      .section.section1 .next-line {
+        height: 10px;
+        visibility: hidden;
+      }
+      .section.section1 .vars-and-console {
+        height: 90px;
+      }
+      td.out-scratch {
+        background-color: white;
+        font-family: cursive;
+      }
+      button.fast-forward {
+        float: right;
+      }
+      button.step {
+        float: right;
+      }
+    </style>
+  </head>
+  <body>
+    <div class='section section1'>
+      <div class='code'>
+        <b>Goal</b>
+        Lengthy description
+      </div>
+      <div class='next-line'>
+        <label>Next</label>
+      </div>
+      <div class='vars-and-console'>
+        <label>Input and Output</label>
+        <div class='console'></div>
+        <button class='rewind'>(|)</button>
+        <button class='fast-forward'>&gt;&gt;</button>
+        <button class='step'>&gt;</button>
+      </div>
+      <div class='cases'>
+        <label>Cases</label>
+        <table>
+          <tr>
+            <th>In</th>
+            <th>Out</th>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>9</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>16</td>
+          </tr>
+          <tr>
+            <td colspan='2'><button>Run All</button></td>
+          </tr>
+        </table>
+      </div>
+      <br clear='all'>
+    </div>
+
+    <div class='section section2'>
+      <div class='code'>
+        <label>Program to write</label>
+      </div>
+      <div class='next-line'>
+        <label>Next</label>
+      </div>
+      <div class='vars-and-console'>
+        <label>Variables</label>
+        <div class='variables'></div>
+
+        <label>Input and Output</label>
+        <div class='console'></div>
+        <button class='rewind'>(|)</button>
+        <button class='fast-forward'>&gt;&gt;</button>
+        <button class='step'>&gt;</button>
+      </div>
+      <div class='cases'>
+        <label>Cases</label>
+        <table>
+          <tr>
+            <th>In</th>
+            <th>Out</th>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td class='out-scratch'>9</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td class='out-scratch'>16</td>
+          </tr>
+          <tr>
+            <td colspan='2'><button>Run all</button></td>
+          </tr>
+        </table>
+      </div>
+      <br clear='all'>
+    </div>
+
+    <div class='section section3'>
+      <div class='code'>
+        <label>Finished program</label>
+      </div>
+      <div class='next-line'>
+        <label>Next</label>
+      </div>
+      <div class='vars-and-console'>
+        <label>Variables</label>
+        <div class='variables'></div>
+
+        <label>Input and Output</label>
+        <div class='console'></div>
+        <button class='rewind'>(|)</button>
+        <button class='fast-forward'>&gt;&gt;</button>
+        <button class='step'>&gt;</button>
+      </div>
+      <div class='cases'>
+        <label>Cases</label>
+        <table>
+          <tr>
+            <th>In</th>
+            <th>Out</th>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td class='out-scratch'>9</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td class='out-scratch'>16</td>
+          </tr>
+          <tr>
+            <td colspan='2'><button>Run all</button></td>
+          </tr>
+        </table>
+      </div>
+      <br clear='all'>
+    </div>
+  </body>
+</html>
