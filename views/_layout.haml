@@ -1,0 +1,18 @@
+!!!
+%html
+
+  %head
+    %title= get_content_for(:title) or raise "Call set_content_for :title, 'x'"
+    %link(href='/stylesheets/application.css' rel='stylesheet' type='text/css')
+    = render 'google_analytics'
+
+  %body
+
+    %h1.basic-ruby Basic Ruby
+
+    .learn-programming
+      learn programming with lots of examples and lots of practice
+
+    %br(clear='all')
+
+    = yield
