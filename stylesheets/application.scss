@@ -24,6 +24,10 @@ h1.basic-ruby {
   float: left;
 }
 
+h1 {
+  font-size: 50pt;
+}
+
 .learn-programming {
   font-size: 30pt;
   background-image: url("../images/learn3.png");
@@ -34,7 +38,7 @@ h1.basic-ruby {
   float: right;
 }
 
-h2 {
+h2.choice {
   font-size: 30pt;
   margin: 60px 60px;
 }

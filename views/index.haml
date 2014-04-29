@@ -1,14 +1,21 @@
 - set_content_for :title, 'Basic Ruby'
 
-%h2
+%h1.basic-ruby Basic Ruby
+
+.learn-programming
+  learn programming with lots of examples and lots of practice
+
+%br(clear='all')
+
+%h2.choice
   %a(href='#' onclick="document.getElementById('about-text').style.display = (document.getElementById('about-text').style.display === 'block') ? 'none' : 'block'; return false;")
     Learn about the project
 
 #about-text(style='display:none')
   = render 'about_text'
 
-%h2
+%h2.choice
   %a(href='/lesson1')
-    Try Lesson #1: Typing Accurately
+    Try Lesson #1: Catching Typos
 
 = render 'mailchimp'
