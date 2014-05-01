@@ -1,0 +1,52 @@
+- content_for :title, '1.1.2 Fix the NoMethodError'
+
+:css
+  body {
+    background-color: #400;
+  }
+  p {
+    color: white;
+  }
+  .breadcrumbs {
+    font-size: 20pt;
+  }
+  .breadcrumbs a {
+    color: #888;
+  }
+
+.breadcrumbs
+  <a href='/'><img src='/assets/basic_ruby.png'></a>
+  &mdash;
+  <a href='/1'>Unit 1</a>
+  &mdash;
+  <a href='/1'>Exercise 1.1.2 &mdash; Fix the <code>NoMethodError</code></a>
+</div>
+
+%p
+  = image_tag 'exercise_icons/red_bug30.png', width: 30, height: 30
+  This program raises an error on line 2 because of a typo.
+  %br
+  Run the broken program, and read the error out loud.
+
+.section.section2(style='width:750px')
+  .code(style='font-family:monospace; font-size: 30pt; padding-left: 30px')
+    puts 1
+    %br
+    pust 2
+    %br
+    puts 1
+  .machine
+    .buttons
+      = power_button
+      = run_button
+    .next-line
+      <label style='display: block; font-size: 20pt; color: black; text-align: center; line-height: 18pt; text-shadow: 1px 1px #333, -1px -1px #111; position: relative; top: 30px'>N<br>e<br>x<br>t<br><br>L<br>i<br>n<br>e</label>
+    .console(style='height:290px')
+  %br(clear='all')
+
+.actions
+  %button Help
+  %br
+  %button Forward
+  %br
+  %button Show Answer
