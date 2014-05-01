@@ -48,3 +48,5 @@ gem 'coffee-rails', '~> 4.0.0'
 gem 'haml'
 
 gem 'thin'
+
+gem 'rails_12factor'
