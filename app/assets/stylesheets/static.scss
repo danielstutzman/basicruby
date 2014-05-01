@@ -17,7 +17,7 @@ p {
 h1.basic-ruby {
   font-size: 60pt;
   margin: 60px 0 0 0;
-  background-image: url("../images/basic_ruby7.png");
+  background-image: image-url("basic_ruby7.png");
   width: 518px;
   height: 63px;
   text-indent: -9999px;
@@ -30,7 +30,7 @@ h1 {
 
 .learn-programming {
   font-size: 30pt;
-  background-image: url("../images/learn3.png");
+  background-image: image-url("learn3.png");
   width: 348px;
   height: 87px;
   text-indent: -9999px;
@@ -55,7 +55,7 @@ h2.choice {
   margin-top: 10px;
   float: right;
   border-bottom: 4px #4b8ece solid;
-  background-image: url("../images/main_menu8.png");
+  background-image: image-url("main_menu8.png");
   width: 688px;
   height: 56px;
   text-transform: uppercase;
