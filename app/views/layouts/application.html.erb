@@ -7,7 +7,7 @@
   <%= csrf_meta_tags %>
   <%= render 'layouts/google_analytics' %>
 </head>
-<body>
+<body class="<%= params[:controller] %>">
 
 <%= yield %>
 
