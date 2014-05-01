@@ -1,0 +1,32 @@
+// Place all the styles related to the curriculum controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+h1 {
+  margin-bottom: 60px;
+  text-align: center;
+}
+
+h2 {
+  font-size: 30pt;
+  margin-bottom: 15px;
+}
+
+.exercise {
+  font-size: 30pt;
+  margin: 0;
+
+  a {
+    display: block;
+    padding: 15px 15px;
+    text-decoration: none;
+
+    &:hover {
+      background-color: #ddd;
+    }
+
+    img {
+      margin-right: 15px;
+    }
+  }
+}

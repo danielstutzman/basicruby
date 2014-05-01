@@ -1,30 +1,49 @@
-- content_for :title, 'Lesson 1 - Catching Typos'
+- content_for :title, 'Unit 1 - Output'
 
-%h1 Lesson 1 &mdash; Catching Typos
+%h1 Unit 1 &mdash; Output
 
-%i (Under construction: none of the links work yet.)
+%h2 Lesson 1.1 &mdash; Output numbers
 
-%p Crutch: show location of symbols on keyboard
-%p Crutch: show correct typing as green, incorrect as red
-%p Crutch: mirror copy-to cursor to copy-from window
+.exercise
+  %a(href='/1.1.1')
+    = image_tag 'exercise_icons/light_bulb30.png', width: 30, height: 30
+    How to output numbers
+.exercise
+  %a(href='/1.1.2')
+    = image_tag 'exercise_icons/red_bug30.png', width: 30, height: 30
+    Fix the <code>NoMethodError</code>
+.exercise
+  %a(href='/1.1.3')
+    = image_tag 'exercise_icons/red_bug30.png', width: 30, height: 30
+    Fix the <code>NameError</code>
+.exercise
+  %a(href='/1.1.4')
+    = image_tag 'exercise_icons/red_bug30.png', width: 30, height: 30
+    Fix the <code>SyntaxError</code>
+.exercise
+  %a(href='/1.1.5')
+    = image_tag 'exercise_icons/red_bug30.png', width: 30, height: 30
+    Fix the missing number
+.exercise
+  %a(href='/1.1.6') 
+    = image_tag 'exercise_icons/question_mark30.png', width: 30, height: 30
+    Output what the test case expects
+.exercise
+  %a(href='/1.1.7') 
+    = image_tag 'exercise_icons/question_mark30.png', width: 30, height: 30
+    The numbers have to match exactly
 
-/ Video example: editing complex ERb file
+%h2 Lesson 1.2 &mdash; Output blank lines
 
-%h2 1.1: Keeping your place when comparing two texts
-%li lowercase words with spaces and numbers and dot (puts 123, gets.chomp)
-%li newline, indentation (while true end, for a in 1..3)
-%li minus, equals (variables)
-
-%h2 1.2: Keeping track of matching pairs
-%li parens
-%li double quotes and closing them!
-%li angle brackets and forward slash (HTML)
-%li square brackets, curly braces
-
-%h2 1.3: Distinguishing between similar symbols
-%li capitalization (active record)
-%li pluralization
-%li underscore not dash, plus
-%li pound, star (comments)
-%li colon vs. semicolon
-%li backslash not forward slash, pipe
+.exercise
+  %a(href='/1.1.5')
+    = image_tag 'exercise_icons/light_bulb30.png', width: 30, height: 30
+    How to output a blank line
+.exercise
+  %a(href='/1.1.6')
+    = image_tag 'exercise_icons/red_bug30.png', width: 30, height: 30
+    Fix the missing blank line
+.exercise
+  %a(href='/1.1.10')
+    = image_tag 'exercise_icons/question_mark30.png', width: 30, height: 30
+    The blank lines have to match exactly
