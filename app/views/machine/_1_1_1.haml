@@ -15,12 +15,12 @@
   }
 
 .breadcrumbs
-  <a href='/'><img src='/assets/basic_ruby.png'></a>
+  %a(href='/')
+    = image_tag 'basic_ruby.png'
   &mdash;
-  <a href='/1'>Unit 1</a>
+  %a(href='/1') Unit 1
   &mdash;
-  <a href='/1'>Exercise 1.1.1 &mdash; How to output numbers</a>
-</div>
+  %a(href='/1.1.1') Exercise 1.1.1 &mdash; How to output numbers
 
 %p
   = image_tag 'exercise_icons/light_bulb30.png', width: 30, height: 30
