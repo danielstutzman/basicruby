@@ -15,7 +15,8 @@ resizeDivs = (w, h) ->
   height_console = height_total
   height_next_line = height_total
 
-  for div in $all('.code')
+  for div in $all('.code, .CodeMirror')
+    console.log div
     div.style.width  = "#{width_code}px"
     div.style.height = "#{height_code}px"
   for div in $all('.machine .console')
@@ -24,7 +25,7 @@ resizeDivs = (w, h) ->
   for div in $all('.machine .next-line')
     div.style.height = "#{height_next_line}px"
 
-setupResizeHandler = ->
+setupResizeHandler = (code_mirror) ->
   oldW = 0
   oldH = 0
   isChanging = false
@@ -41,6 +42,7 @@ setupResizeHandler = ->
       oldH = h
     else if isChanging
       resizeDivs w, h
+      code_mirror.refresh()
       isChanging = false
   window.setInterval resizeIfChanged, 500
   resizeIfChanged()
@@ -141,4 +143,9 @@ setupMachine = ->
 document.addEventListener 'DOMContentLoaded', ->
   if $one('body.machine') # have to wait until dom is loaded to check
     setupMachine()
-    setupResizeHandler()
+    options =
+      mode: 'ruby'
+      lineNumbers: true
+      autofocus: true
+    code_mirror = CodeMirror.fromTextArea($one('.code'), options)
+    setupResizeHandler code_mirror

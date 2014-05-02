@@ -8,7 +8,17 @@
  * You're free to add application-wide styles to this file and they'll appear at the top of the
  * compiled file, but it's generally better to create a new file per style scope.
  *
- *= require_self
- *= require_tree .
  *= require_tree ../../../vendor/assets/stylesheets/.
+ *= require_tree .
+ *= require_self
  */
+
+.CodeMirror-linenumber {
+  color: white;
+  opacity: 0.25;
+}
+.CodeMirror-linenumbers {
+  width: 25px;
+  background-color: #400;
+  padding-right: 18px;
+}

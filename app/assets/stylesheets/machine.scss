@@ -35,16 +35,13 @@ body.machine {
   }
 
   .section {
-    .code {
+    textarea.code, .CodeMirror {
       width: 280px;
       height: 289px;
       float: left;
       background-color: #fff;
-      border: 1px #aaa solid;
-      padding-top: 40px;
       font-family:monospace;
       font-size: 30pt;
-      padding-left: 30px;
     }
 
     .machine {
@@ -160,7 +157,7 @@ body.machine {
     }
 
     &.section1 {
-      .code {
+      textarea.code, .CodeMirror {
         height: 20px;
         background-color: transparent;
         border: 0;
@@ -253,7 +250,7 @@ body.machine {
         }
       }
 
-      .code {
+      textarea.code, .CodeMirror {
         background-color: #ddd;
       }
       .machine {
