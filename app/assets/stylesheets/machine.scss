@@ -49,6 +49,14 @@ body.machine {
     margin-right: 10px;
     border: 2px #222 solid;
     border-bottom: 2px #444 solid;
+    position: relative;
+
+    .pointer {
+      color: #0f0;
+      font-size: 20pt;
+      position: absolute;
+      top: 30px;
+    }
   }
   .section .cases {
     margin-left: 20px;
@@ -117,6 +125,19 @@ body.machine {
     border: 2px #222 solid;
     border-bottom: 2px #444 solid;
     margin-left: 60px;
+    color: #0f0;
+    font-size: 20pt;
+    overflow: scroll;
+    font-family: monospace;
+
+    .cursor {
+      background-color: #0f0;
+      width: 12px;
+      height: 20px;
+      margin-left: 2px;
+      display: inline-block;
+      line-height: 0;
+    }
   }
   .section.section1 .code {
     height: 20px;
@@ -230,7 +251,10 @@ body.machine {
   }
   button.fast-forward {
     float: right;
-    color: #bbb;
+    &:disabled {
+      color: #aaa;
+      opacity: 1.0;
+    }
   }
   button.step {
     float: right;

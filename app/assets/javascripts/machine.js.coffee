@@ -1,3 +1,6 @@
+$one = (selector) -> document.querySelector(selector)
+$all = (selector) -> document.querySelectorAll(selector)
+
 resizeDivs = (w, h) ->
   width_code = w / 2
   width_machine = w / 2
@@ -12,13 +15,13 @@ resizeDivs = (w, h) ->
   height_console = height_total
   height_next_line = height_total
 
-  for div in document.querySelectorAll('body.machine .code')
+  for div in $all('.code')
     div.style.width  = "#{width_code}px"
     div.style.height = "#{height_code}px"
-  for div in document.querySelectorAll('body.machine .machine .console')
+  for div in $all('.machine .console')
     div.style.width  = "#{width_console}px"
     div.style.height = "#{height_console}px"
-  for div in document.querySelectorAll('body.machine .machine .next-line')
+  for div in $all('.machine .next-line')
     div.style.height = "#{height_next_line}px"
 
 setupResizeHandler = ->
@@ -30,7 +33,7 @@ setupResizeHandler = ->
     #   xmlns='http://www.w3.org/2000/svg' version='1.1'
     #   style='display:none'></svg> and
     #   document.getElementById('svg').currentScale
-    w = window.innerWidth - 62
+    w = window.innerWidth - 70
     h = window.innerHeight - 70
     if w != oldW or h != oldH
       isChanging = true
@@ -43,5 +46,89 @@ setupResizeHandler = ->
   resizeIfChanged()
   resizeIfChanged()
 
+# states: OFF, WAITING, RUNNING
+class Machine
+
+  constructor: (line_height, setTimeout) ->
+    @state = 'OFF'
+    @next_line = null
+    @console_lines = []
+    @line_height = line_height
+    @setTimeout = setTimeout
+
+  _getNextLineHTML: ->
+    return '' if @next_line == null
+    y = (@next_line - 1) * @line_height
+    "<div class='pointer' style='top: #{y}px'>&larr;</div>"
+
+  _getConsoleHTML: ->
+    return '' if @state == 'OFF'
+    empty_lines = ('' for i in [1..20]).join('<br>')
+    console_lines = @console_lines.join('<br>') + '<br>'
+    cursor = "<div class='cursor'></div>"
+    empty_lines + console_lines + cursor
+
+  refreshDisplays: ->
+    $one('.machine .next-line').innerHTML = @_getNextLineHTML()
+    $one('.machine .console').innerHTML = @_getConsoleHTML()
+    $one('.machine .console').scrollTop =
+      $one('.machine .console').scrollHeight
+
+    $one('.machine button.fast-forward').disabled =
+      (@state != 'WAITING' || @next_line == null)
+
+  clickPower: ->
+    if @state == 'OFF'
+      @state = 'WAITING'
+      @next_line = 1
+      @console_lines = []
+    else
+      @state = 'OFF'
+      @next_line = null
+      @console_lines = []
+    @refreshDisplays()
+
+  _doStep : ->
+    if @next_line == 1
+      @console_lines.push '1'
+      @next_line = 2
+    else if @next_line == 2
+      @console_lines.push '2'
+      @next_line = 3
+    else if @next_line == 3
+      @console_lines.push '3'
+      @state = 'WAITING'
+      @next_line = null
+
+    @refreshDisplays()
+
+  clickStep: ->
+    return unless @state == 'WAITING'
+    @_doStep()
+
+  clickRun: ->
+    return unless @state == 'WAITING'
+
+    @state = 'RUNNING'
+    doNextStep = =>
+      @_doStep()
+      if @next_line != null
+        @setTimeout doNextStep, 1000
+    doNextStep()
+
+setTimeout = (f, seconds) -> window.setTimeout(f, seconds)
+machine = new Machine(40, setTimeout)
+
+setupMachine = ->
+  for button in $all('.machine button.power')
+    button.addEventListener 'click', ->
+      machine.clickPower()
+  for button in $all('.machine button.fast-forward')
+    button.addEventListener 'click', ->
+      machine.clickRun()
+  machine.refreshDisplays()
+
 document.addEventListener 'DOMContentLoaded', ->
-  setupResizeHandler()
+  if $one('body.machine') # have to wait until dom is loaded to check
+    setupMachine()
+    setupResizeHandler()
