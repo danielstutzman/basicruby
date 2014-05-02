@@ -34,7 +34,7 @@ setupResizeHandler = ->
     #   style='display:none'></svg> and
     #   document.getElementById('svg').currentScale
     w = window.innerWidth - 70
-    h = window.innerHeight - 70
+    h = window.innerHeight - 200
     if w != oldW or h != oldH
       isChanging = true
       oldW = w

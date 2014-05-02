@@ -4,15 +4,6 @@
   body {
     background-color: #400;
   }
-  p {
-    color: white;
-  }
-  .breadcrumbs {
-    font-size: 20pt;
-  }
-  .breadcrumbs a {
-    color: #888;
-  }
 
 .breadcrumbs
   %a(href='/')
@@ -24,11 +15,14 @@
   &mdash;
   %a(href='/1.1.2') 1.1.2. Fix the <code>NoMethodError</code>
 
-%p
+.assignment
   = image_tag 'exercise_icons/red_bug30.png', width: 30, height: 30
-  This program raises an error on line 2 because of a typo.
-  %br
-  Run the broken program, and read the error message out loud.
+  %p
+    This program raises an error on line 2 because of a typo.
+    %br
+    Run the broken program.
+    %br
+    Then read the error message out loud.
 
 .section.section2
   %textarea.code= "puts 1\npust 2\nputs 1"
