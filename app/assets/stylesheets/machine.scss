@@ -5,261 +5,277 @@ body.machine {
   .breadcrumbs {
     background-color: black;
     color: #333;
+
+    a {
+      color: #555;
+    }
   }
-  .breadcrumbs a {
-    color: #555;
-  }
+
   h1 {
     margin: 0;
   }
+
   .section {
-  }
-  .section.section1 {
-    background-color: #006;
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-  .section.section2 {
-    background-color: #222;
-    padding-top: 10px;
-  }
-  .section.answer-section {
-    background-color: #B8860B; /* dark golden rod */
-    background-color: #a70;
-    background-color: #960;
-    padding-top: 10px;
-  }
-  .section .code {
-    width: 280px;
-    height: 289px;
-    float: left;
-    background-color: #fff;
-    border: 1px #aaa solid;
-    margin-right: 10px;
-    padding-top: 40px;
-    font-family:monospace;
-    font-size: 30pt;
-    padding-left: 30px;
-  }
-  .section .next-line {
-    width: 50px;
-    height: 288px;
-    float: left;
-    background-color: black;
-    margin-right: 10px;
-    border: 2px #222 solid;
-    border-bottom: 2px #444 solid;
-    position: relative;
-
-    .pointer {
-      color: #0f0;
-      font-size: 20pt;
-      position: absolute;
-      top: 30px;
+    .code {
+      width: 280px;
+      height: 289px;
+      float: left;
+      background-color: #fff;
+      border: 1px #aaa solid;
+      margin-right: 10px;
+      padding-top: 40px;
+      font-family:monospace;
+      font-size: 30pt;
+      padding-left: 30px;
     }
-  }
-  .section .cases {
-    margin-left: 20px;
-    float: left;
-    background-color: #333;
-    width: 150px;
-    padding: 5px;
-    border: 3px #272727 solid;
-    border-top: 3px #444 solid;
-  }
-  .section .cases .buttons {
-    padding-top: 3px;
-    padding-bottom: 8px;
-  }
-  .section .cases .buttons button {
-    padding: 4px 6px;
-  }
-  .section .cases table {
-    border-spacing: 0px 4px;
-  }
-  .section .cases th {
-    padding: 2px 5px;
-    color: #333;
-    text-shadow: 1px 1px #444;
-    text-transform: uppercase;
-    font-size: 10pt;
-  }
-  .section .cases td {
-    color: white;
-    text-align: right;
-    padding: 2px 5px;
-    font-family: monospace;
-  }
-  .section label {
-    color: #fff;
-    text-shadow: 1px 1px black;
-    text-transform: uppercase;
-    font-weight: bold;
-  }
-  .section .machine {
-    background-color: #333;
-    float: left;
-    padding: 5px;
-    border: 3px #222 solid;
-    border-top: 3px #555 solid;
-  }
-  .section .machine .buttons {
-    padding-top: 3px;
-    padding-bottom: 8px;
-  }
-  .section .machine .buttons button {
-    padding: 4px 6px;
-  }
-  .section .variables {
-    width: 200px;
-    height: 120px;
-    background-color: black;
-    border: 2px #222 solid;
-    border-bottom: 2px #444 solid;
-    margin-left: 60px;
-  }
-  .section .console {
-    width: 200px;
-    height: 160px;
-    background-color: black;
-    border: 2px #222 solid;
-    border-bottom: 2px #444 solid;
-    margin-left: 60px;
-    color: #0f0;
-    font-size: 20pt;
-    overflow: scroll;
-    font-family: monospace;
 
-    .cursor {
-      background-color: #0f0;
-      width: 12px;
-      height: 20px;
-      margin-left: 2px;
-      display: inline-block;
-      line-height: 0;
+    .machine {
+      background-color: #333;
+      float: left;
+      padding: 5px;
+      border: 3px #222 solid;
+      border-top: 3px #555 solid;
+
+      .buttons {
+        padding-top: 3px;
+        padding-bottom: 8px;
+
+        button {
+          padding: 4px 6px;
+        }
+      }
+
+      .next-line {
+        width: 50px;
+        height: 288px;
+        float: left;
+        background-color: black;
+        margin-right: 10px;
+        border: 2px #222 solid;
+        border-bottom: 2px #444 solid;
+        position: relative;
+
+        .pointer {
+          color: #0f0;
+          font-size: 20pt;
+          position: absolute;
+          top: 30px;
+        }
+      }
+
+      .variables {
+        width: 200px;
+        height: 120px;
+        background-color: black;
+        border: 2px #222 solid;
+        border-bottom: 2px #444 solid;
+        margin-left: 60px;
+      }
+
+      .console {
+        width: 200px;
+        height: 160px;
+        background-color: black;
+        border: 2px #222 solid;
+        border-bottom: 2px #444 solid;
+        margin-left: 60px;
+        color: #0f0;
+        font-size: 20pt;
+        overflow: scroll;
+        font-family: monospace;
+
+        .cursor {
+          background-color: #0f0;
+          width: 12px;
+          height: 20px;
+          margin-left: 2px;
+          display: inline-block;
+          line-height: 0;
+        }
+      }
     }
-  }
-  .section.section1 .code {
-    height: 20px;
-    background-color: transparent;
-    border: 0;
-  }
-  .section.section1 .icon {
-    background-color: #aaa;
-    color: #004;
-    width: 30px;
-    height: 30px;
-    float: left;
-    font-size: 20pt;
-    text-align: center;
-    font-weight: bold;
-  }
-  .section.section1 .hider {
-    position: absolute;
-    top: 128px;
-    width: 100%;
-    text-align: right;
-  }
-  .section.section1 .console {
-    height: 70px;
-    width: 265px;
-    margin-left: 0;
-  }
-  .section.section1 .hider button {
-    -webkit-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    transform: rotate(90deg);
-    position: relative;
-    top: -65px;
-    right: -30px;
-    background: transparent;
-    border: 1px #aaa solid;
-    border-top: 1px #ccc solid;
-    border-bottom: 1px #999 solid;
-    color: #aaa;
-  }
-  .section.section1 .assignment {
-    margin-left: 40px;
-    color: white;
-  }
-  .section.section1 .machine {
-    background-color: #117;
-    border: 3px #004 solid;
-    border-top: 3px #227 solid;
-  }
-  .section.section1 .cases {
-    background-color: #117;
-    border: 3px #004 solid;
-    border-top: 3px #227 solid;
-  }
-  .section.section1 .cases th {
-    color: #117;
-    text-shadow: 1px 1px #338;
-  }
-  .section.section1 .next-line {
-    height: 10px;
-    visibility: hidden;
-  }
 
-  .section.section2 .cases td.input {
-    color: #999;
-  }
-  .section.section2 .cases td.output {
-    color: #0f0;
-    background-color: black;
-  }
+    .cases {
+      margin-left: 20px;
+      float: left;
+      background-color: #333;
+      width: 150px;
+      padding: 5px;
+      border: 3px #272727 solid;
+      border-top: 3px #444 solid;
 
-  .section.answer-section .hider {
-    position: absolute;
-    top: 95%;
-    right: 10px;
-  }
-  .section.answer-section .hider button {
-    background: transparent;
-    border: 1px #aaa solid;
-    border-top: 1px #ccc solid;
-    border-bottom: 1px #999 solid;
-    color: #aaa;
-  }
+      .buttons {
+        padding-top: 3px;
+        padding-bottom: 8px;
 
-  .section.answer-section .code {
-    background-color: #ddd;
-  }
-  .section.answer-section .machine {
-    background-color: #b80;
-    border: 3px #750 solid;
-    border-top: 3px #c90 solid;
-  }
-  .section.answer-section .cases {
-    background-color: #b80;
-    border: 3px #750 solid;
-    border-top: 3px #c90 solid;
-  }
-  .section.answer-section .next-line {
-    border: 2px #777 solid;
-    border-bottom: 2px #999 solid;
-  }
-  .section.answer-section .cases th {
-    color: #b80;
-    text-shadow: 1px 1px #750;
-  }
+        button {
+          padding: 4px 6px;
+        }
+      }
 
-  .section .cases td.out-scratch {
-    background-color: black;
-  }
-  button.fast-forward {
-    float: right;
-    &:disabled {
-      color: #aaa;
-      opacity: 1.0;
+      table {
+        border-spacing: 0px 4px;
+      }
+      th {
+        padding: 2px 5px;
+        color: #333;
+        text-shadow: 1px 1px #444;
+        text-transform: uppercase;
+        font-size: 10pt;
+      }
+      td {
+        color: white;
+        text-align: right;
+        padding: 2px 5px;
+        font-family: monospace;
+      }
     }
-  }
-  button.step {
-    float: right;
-    color: #bbb;
-  }
+
+    &.section1 {
+      background-color: #006;
+      padding-top: 10px;
+      padding-bottom: 10px;
+
+      .code {
+        height: 20px;
+        background-color: transparent;
+        border: 0;
+      }
+      .icon {
+        background-color: #aaa;
+        color: #004;
+        width: 30px;
+        height: 30px;
+        float: left;
+        font-size: 20pt;
+        text-align: center;
+        font-weight: bold;
+      }
+      .hider {
+        position: absolute;
+        top: 128px;
+        width: 100%;
+        text-align: right;
+        button {
+          -webkit-transform: rotate(90deg);
+          -moz-transform: rotate(90deg);
+          -o-transform: rotate(90deg);
+          -ms-transform: rotate(90deg);
+          transform: rotate(90deg);
+          position: relative;
+          top: -65px;
+          right: -30px;
+          background: transparent;
+          border: 1px #aaa solid;
+          border-top: 1px #ccc solid;
+          border-bottom: 1px #999 solid;
+          color: #aaa;
+        }
+      }
+      .assignment {
+        margin-left: 40px;
+        color: white;
+      }
+      .machine {
+        background-color: #117;
+        border: 3px #004 solid;
+        border-top: 3px #227 solid;
+        .next-line {
+          height: 10px;
+          visibility: hidden;
+        }
+        .console {
+          height: 70px;
+          width: 265px;
+          margin-left: 0;
+        }
+      }
+      .cases {
+        background-color: #117;
+        border: 3px #004 solid;
+        border-top: 3px #227 solid;
+        th {
+          color: #117;
+          text-shadow: 1px 1px #338;
+        }
+      }
+    } // end .section1
+
+    &.section2 {
+      background-color: #222;
+      padding-top: 10px;
+
+      .cases {
+        td.input {
+          color: #999;
+        }
+        td.output {
+          color: #0f0;
+          background-color: black;
+        }
+      }
+    }
+
+    &.answer-section {
+      background-color: #B8860B; /* dark golden rod */
+      background-color: #a70;
+      background-color: #960;
+      padding-top: 10px;
+
+      .hider {
+        position: absolute;
+        top: 95%;
+        right: 10px;
+        button {
+          background: transparent;
+          border: 1px #aaa solid;
+          border-top: 1px #ccc solid;
+          border-bottom: 1px #999 solid;
+          color: #aaa;
+        }
+      }
+
+      .code {
+        background-color: #ddd;
+      }
+      .machine {
+        background-color: #b80;
+        border: 3px #750 solid;
+        border-top: 3px #c90 solid;
+
+        .next-line {
+          border: 2px #777 solid;
+          border-bottom: 2px #999 solid;
+        }
+      }
+      .cases {
+        background-color: #b80;
+        border: 3px #750 solid;
+        border-top: 3px #c90 solid;
+
+        th {
+          color: #b80;
+          text-shadow: 1px 1px #750;
+        }
+        td.out-scratch {
+          background-color: black;
+        }
+      }
+    } // end .answer-section
+
+    button.fast-forward {
+      float: right;
+      &:disabled {
+        color: #aaa;
+        opacity: 1.0;
+      }
+    }
+
+    button.step {
+      float: right;
+      color: #bbb;
+    }
+  } // end .section
 
   .actions {
     position: absolute;
@@ -273,7 +289,7 @@ body.machine {
       margin-left: 10px;
       margin-bottom: 10px;
       font-size: 20pt;
-
     }
   }
-}
+
+} // end body.machine
