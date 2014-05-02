@@ -75,7 +75,17 @@ class Machine
       $one('.machine .console').scrollHeight
 
     $one('.machine button.fast-forward').disabled =
-      (@state != 'WAITING' || @next_line == null)
+      (@state == 'OFF' || @next_line == null)
+
+    if @state == 'OFF'
+      $one('.machine button.power').classList.remove 'active'
+    else
+      $one('.machine button.power').classList.add 'active'
+
+    if @state != 'RUNNING'
+      $one('.machine button.fast-forward').classList.remove 'active'
+    else
+      $one('.machine button.fast-forward').classList.add 'active'
 
   clickPower: ->
     if @state == 'OFF'

@@ -39,9 +39,20 @@ body.machine {
       .buttons {
         padding-top: 3px;
         padding-bottom: 8px;
+        text-align: right;
 
         button {
-          padding: 4px 6px;
+          padding: 12px 20px;
+          font-size: 12pt;
+
+          &.active {
+            color: #0a0;
+            text-shadow: 0px 0px 6px #0f0;
+          }
+          &:disabled {
+            color: #aaa;
+            opacity: 1.0;
+          }
         }
       }
 
@@ -263,18 +274,6 @@ body.machine {
       }
     } // end .answer-section
 
-    button.fast-forward {
-      float: right;
-      &:disabled {
-        color: #aaa;
-        opacity: 1.0;
-      }
-    }
-
-    button.step {
-      float: right;
-      color: #bbb;
-    }
   } // end .section
 
   .actions {
