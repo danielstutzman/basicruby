@@ -23,14 +23,13 @@ body.machine {
     background-color: #222;
     padding-top: 10px;
   }
-  .section.section3 {
+  .section.answer-section {
     background-color: #B8860B; /* dark golden rod */
     background-color: #a70;
     background-color: #960;
     padding-top: 10px;
   }
   .section .code {
-    margin-left: 10px;
     width: 280px;
     height: 289px;
     float: left;
@@ -38,6 +37,9 @@ body.machine {
     border: 1px #aaa solid;
     margin-right: 10px;
     padding-top: 40px;
+    font-family:monospace;
+    font-size: 30pt;
+    padding-left: 30px;
   }
   .section .next-line {
     width: 50px;
@@ -88,7 +90,6 @@ body.machine {
   }
   .section .machine {
     background-color: #333;
-    width: 270px;
     float: left;
     padding: 5px;
     border: 3px #222 solid;
@@ -189,12 +190,12 @@ body.machine {
     background-color: black;
   }
 
-  .section.section3 .hider {
+  .section.answer-section .hider {
     position: absolute;
     top: 95%;
     right: 10px;
   }
-  .section.section3 .hider button {
+  .section.answer-section .hider button {
     background: transparent;
     border: 1px #aaa solid;
     border-top: 1px #ccc solid;
@@ -202,24 +203,24 @@ body.machine {
     color: #aaa;
   }
 
-  .section.section3 .code {
+  .section.answer-section .code {
     background-color: #ddd;
   }
-  .section.section3 .machine {
+  .section.answer-section .machine {
     background-color: #b80;
     border: 3px #750 solid;
     border-top: 3px #c90 solid;
   }
-  .section.section3 .cases {
+  .section.answer-section .cases {
     background-color: #b80;
     border: 3px #750 solid;
     border-top: 3px #c90 solid;
   }
-  .section.section3 .next-line {
+  .section.answer-section .next-line {
     border: 2px #777 solid;
     border-bottom: 2px #999 solid;
   }
-  .section.section3 .cases th {
+  .section.answer-section .cases th {
     color: #b80;
     text-shadow: 1px 1px #750;
   }
@@ -238,18 +239,17 @@ body.machine {
 
   .actions {
     position: absolute;
-    width: 100px;
     background-color: #777;
-    height: 200px;
     right: 0px;
     bottom: 0px;
-    padding-top: 10px
+    padding: 10px;
 
     button {
-      width: 80px;
-      height: 30px;
+      padding: 10px 30px;
       margin-left: 10px;
       margin-bottom: 10px;
+      font-size: 20pt;
+
     }
   }
 }

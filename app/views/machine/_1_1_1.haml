@@ -30,13 +30,8 @@
   %br
   Click Power twice to restart the Ruby machine.
 
-.section.section3(style='width:750px')
-  .code(style='font-family:monospace; font-size: 30pt; padding-left: 30px')
-    puts 1
-    %br
-    puts 1
-    %br
-    puts 1
+.section.answer-section
+  %textarea.code= "puts 1\nputs 2\nputs 3"
   .machine
     .buttons
       = power_button
@@ -48,5 +43,4 @@
 
 .actions
   %button Help
-  %br
   %button Forward
