@@ -1,4 +1,5 @@
 $border-width: 5px;
+$code-font-size: 30pt;
 
 body.machine {
   font-family: sans-serif;
@@ -41,7 +42,7 @@ body.machine {
       float: left;
       background-color: #fff;
       font-family:monospace;
-      font-size: 30pt;
+      font-size: $code-font-size;
     }
 
     .machine {
@@ -78,13 +79,13 @@ body.machine {
         border-top: 2px #222 solid;
         border-left: 2px #222 solid;
         border-bottom: 2px #444 solid;
-        position: relative;
 
         .pointer {
           color: #0f0;
-          font-size: 20pt;
+          font-size: $code-font-size;
           position: absolute;
           top: 30px;
+          line-height: 1;
         }
       }
 

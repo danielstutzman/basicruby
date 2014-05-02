@@ -16,7 +16,6 @@ resizeDivs = (w, h) ->
   height_next_line = height_total
 
   for div in $all('.code, .CodeMirror')
-    console.log div
     div.style.width  = "#{width_code}px"
     div.style.height = "#{height_code}px"
   for div in $all('.machine .console')
@@ -51,16 +50,18 @@ setupResizeHandler = (code_mirror) ->
 # states: OFF, WAITING, RUNNING
 class Machine
 
-  constructor: (line_height, setTimeout) ->
+  constructor: (line_height, setTimeout, code_mirror) ->
     @state = 'OFF'
     @next_line = null
     @console_lines = []
     @line_height = line_height
     @setTimeout = setTimeout
+    @code_mirror = code_mirror
 
   _getNextLineHTML: ->
     return '' if @next_line == null
-    y = (@next_line - 1) * @line_height
+    y = @code_mirror.heightAtLine(@next_line - 1)
+    # y = (@next_line - 1) * @line_height
     "<div class='pointer' style='top: #{y}px'>&larr;</div>"
 
   _getConsoleHTML: ->
@@ -128,10 +129,9 @@ class Machine
         @setTimeout doNextStep, 1000
     doNextStep()
 
-setTimeout = (f, seconds) -> window.setTimeout(f, seconds)
-machine = new Machine(40, setTimeout)
-
-setupMachine = ->
+setupMachine = (code_mirror) ->
+  setTimeout = (f, seconds) -> window.setTimeout(f, seconds)
+  machine = new Machine(40, setTimeout, code_mirror)
   for button in $all('.machine button.power')
     button.addEventListener 'click', ->
       machine.clickPower()
@@ -142,10 +142,10 @@ setupMachine = ->
 
 document.addEventListener 'DOMContentLoaded', ->
   if $one('body.machine') # have to wait until dom is loaded to check
-    setupMachine()
+    code_mirror = CodeMirror.fromTextArea($one('.code'), options)
+    setupMachine code_mirror
     options =
       mode: 'ruby'
       lineNumbers: true
       autofocus: true
-    code_mirror = CodeMirror.fromTextArea($one('.code'), options)
     setupResizeHandler code_mirror
