@@ -52,6 +52,7 @@ class Machine
 
   constructor: (line_height, setTimeout, code_mirror) ->
     @state = 'OFF'
+    @line_num_to_unhighlight = null
     @next_line = null
     @console_lines = []
     @line_height = line_height
@@ -73,6 +74,13 @@ class Machine
 
   refreshDisplays: ->
     $one('.machine .next-line').innerHTML = @_getNextLineHTML()
+    if @line_num_to_unhighlight != null
+      @code_mirror.removeLineClass @line_num_to_unhighlight - 1,
+        'text', 'current-line'
+    if @next_line != null
+      @code_mirror.addLineClass @next_line - 1, 'text', 'current-line'
+      @line_num_to_unhighlight = @next_line
+
     $one('.machine .console').innerHTML = @_getConsoleHTML()
     $one('.machine .console').scrollTop =
       $one('.machine .console').scrollHeight
@@ -142,10 +150,10 @@ setupMachine = (code_mirror) ->
 
 document.addEventListener 'DOMContentLoaded', ->
   if $one('body.machine') # have to wait until dom is loaded to check
-    code_mirror = CodeMirror.fromTextArea($one('.code'), options)
-    setupMachine code_mirror
     options =
       mode: 'ruby'
       lineNumbers: true
       autofocus: true
+    code_mirror = CodeMirror.fromTextArea($one('.code'), options)
+    setupMachine code_mirror
     setupResizeHandler code_mirror

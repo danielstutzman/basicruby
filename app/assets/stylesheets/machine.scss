@@ -40,9 +40,13 @@ body.machine {
       width: 280px;
       height: 289px;
       float: left;
-      background-color: #fff;
+      background-color: #ddd;
       font-family:monospace;
       font-size: $code-font-size;
+
+      .current-line {
+        background-color: #efe;
+      }
     }
 
     .machine {
