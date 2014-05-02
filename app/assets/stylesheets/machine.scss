@@ -1,3 +1,5 @@
+$border-width: 5px;
+
 body.machine {
   font-family: sans-serif;
   margin: 0;
@@ -39,7 +41,6 @@ body.machine {
       float: left;
       background-color: #fff;
       border: 1px #aaa solid;
-      margin-right: 10px;
       padding-top: 40px;
       font-family:monospace;
       font-size: 30pt;
@@ -49,18 +50,17 @@ body.machine {
     .machine {
       background-color: #333;
       float: left;
-      padding: 5px;
-      border: 3px #222 solid;
-      border-top: 3px #555 solid;
+      border: $border-width #222 solid;
+      border-top: $border-width #555 solid;
 
       .buttons {
-        padding-top: 3px;
-        padding-bottom: 8px;
         text-align: right;
+        padding: 5px;
 
         button {
           padding: 12px 20px;
           font-size: 12pt;
+          margin: 0;
 
           &.active {
             color: #0a0;
@@ -78,8 +78,8 @@ body.machine {
         height: 288px;
         float: left;
         background-color: black;
-        margin-right: 10px;
-        border: 2px #222 solid;
+        border-top: 2px #222 solid;
+        border-left: 2px #222 solid;
         border-bottom: 2px #444 solid;
         position: relative;
 
@@ -106,7 +106,7 @@ body.machine {
         background-color: black;
         border: 2px #222 solid;
         border-bottom: 2px #444 solid;
-        margin-left: 60px;
+        margin-left: 50px;
         color: #0f0;
         font-size: 20pt;
         overflow: scroll;
@@ -160,10 +160,6 @@ body.machine {
     }
 
     &.section1 {
-      background-color: #006;
-      padding-top: 10px;
-      padding-bottom: 10px;
-
       .code {
         height: 20px;
         background-color: transparent;
@@ -230,9 +226,6 @@ body.machine {
     } // end .section1
 
     &.section2 {
-      background-color: #222;
-      padding-top: 10px;
-
       .cases {
         td.input {
           color: #999;
@@ -245,9 +238,6 @@ body.machine {
     }
 
     &.answer-section {
-      background-color: #B8860B; /* dark golden rod */
-      background-color: #a70;
-      background-color: #960;
       padding-top: 10px;
 
       .hider {
@@ -268,13 +258,9 @@ body.machine {
       }
       .machine {
         background-color: #b80;
-        border: 3px #750 solid;
-        border-top: 3px #c90 solid;
-
-        .next-line {
-          border: 2px #777 solid;
-          border-bottom: 2px #999 solid;
-        }
+        border: $border-width #750 solid;
+        border-top: $border-width #c90 solid;
+        border-bottom: $border-width #640 solid;
       }
       .cases {
         background-color: #b80;
