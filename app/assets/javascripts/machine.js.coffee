@@ -14,23 +14,25 @@ escapeHTML = (s, forAttribute) ->
 
 resizeDivs = (w, h) ->
   width_code = w / 2
-  width_machine = w - width_code
+  width_machine = w / 2
 
-  height_breadcrumbs = 31
-  height_description = 102
-  height_actions = 84
-  height_total = h - height_breadcrumbs - height_description - height_actions
-  height_code = height_total
-  height_console = height_total
-  height_next_line = height_total
+  assignment_y2 = $one('div.assignment-above').getBoundingClientRect().bottom
+  actions_h = $one('.actions').getBoundingClientRect().bottom -
+              $one('.actions').getBoundingClientRect().top
+  console_y = $one('div.machine .console').getBoundingClientRect().top
+
+  height_total = Math.floor(h - assignment_y2 - actions_h)
+  height_above_console = Math.ceil(console_y - assignment_y2)
+  height_console = height_total - height_above_console
 
   for div in $all('.code-editor, .CodeMirror')
     div.style.width  = "#{width_code}px"
-    div.style.height = "#{height_code}px"
-  for div in $all('div.machine')
-    div.style.width  = "#{width_machine}px"
+    div.style.height = "#{height_total}px"
   for div in $all('div.machine .console')
     div.style.height = "#{height_console}px"
+  for div in $all('div.machine')
+    div.style.width  = "#{width_machine}px"
+    div.style.height = "#{height_total}px"
 
 setupResizeHandler = (code_mirror) ->
   oldW = 0
@@ -42,7 +44,7 @@ setupResizeHandler = (code_mirror) ->
     #   style='display:none'></svg> and
     #   document.getElementById('svg').currentScale
     w = window.innerWidth
-    h = window.innerHeight - 200
+    h = window.innerHeight
     if w != oldW or h != oldH
       isChanging = true
       oldW = w
