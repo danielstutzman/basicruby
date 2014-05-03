@@ -1,5 +1,6 @@
 $border-width: 5px;
 $code-font-size: 30pt;
+$console-font-size: 30pt;
 
 body.machine {
   font-family: sans-serif;
@@ -110,14 +111,14 @@ body.machine {
         border-bottom: 2px #444 solid;
         margin-left: 50px;
         color: #0f0;
-        font-size: 20pt;
+        font-size: $console-font-size;
         overflow: scroll;
         font-family: monospace;
 
         .cursor {
           background-color: #0f0;
-          width: 12px;
-          height: 20px;
+          width: $console-font-size * 0.5;
+          height: $console-font-size;
           margin-left: 2px;
           display: inline-block;
           line-height: 0;
