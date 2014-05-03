@@ -50,7 +50,8 @@ setupResizeHandler = (code_mirror) ->
 # states: OFF, WAITING, RUNNING
 class Machine
   MILLIS_FOR_BOLD = 700
-  MILLIS_FOR_OUTPUT = 500
+  MILLIS_FOR_OUTPUT = 0
+  MILLIS_FOR_UNBOLD = 500
   MILLIS_FOR_MOVED_ARROW = 500
 
   constructor: (line_height, setTimeout, code_mirror) ->
@@ -121,11 +122,12 @@ class Machine
 
   _continueRun: ->
     @_boldNextLine =>
-      @_executeAndUnboldNextLine =>
-        @_showNextLine =>
-          @refreshDisplays()
-          if @next_line != null
-            @_continueRun()
+      @_executeNextLine =>
+        @_unboldNextLine =>
+          @_showNextLine =>
+            @refreshDisplays()
+            if @next_line != null
+              @_continueRun()
 
   _boldNextLine: (callback) ->
     from = { line: @next_line - 1, ch: 0 }
@@ -134,12 +136,15 @@ class Machine
       @code_mirror.markText from, to, className: 'running'
     @setTimeout callback, MILLIS_FOR_BOLD
 
-  _executeAndUnboldNextLine: (callback) ->
+  _executeNextLine: (callback) ->
     output = @_executeNextLineGettingOutput()
     $one('div.machine .before-cursor').textContent += output
+    @setTimeout callback, MILLIS_FOR_OUTPUT
+
+  _unboldNextLine: (callback) ->
     @being_bolded_marker.clear()
     @being_bolded_marker = null
-    @setTimeout callback, MILLIS_FOR_OUTPUT
+    @setTimeout callback, MILLIS_FOR_UNBOLD
 
   _showNextLine: (callback) ->
     if @next_line
