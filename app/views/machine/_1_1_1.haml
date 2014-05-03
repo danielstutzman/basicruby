@@ -23,13 +23,14 @@
     Click Run to run the program.
 
 .section.answer-section
-  %textarea.code= "puts 1\nputs 2\nputs 3"
+  %textarea.code= "puts 1\nputs 2\nputs 3\n"
   .machine.off
     .buttons
       = run_button
       = power_button
-    .next-line
-      .pointer &larr;
+    .instructions
+      .pointer &rarr;
+      .content
     .console(style='height:290px')<
       %span.before-cursor>
       .cursor>

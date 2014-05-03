@@ -1,11 +1,23 @@
 $one = (selector) -> document.querySelector(selector)
 $all = (selector) -> document.querySelectorAll(selector)
 
+MAP =
+  '&': '&amp;'
+  '<': '&lt;'
+  '>': '&gt;'
+  '"': '&quot;'
+  "'": '&#39;'
+
+escapeHTML = (s, forAttribute) ->
+  regex = if forAttribute then /[&<>'"]/g else /[&<>]/g
+  s.replace regex, (c) -> MAP[c]
+
 resizeDivs = (w, h) ->
   width_code = w / 2
   width_machine = w / 2
   width_next_line = 65
   width_console = width_machine - width_next_line
+  width_instructions = width_console
 
   height_breadcrumbs = 31
   height_description = 102
@@ -18,11 +30,11 @@ resizeDivs = (w, h) ->
   for div in $all('.code, .CodeMirror')
     div.style.width  = "#{width_code}px"
     div.style.height = "#{height_code}px"
+  for div in $all('div.machine .instructions')
+    div.style.width  = "#{width_instructions}px"
   for div in $all('div.machine .console')
     div.style.width  = "#{width_console}px"
     div.style.height = "#{height_console}px"
-  for div in $all('div.machine .next-line')
-    div.style.height = "#{height_next_line}px"
 
 setupResizeHandler = (code_mirror) ->
   oldW = 0
@@ -93,14 +105,27 @@ class Machine
     else
       $one('div.machine button.fast-forward').classList.add 'active'
 
+  _codeWithLineNums: ->
+    lines = $one('textarea.code').textContent.split("\n")
+    new_lines = ["<br>\n"] # blank line at beginning
+    line_num = 1
+    for line in lines
+      new_lines.push "<div class='num #{line_num}'>#{line_num}</div> " +
+        "<div class='code #{line_num}'>#{escapeHTML(line)}</div>"
+      line_num += 1
+    new_lines.join("\n") + "<br>\n" # blank line at end
+
   clickPower: ->
     if @state == 'OFF'
       @state = 'WAITING'
       @next_line = 1
       $one('div.machine .before-cursor').textContent = ''
+      $one('div.machine .instructions .content').innerHTML =
+        @_codeWithLineNums()
     else
       @state = 'OFF'
       @next_line = null
+      $one('div.machine .instructions .content').innerHTML = ''
     @refreshDisplays()
     @_showNextLine (->)
 
@@ -155,11 +180,11 @@ class Machine
     @setTimeout callback, MILLIS_FOR_UNBOLD
 
   _showNextLine: (callback) ->
-    if @next_line
-      y = @code_mirror.heightAtLine(@next_line - 1)
-      $one('div.machine .next-line .pointer').style.top = "#{y}px"
-    $one('div.machine .next-line .pointer').style.display =
-      (if @next_line then 'block' else 'none')
+    #if @next_line
+    #  y = @code_mirror.heightAtLine(@next_line - 1)
+    #  $one('div.machine .next-line .pointer').style.top = "#{y}px"
+    #$one('div.machine .next-line .pointer').style.display =
+    #  (if @next_line then 'block' else 'none')
 
     if @line_num_to_unhighlight != null
       @code_mirror.removeLineClass @line_num_to_unhighlight - 1,
