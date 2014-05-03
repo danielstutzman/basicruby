@@ -92,8 +92,9 @@ body.machine {
           color: #0f0;
           font-size: $code-font-size;
           position: absolute;
-          top: 30px;
+          top: -999px;
           line-height: 1;
+          transition: 0.1s;
         }
       }
 
@@ -118,6 +119,10 @@ body.machine {
         overflow: scroll;
         font-family: monospace;
 
+        .before-cursor {
+          margin: 0;
+          white-space: pre;
+        }
         .cursor {
           background-color: #0f0;
           width: $console-font-size * 0.5;
@@ -126,8 +131,22 @@ body.machine {
           display: inline-block;
           line-height: 0;
         }
+      } // end .console
+
+      &.off {
+        .next-line .pointer {
+          display: none;
+        }
+        .console {
+          .before-cursor {
+            display: none;
+          }
+          .cursor {
+            display: none;
+          }
+        }
       }
-    }
+    } // end .machine
 
     .cases {
       margin-left: 20px;
