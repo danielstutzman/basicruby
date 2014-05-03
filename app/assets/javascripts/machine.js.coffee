@@ -49,6 +49,8 @@ setupResizeHandler = (code_mirror) ->
 
 # states: OFF, WAITING, RUNNING
 class Machine
+  MILLIS_BETWEEN_HIGHLIGHT_AND_EXECUTE = 700
+  MILLIS_BETWEEN_EXECUTE_AND_NEXT = 500
 
   constructor: (line_height, setTimeout, code_mirror) ->
     @state = 'OFF'
@@ -58,6 +60,7 @@ class Machine
     @line_height = line_height
     @setTimeout = setTimeout
     @code_mirror = code_mirror
+    @being_flashed_marker = null
 
   _getNextLineHTML: ->
     return '' if @next_line == null
@@ -109,7 +112,7 @@ class Machine
       @console_lines = []
     @refreshDisplays()
 
-  _doStep : ->
+  _executeNextLine : ->
     if @next_line == 1
       @console_lines.push '1'
       @next_line = 2
@@ -121,21 +124,30 @@ class Machine
       @state = 'WAITING'
       @next_line = null
 
-    @refreshDisplays()
-
-  clickStep: ->
-    return unless @state == 'WAITING'
-    @_doStep()
-
   clickRun: ->
     return unless @state == 'WAITING'
-
     @state = 'RUNNING'
-    doNextStep = =>
-      @_doStep()
-      if @next_line != null
-        @setTimeout doNextStep, 1000
-    doNextStep()
+    @_continueRun()
+
+  _continueRun: ->
+    @_flashNextLine =>
+      @_executeAndDimNextLine =>
+        if @next_line != null
+          @_continueRun()
+
+  _flashNextLine: (callback) ->
+    from = { line: @next_line - 1, ch: 0 }
+    to   = { line: @next_line, ch: 0 }
+    @being_flashed_marker =
+      @code_mirror.markText from, to, className: 'running'
+    @setTimeout callback, MILLIS_BETWEEN_HIGHLIGHT_AND_EXECUTE
+
+  _executeAndDimNextLine: (callback) ->
+    @_executeNextLine()
+    @being_flashed_marker.clear()
+    @being_flashed_marker = null
+    @refreshDisplays()
+    @setTimeout callback, MILLIS_BETWEEN_EXECUTE_AND_NEXT
 
 setupMachine = (code_mirror) ->
   setTimeout = (f, seconds) -> window.setTimeout(f, seconds)

@@ -46,7 +46,10 @@ body.machine {
       font-size: $code-font-size;
 
       .current-line {
-        background-color: #efe;
+        background-color: #ded;
+      }
+      .running {
+        font-weight: bold;
       }
     }
 
