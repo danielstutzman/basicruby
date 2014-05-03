@@ -49,8 +49,9 @@ setupResizeHandler = (code_mirror) ->
 
 # states: OFF, WAITING, RUNNING
 class Machine
-  MILLIS_FOR_BOLD = 700
-  MILLIS_FOR_OUTPUT = 0
+  MILLIS_FOR_BOLD = 300
+  MILLIS_FOR_OUTPUT = 300
+  MILLIS_FOR_OUTPUT_LETTER = 100
   MILLIS_FOR_UNBOLD = 500
   MILLIS_FOR_MOVED_ARROW = 500
 
@@ -137,9 +138,16 @@ class Machine
     @setTimeout callback, MILLIS_FOR_BOLD
 
   _executeNextLine: (callback) ->
+    outputNextLetter = (rest) ->
+      nextLetter = rest[0]
+      rest = rest[1..-1]
+      $one('div.machine .before-cursor').textContent += nextLetter
+      if rest == ''
+        @setTimeout callback, MILLIS_FOR_OUTPUT
+      else
+        @setTimeout (-> outputNextLetter rest), MILLIS_FOR_OUTPUT_LETTER
     output = @_executeNextLineGettingOutput()
-    $one('div.machine .before-cursor').textContent += output
-    @setTimeout callback, MILLIS_FOR_OUTPUT
+    outputNextLetter output
 
   _unboldNextLine: (callback) ->
     @being_bolded_marker.clear()
