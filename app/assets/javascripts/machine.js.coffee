@@ -14,8 +14,12 @@ escapeHTML = (s, forAttribute) ->
 
 resizeDivs = (w, h) ->
   assignment_y2 = $one('div.assignment-above').getBoundingClientRect().bottom
-  actions_h = $one('.actions').getBoundingClientRect().bottom -
-              $one('.actions').getBoundingClientRect().top
+  actions_div = $one('.actions')
+  if actions_div
+    actions_h = actions_div.getBoundingClientRect().bottom -
+                actions_div.getBoundingClientRect().top
+  else
+    actions_h = 0
   console_y = $one('div.machine .console').getBoundingClientRect().top
 
   height_total = Math.floor(h - assignment_y2 - actions_h)
