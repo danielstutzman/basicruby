@@ -127,7 +127,7 @@ body.machine {
         .cursor {
           background-color: #0f0;
           width: $console-font-size * 0.5;
-          height: $console-font-size;
+          height: $console-font-size * 0.9;
           margin-left: 2px;
           display: inline-block;
           line-height: 0;
