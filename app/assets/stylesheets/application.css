@@ -12,13 +12,3 @@
  *= require_tree .
  *= require_self
  */
-
-.CodeMirror-linenumber {
-  color: white;
-  opacity: 0.25;
-}
-.CodeMirror-linenumbers {
-  width: 25px;
-  background-color: #400;
-  padding-right: 18px;
-}

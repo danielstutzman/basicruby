@@ -1,10 +1,5 @@
 - content_for :title, '1.1.1 How to output numbers'
 
-:css
-  body {
-    background-color: #960;
-  }
-
 .breadcrumbs
   %a(href='/')
     = image_tag 'basic_ruby.png'
@@ -15,15 +10,14 @@
   &mdash;
   %a(href='/1.1.1') 1.1.1. How to output numbers
 
-.assignment
-  = image_tag 'exercise_icons/light_bulb30.png', width: 30, height: 30
-  %p
-    Click Power to start the Ruby machine.
-    %br
-    Click Run to run the program.
-
 .section.answer-section
-  %textarea.code= "puts 1\nputs 2\nputs 3\n"
+  .assignment-above
+    = image_tag 'exercise_icons/light_bulb30.png', width: 30, height: 30
+    %p
+      Click Power to start the Ruby machine.
+      %br
+      Click Run to run the program.
+    %textarea.code= "puts 1\nputs 2\nputs 3\n"
   .machine.off
     .buttons
       = run_button

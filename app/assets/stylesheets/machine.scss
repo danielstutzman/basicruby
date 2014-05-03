@@ -20,23 +20,24 @@ body.machine {
     margin: 0;
   }
 
-  .assignment {
-    color: white;
-
-    img {
-      float: left;
-      margin-top: 10px;
-      margin-left: 15px;
-    }
-    p {
-      margin: 20px 0;
-      margin-left: 60px;
-      font-size: 30pt;
-      line-height: 45pt;
-    }
-  }
-
   .section {
+    .assignment-above {
+      color: white;
+
+      img {
+        float: left;
+        margin-top: 35px;
+        margin-left: 15px;
+      }
+      p {
+        margin: 0;
+        padding: 20px 0;
+        margin-left: 60px;
+        font-size: 30pt;
+        line-height: 45pt;
+      }
+    }
+
     textarea.code, .CodeMirror {
       width: 280px;
       height: 289px;
@@ -44,6 +45,16 @@ body.machine {
       background-color: #ddd;
       font-family:monospace;
       font-size: $code-font-size;
+
+      .CodeMirror-linenumbers {
+        width: 25px;
+        padding-right: 18px;
+        background-color: #ddd;
+      }
+      .CodeMirror-linenumber {
+        color: black;
+        opacity: 0.25;
+      }
     }
 
     .machine {
@@ -273,6 +284,7 @@ body.machine {
 
     &.answer-section {
       padding-top: 10px;
+      background-color: #960;
 
       .hider {
         position: absolute;
@@ -289,6 +301,12 @@ body.machine {
 
       textarea.code, .CodeMirror {
         background-color: #ddd;
+        .CodeMirror-linenumbers {
+          background-color: #960;
+        }
+        .CodeMirror-linenumber {
+          color: white;
+        }
       }
       .machine {
         background-color: #b80;
@@ -310,6 +328,20 @@ body.machine {
         }
       }
     } // end .answer-section
+
+    &.bug-section {
+      background-color: #400;
+
+      textarea.code, .CodeMirror {
+        background-color: #eee;
+        .CodeMirror-linenumbers {
+          background-color: #400;
+        }
+        .CodeMirror-linenumber {
+          color: white;
+        }
+      }
+    } // end .bug-section
 
   } // end .section
 
