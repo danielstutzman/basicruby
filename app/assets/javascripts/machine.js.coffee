@@ -14,10 +14,7 @@ escapeHTML = (s, forAttribute) ->
 
 resizeDivs = (w, h) ->
   width_code = w / 2
-  width_machine = w / 2
-  width_next_line = 65
-  width_console = width_machine - width_next_line
-  width_instructions = width_console
+  width_machine = w - width_code
 
   height_breadcrumbs = 31
   height_description = 102
@@ -30,10 +27,9 @@ resizeDivs = (w, h) ->
   for div in $all('.code-editor, .CodeMirror')
     div.style.width  = "#{width_code}px"
     div.style.height = "#{height_code}px"
-  for div in $all('div.machine .instructions')
-    div.style.width  = "#{width_instructions}px"
+  for div in $all('div.machine')
+    div.style.width  = "#{width_machine}px"
   for div in $all('div.machine .console')
-    div.style.width  = "#{width_console}px"
     div.style.height = "#{height_console}px"
 
 setupResizeHandler = (code_mirror) ->
@@ -45,7 +41,7 @@ setupResizeHandler = (code_mirror) ->
     #   xmlns='http://www.w3.org/2000/svg' version='1.1'
     #   style='display:none'></svg> and
     #   document.getElementById('svg').currentScale
-    w = window.innerWidth - 50
+    w = window.innerWidth
     h = window.innerHeight - 200
     if w != oldW or h != oldH
       isChanging = true
