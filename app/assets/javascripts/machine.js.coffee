@@ -87,6 +87,8 @@ class Machine
 
     $one('div.machine button.fast-forward').disabled =
       (@state == 'OFF' || @next_line == null)
+    $one('div.machine button.step').disabled =
+      (@state == 'OFF' || @next_line == null)
 
     if @state == 'OFF'
       $one('div.machine button.power').classList.remove 'active'
@@ -139,14 +141,22 @@ class Machine
     @state = 'RUNNING'
     @_continueRun()
 
-  _continueRun: ->
+  clickStep: ->
+    return unless @state == 'WAITING'
+    @_doStep (->)
+
+  _doStep: (callback) ->
     @_boldNextLine =>
       @_executeNextLine =>
         @_unboldNextLine =>
           @_showNextLine =>
             @refreshDisplays()
-            if @next_line != null
-              @_continueRun()
+            callback()
+
+  _continueRun: ->
+    @_doStep =>
+      if @next_line != null
+        @_continueRun()
 
   _boldNextLine: (callback) ->
     line = $one("div.machine .instructions .content .code._#{@next_line}")
@@ -204,6 +214,9 @@ setupMachine = (code_mirror) ->
   for button in $all('div.machine button.power')
     button.addEventListener 'click', ->
       machine.clickPower()
+  for button in $all('div.machine button.step')
+    button.addEventListener 'click', ->
+      machine.clickStep()
   for button in $all('div.machine button.fast-forward')
     button.addEventListener 'click', ->
       machine.clickRun()
