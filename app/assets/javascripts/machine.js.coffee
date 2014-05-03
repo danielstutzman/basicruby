@@ -27,7 +27,7 @@ resizeDivs = (w, h) ->
   height_console = height_total
   height_next_line = height_total
 
-  for div in $all('.code, .CodeMirror')
+  for div in $all('.code-editor, .CodeMirror')
     div.style.width  = "#{width_code}px"
     div.style.height = "#{height_code}px"
   for div in $all('div.machine .instructions')
@@ -102,7 +102,7 @@ class Machine
       $one('div.machine button.fast-forward').classList.add 'active'
 
   _codeWithLineNums: ->
-    lines = $one('textarea.code').textContent.split("\n")
+    lines = $one('textarea.code-editor').textContent.split("\n")
     new_lines = ["<br>\n"] # blank line at beginning
     line_num = 1
     for line in lines
@@ -218,6 +218,6 @@ document.addEventListener 'DOMContentLoaded', ->
       mode: 'ruby'
       lineNumbers: true
       autofocus: true
-    code_mirror = CodeMirror.fromTextArea($one('.code'), options)
+    code_mirror = CodeMirror.fromTextArea($one('.code-editor'), options)
     setupMachine code_mirror
     setupResizeHandler code_mirror
