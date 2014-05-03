@@ -8,6 +8,7 @@
 $border-width: 5px;
 $code-font-size: 30pt;
 $console-font-size: 30pt;
+$min-width-for-extra-padding: 1000px;
 
 body.machine {
   font-family: sans-serif;
@@ -52,6 +53,10 @@ body.machine {
       background-color: #ddd;
       font-family:monospace;
       font-size: $code-font-size;
+      @media all and (min-width: $min-width-for-extra-padding) {
+        width: 48%;
+        margin-right: 2%;
+      }
 
       .CodeMirror-linenumbers {
         width: 25px;
@@ -70,6 +75,11 @@ body.machine {
       border: $border-width #222 solid;
       border-top: $border-width #555 solid;
       width: 50%;
+      @media all and (min-width: $min-width-for-extra-padding) {
+        margin-left: 2%;
+        width: 44%;
+        margin-right: 4%;
+      }
 
       .buttons {
         text-align: right;
