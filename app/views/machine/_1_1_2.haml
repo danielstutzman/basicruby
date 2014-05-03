@@ -25,14 +25,17 @@
     Then read the error message out loud.
 
 .section.section2
-  %textarea.code= "puts 1\npust 2\nputs 1"
-  .machine
+  %textarea.code= "puts 1\npust 2\nputs 3\n"
+  .machine.off
     .buttons
       = run_button
       = power_button
-    .next-line
-      <label style='display: block; font-size: 20pt; color: black; text-align: center; line-height: 18pt; text-shadow: 1px 1px #333, -1px -1px #111; position: relative; top: 30px'>N<br>e<br>x<br>t<br><br>L<br>i<br>n<br>e</label>
-    .console(style='height:290px')
+    .instructions
+      .pointer &rarr;
+      .content
+    .console(style='height:290px')<
+      %span.before-cursor>
+      .cursor>
   %br(clear='all')
 
 .actions
