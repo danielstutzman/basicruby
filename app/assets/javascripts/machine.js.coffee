@@ -100,6 +100,11 @@ class Machine
     else
       $one('div.machine button.fast-forward').classList.add 'active'
 
+    scrollConsole = ->
+      $one('div.machine .console').scrollTop =
+        $one('div.machine .console').scrollHeight
+    @setTimeout scrollConsole, 1 # timeout to avoid weird layout bug
+
   _codeWithLineNums: ->
     lines = $one('textarea.code-editor').textContent.split("\n")
     new_lines = ["<br>\n"] # blank line at beginning
@@ -169,6 +174,9 @@ class Machine
       nextLetter = rest[0]
       rest = rest[1..-1]
       $one('div.machine .before-cursor').textContent += nextLetter
+      if nextLetter == "\n"
+        $one('div.machine .console').scrollTop =
+          $one('div.machine .console').scrollHeight
       if rest == ''
         @setTimeout callback, MILLIS_FOR_OUTPUT
       else
