@@ -44,13 +44,6 @@ body.machine {
       background-color: #ddd;
       font-family:monospace;
       font-size: $code-font-size;
-
-      .current-line {
-        background-color: #ded;
-      }
-      .running {
-        font-weight: bold;
-      }
     }
 
     .machine {
@@ -136,6 +129,10 @@ body.machine {
           }
           .code {
             margin-left: 100px;
+
+            &.bold {
+              font-weight: bold;
+            }
           }
         }
       }

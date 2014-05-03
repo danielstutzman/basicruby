@@ -65,16 +65,16 @@ class Machine
   MILLIS_FOR_OUTPUT = 300
   MILLIS_FOR_OUTPUT_LETTER = 100
   MILLIS_FOR_UNBOLD = 500
-  MILLIS_FOR_MOVED_ARROW = 500
+  MILLIS_FOR_SCROLLED_INSTRUCTIONS = 500
+  MILLIS_FOR_SCROLLED_INSTRUCTIONS_TENTH = 5
 
   constructor: (line_height, setTimeout, code_mirror) ->
     @state = 'OFF'
-    @line_num_to_unhighlight = null
     @next_line = null
     @line_height = line_height
     @setTimeout = setTimeout
     @code_mirror = code_mirror
-    @being_bolded_marker = null
+    @old_bolded_line = null
 
   _getNextLineHTML: ->
     return '' if @next_line == null
@@ -87,10 +87,6 @@ class Machine
       $one('div.machine').classList.add 'off'
     else
       $one('div.machine').classList.remove 'off'
-
-    #$one('.machine .console').innerHTML = @_getConsoleHTML()
-    #$one('.machine .console').scrollTop =
-    #  $one('.machine .console').scrollHeight
 
     $one('div.machine button.fast-forward').disabled =
       (@state == 'OFF' || @next_line == null)
@@ -110,8 +106,8 @@ class Machine
     new_lines = ["<br>\n"] # blank line at beginning
     line_num = 1
     for line in lines
-      new_lines.push "<div class='num #{line_num}'>#{line_num}</div> " +
-        "<div class='code #{line_num}'>#{escapeHTML(line)}</div>"
+      new_lines.push "<div class='num _#{line_num}'>#{line_num}</div> " +
+        "<div class='code _#{line_num}'>#{escapeHTML(line)}</div>"
       line_num += 1
     new_lines.join("\n") + "<br>\n" # blank line at end
 
@@ -156,10 +152,9 @@ class Machine
               @_continueRun()
 
   _boldNextLine: (callback) ->
-    from = { line: @next_line - 1, ch: 0 }
-    to   = { line: @next_line, ch: 0 }
-    @being_bolded_marker =
-      @code_mirror.markText from, to, className: 'running'
+    line = $one("div.machine .instructions .content .code._#{@next_line}")
+    line.classList.add 'bold'
+    @old_bolded_line = line
     @setTimeout callback, MILLIS_FOR_BOLD
 
   _executeNextLine: (callback) ->
@@ -175,25 +170,36 @@ class Machine
     outputNextLetter output
 
   _unboldNextLine: (callback) ->
-    @being_bolded_marker.clear()
-    @being_bolded_marker = null
+    if @old_bolded_line
+      @old_bolded_line.classList.remove 'bold'
+      @old_bolded_line = null
     @setTimeout callback, MILLIS_FOR_UNBOLD
 
   _showNextLine: (callback) ->
-    #if @next_line
-    #  y = @code_mirror.heightAtLine(@next_line - 1)
-    #  $one('div.machine .next-line .pointer').style.top = "#{y}px"
-    #$one('div.machine .next-line .pointer').style.display =
-    #  (if @next_line then 'block' else 'none')
-
-    if @line_num_to_unhighlight != null
-      @code_mirror.removeLineClass @line_num_to_unhighlight - 1,
-        'text', 'current-line'
-    if @next_line != null
-      @code_mirror.addLineClass @next_line - 1, 'text', 'current-line'
-      @line_num_to_unhighlight = @next_line
-
-    @setTimeout callback, MILLIS_FOR_MOVED_ARROW
+    $pointer = $one('.machine .instructions .pointer')
+    $content = $one('.machine .instructions .content')
+    if @next_line
+      $pointer.style.display = 'block'
+      $content.style.display = 'block'
+      element_1 = $one("div.machine .instructions .content .num._1")
+      element_n = $one("div.machine .instructions .content .num._#{@next_line}")
+      old_scroll_top = $content.scrollTop
+      new_scroll_top = element_n.getBoundingClientRect().top -
+                       element_1.getBoundingClientRect().top
+      animateScrollTop = (progress) ->
+        progress = 1.0 if progress > 1.0
+        $content.scrollTop = (1.0 - progress) * old_scroll_top +
+          progress * new_scroll_top
+        if progress < 1.0
+          @setTimeout (=> animateScrollTop (progress + 0.1)),
+            MILLIS_FOR_SCROLLED_INSTRUCTIONS_TENTH
+        else
+          @setTimeout callback, MILLIS_FOR_SCROLLED_INSTRUCTIONS
+      animateScrollTop 0.1
+    else
+      $pointer.style.display = 'none'
+      $content.style.display = 'none'
+      @setTimeout callback, MILLIS_FOR_SCROLLED_INSTRUCTIONS
 
 setupMachine = (code_mirror) ->
   setTimeout = (f, seconds) -> window.setTimeout(f, seconds)
