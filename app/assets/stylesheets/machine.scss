@@ -46,7 +46,7 @@ body.machine {
     }
 
     textarea.code, .CodeMirror {
-      width: 280px;
+      width: 50%;
       height: 289px;
       float: left;
       background-color: #ddd;
@@ -69,6 +69,7 @@ body.machine {
       float: left;
       border: $border-width #222 solid;
       border-top: $border-width #555 solid;
+      width: 50%;
 
       .buttons {
         text-align: right;

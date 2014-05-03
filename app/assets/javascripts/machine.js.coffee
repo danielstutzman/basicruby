@@ -13,9 +13,6 @@ escapeHTML = (s, forAttribute) ->
   s.replace regex, (c) -> MAP[c]
 
 resizeDivs = (w, h) ->
-  width_code = w / 2
-  width_machine = w / 2
-
   assignment_y2 = $one('div.assignment-above').getBoundingClientRect().bottom
   actions_h = $one('.actions').getBoundingClientRect().bottom -
               $one('.actions').getBoundingClientRect().top
@@ -26,12 +23,10 @@ resizeDivs = (w, h) ->
   height_console = height_total - height_above_console
 
   for div in $all('.code-editor, .CodeMirror')
-    div.style.width  = "#{width_code}px"
     div.style.height = "#{height_total}px"
   for div in $all('div.machine .console')
     div.style.height = "#{height_console}px"
   for div in $all('div.machine')
-    div.style.width  = "#{width_machine}px"
     div.style.height = "#{height_total}px"
 
 setupResizeHandler = (code_mirror) ->
