@@ -17,5 +17,4 @@
 
 //= require browserified.js
 //= require ruby_to_pos_to_result.js
-require('./coffee/machine.coffee');
-var compile = require('./coffee/compile.coffee').compile;
+require('./coffee/application.coffee');
