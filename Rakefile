@@ -16,7 +16,7 @@ end
 
 if defined?(before)
   before 'assets:precompile' do
-    Rake::Task['app/assets/javascripts/browserified-prod.js'].invoke
+    Rake::Task['app/assets/javascripts/browserified.js'].invoke
     Rake::Task['app/assets/javascripts/ruby_to_pos_to_result.js'].invoke
   end
 end
