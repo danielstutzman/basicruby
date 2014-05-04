@@ -21,7 +21,7 @@ if defined?(before)
   end
 end
 
-file 'app/assets/javascripts/browserified-dev.js' =>
+file 'app/assets/javascripts/browserified.js' =>
     Dir.glob('coffee/*.coffee') do |task|
   dash_r_paths = task.prerequisites.map { |path|
     ['-r', "./#{path}"]
@@ -29,28 +29,10 @@ file 'app/assets/javascripts/browserified-dev.js' =>
   command = %W[
     node_modules/.bin/browserify
       -t coffeeify
+      #{ENV['RAILS_ENV'] == 'assets' ? '-t uglifyify' : ''}
       --insert-global-vars ''
       -d
       #{dash_r_paths}
-  ].join(' ')
-  create_with_sh command, task.name
-end
-
-file 'app/assets/javascripts/browserified-prod.js' =>
-    Dir.glob('coffee/*.coffee') do |task|
-  dash_r_paths = task.prerequisites.map { |path|
-    ['-r', "./#{path}"]
-  }.flatten.join(' ')
-  command = %W[
-    node_modules/.bin/browserify
-      -t coffeeify
-      -t uglifyify
-      --insert-global-vars ''
-      -d
-      #{dash_r_paths}
-  | node
-      node_modules/exorcist/bin/exorcist.js
-      public/browserified.js.map
   ].join(' ')
   create_with_sh command, task.name
 end

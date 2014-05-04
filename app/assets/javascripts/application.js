@@ -13,5 +13,8 @@
 // - require jquery
 // - require jquery_ujs
 // - require turbolinks
-//= require_tree ../../../vendor/assets/javascripts/.
-//= require_tree .
+// - require_tree .
+
+//= require browserified.js
+//= require ruby_to_pos_to_result.js
+//= require ruby_to_pos_to_result2.js

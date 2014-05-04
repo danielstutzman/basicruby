@@ -42,6 +42,5 @@ build/
 
 /node_modules
 /public/browserified.js.map
-/app/assets/javascripts/browserified-dev.js
-/app/assets/javascripts/browserified-prod.js
+/app/assets/javascripts/browserified.js
 /app/assets/javascripts/ruby_to_pos_to_result.js
