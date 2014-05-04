@@ -4,3 +4,7 @@
 require File.expand_path('../config/application', __FILE__)
 
 BasicRuby::Application.load_tasks
+
+before 'assets:precompile' do
+  system 'ls'
+end
