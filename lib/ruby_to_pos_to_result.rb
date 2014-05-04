@@ -31,9 +31,25 @@ end
 def sexp_to_pos(sexp)
   sexp.source[0]
 end
+def statements_to_pos_to_result(sexp)
+  if sexp == nil
+    parser = Opal::Parser.new
+    block = parser.s(:block) # an empty block
+    block_to_pos_to_result(block)
+  elsif sexp[0] == :block
+    block_to_pos_to_result(sexp)
+  else
+    parser = Opal::Parser.new
+    block = parser.s(:block, sexp) # wrap with a block
+    block_to_pos_to_result(block)
+  end
+end
 def block_to_pos_to_result(sexp)
   if sexp[0] == :block
     poses = sexp[1..-1].map { |sexp| sexp_to_pos(sexp) } + [:finish]
+    if poses.uniq != poses
+      raise "Can't have more than one statement on a line"
+    end
 
     pos_to_result = {}
     sexp[1..-1].each_with_index do |sexp, i|
@@ -51,7 +67,7 @@ end
 def code_to_pos_to_result(code)
   parser = Opal::Parser.new
   sexp = parser.parse(code)
-  block_to_pos_to_result(sexp)
+  statements_to_pos_to_result(sexp)
 end 
 
 if __FILE__ == $0
@@ -60,18 +76,26 @@ if __FILE__ == $0
   parser = Opal::Parser.new
   compiler = Opal::Compiler.new
 
-  code = "puts 3\nputs 4\n"
+  code = "puts 3\nputs 4"
   p code
+
   sexp = parser.parse(code)
-  compiler.scope = Opal::Nodes::ScopeNode.new(sexp, :stmt, compiler)
-  sexp = parser.s(:top, sexp)
+  if sexp
+    compiler.scope = Opal::Nodes::ScopeNode.new(sexp, :stmt, compiler)
+    sexp = parser.s(:top, sexp)
+  else
+    sexp = parser.s(:top)
+  end
   p sexp
+
   processed = compiler.process(sexp)
   p processed
+
   fragments = processed.flatten
   p fragments
+
   result = fragments.map(&:code)
   puts "{\n#{result.join}\n}"
 
-  puts code_to_pos_to_result("puts 3\nputs 4\n")
+  puts code_to_pos_to_result("puts 3\nputs 4")
 end
