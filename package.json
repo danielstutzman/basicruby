@@ -1,6 +1,6 @@
 {
   "name": "basic-ruby-rails",
-  "devDependencies": {
+  "dependencies": {
     "browserify": "~> 3.33",
     "exorcist": "~0.1.6",
     "coffeeify": "~0.6.0",
