@@ -21,6 +21,21 @@ if defined?(before)
   end
 end
 
+file 'app/assets/javascripts/browserified-dev.js' =>
+    Dir.glob('coffee/*.coffee') do |task|
+  dash_r_paths = task.prerequisites.map { |path|
+    ['-r', "./#{path}"]
+  }.flatten.join(' ')
+  command = %W[
+    node_modules/.bin/browserify
+      -t coffeeify
+      --insert-global-vars ''
+      -d
+      #{dash_r_paths}
+  ].join(' ')
+  create_with_sh command, task.name
+end
+
 file 'app/assets/javascripts/browserified-prod.js' =>
     Dir.glob('coffee/*.coffee') do |task|
   dash_r_paths = task.prerequisites.map { |path|

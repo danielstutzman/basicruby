@@ -54,3 +54,6 @@ gem 'rails_12factor'
 gem 'opal', github: 'opal/opal', ref: '680eb8fa' # Ruby to JavaScript transpiler
 
 gem 'rake-hooks', group: :assets # so I can run deploy tasks for Heroku
+
+gem 'guard', group: :development
+gem 'guard-shell', group: :development

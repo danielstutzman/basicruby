@@ -9,5 +9,8 @@
   "license": "MIT",
   "engines": {
     "node": ">= 0.6"
+  },
+  "devDependencies": {
+    "watch": "~0.10.0"
   }
 }
