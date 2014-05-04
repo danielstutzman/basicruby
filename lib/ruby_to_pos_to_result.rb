@@ -1,5 +1,3 @@
-require 'opal'
-
 def literal_to_output(sexp)
   if sexp[0] == :int
     sexp[1].to_s + "\n"
@@ -57,7 +55,7 @@ def code_to_pos_to_result(code)
 end 
 
 if __FILE__ == $0
-  require 'opal'
+  send :require, 'opal' # avoid require being noticed by opal->js compiler
 
   parser = Opal::Parser.new
   compiler = Opal::Compiler.new

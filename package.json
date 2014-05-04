@@ -1,0 +1,13 @@
+{
+  "name": "basic-ruby-rails",
+  "devDependencies": {
+    "browserify": "~> 3.33",
+    "exorcist": "~0.1.6",
+    "coffeeify": "~0.6.0",
+    "uglifyify": "~2.1.1"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">= 0.6"
+  }
+}
