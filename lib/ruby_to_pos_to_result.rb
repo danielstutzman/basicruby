@@ -1,12 +1,20 @@
+class BasicRubyDoesntYetSupport < RuntimeError
+end
+
+def no(message)
+  raise BasicRubyDoesntYetSupport.new(message)
+end
+
 def literal_to_output(sexp)
   if sexp[0] == :int
     sexp[1].to_s + "\n"
   elsif sexp[0] == :str
     sexp[1] + "\n"
   else
-    raise "Was expecting :int or :str"
+    no "literal type #{sexp[0]}"
   end
 end
+
 def expr_to_output(sexp)
   if sexp[0] == :call
     if sexp[1] == nil
@@ -16,21 +24,27 @@ def expr_to_output(sexp)
             literal_to_output(sexp)
           }.join
         else
-          raise "Was expecting arglist"
+          no "puts method calls without :arglist"
         end
       else
-        raise "Can only call puts method"
+        no "receiverless method calls besides puts"
       end
     else
-      raise "Can't call methods yet"
+      no "method calls with receivers"
     end
   else
-    raise "Unknown sexp #{sexp[0]}"
+    no "expression type #{sexp[0]}"
   end
 end
+
 def sexp_to_pos(sexp)
-  sexp.source[0]
+  if sexp.source
+    sexp.source[0]
+  else
+    raise "Can't find source line for s-exp #{sexp.inspect}"
+  end
 end
+
 def statements_to_pos_to_result(sexp)
   if sexp == nil
     parser = Opal::Parser.new
@@ -44,6 +58,7 @@ def statements_to_pos_to_result(sexp)
     block_to_pos_to_result(block)
   end
 end
+
 def block_to_pos_to_result(sexp)
   if sexp[0] == :block
     poses = sexp[1..-1].map { |sexp| sexp_to_pos(sexp) } + [:finish]
@@ -61,9 +76,10 @@ def block_to_pos_to_result(sexp)
     pos_to_result[:start] = poses[0]
     pos_to_result
   else
-    raise "Unknown sexp #{sexp[0]}"
+    no "block type #{sexp[0]}"
   end
 end
+
 def code_to_pos_to_result(code)
   parser = Opal::Parser.new
   sexp = parser.parse(code)
