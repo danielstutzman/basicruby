@@ -79,6 +79,7 @@ class Machine
       @state = 'WAITING'
       @program = compile(@code_mirror.getValue())
       @next_line = @program.map['start']
+      @next_line = null if @next_line == 'finish'
       $one('div.machine .before-cursor').textContent = ''
       $one('div.machine .instructions .content').innerHTML =
         @_codeWithLineNums()
