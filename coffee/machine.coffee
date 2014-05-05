@@ -22,6 +22,7 @@ class Machine
   MILLIS_FOR_SCROLLED_INSTRUCTIONS_TENTH = 5
 
   constructor: (line_height, setTimeout, code_mirror) ->
+    @program = null
     @state = 'OFF'
     @next_line = null
     @line_height = line_height
@@ -62,19 +63,22 @@ class Machine
     @setTimeout scrollConsole, 1 # timeout to avoid weird layout bug
 
   _codeWithLineNums: ->
-    lines = $one('textarea.code-editor').textContent.split("\n")
+    lines = @code_mirror.getValue().split("\n")
     new_lines = ["<br>\n"] # blank line at beginning
     line_num = 1
     for line in lines
       new_lines.push "<div class='num _#{line_num}'>#{line_num}</div> " +
         "<div class='code _#{line_num}'>#{escapeHTML(line)}</div>"
       line_num += 1
-    new_lines.join("\n") + "<br>\n" # blank line at end
+
+    # blank lines at end, so we can scroll if program is short
+    new_lines.join("\n") + "<br><br><br>"
 
   clickPower: ->
     if @state == 'OFF'
       @state = 'WAITING'
-      @next_line = 1
+      @program = compile(@code_mirror.getValue())
+      @next_line = @program.map['start']
       $one('div.machine .before-cursor').textContent = ''
       $one('div.machine .instructions .content').innerHTML =
         @_codeWithLineNums()
@@ -86,16 +90,14 @@ class Machine
     @_showNextLine (->)
 
   _executeNextLineGettingOutput: ->
-    if @next_line == 1
-      @next_line = 2
-      return "1\n"
-    else if @next_line == 2
-      @next_line = 3
-      return "2\n"
-    else if @next_line == 3
+    next_line = @program.map[@next_line].map.next
+    output    = @program.map[@next_line].map.output
+    if next_line == 'finish'
       @state = 'WAITING'
       @next_line = null
-      return "3\n"
+    else
+      @next_line = next_line
+    return output
 
   clickRun: ->
     return unless @state == 'WAITING'
