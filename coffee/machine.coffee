@@ -71,8 +71,9 @@ class Machine
         "<div class='code _#{line_num}'>#{escapeHTML(line)}</div>"
       line_num += 1
 
-    # blank lines at end, so we can scroll if program is short
-    new_lines.join("\n") + "<br><br><br>"
+    # blank lines at end, so we can scroll if program is short and has blank
+    # lines at the top
+    new_lines.join("\n") + "<br clear='all'><br>"
 
   clickPower: ->
     if @state == 'OFF'
