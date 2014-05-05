@@ -15,8 +15,8 @@ escapeHTML = (s, forAttribute) ->
 # states: OFF, WAITING, RUNNING
 class Machine
   MILLIS_FOR_BOLD = 300
-  MILLIS_FOR_OUTPUT = 300
-  MILLIS_FOR_OUTPUT_LETTER = 100
+  MILLIS_FOR_OUTPUT_DURING = 200
+  MILLIS_FOR_OUTPUT_AFTER = 300
   MILLIS_FOR_UNBOLD = 500
   MILLIS_FOR_SCROLLED_INSTRUCTIONS = 500
   MILLIS_FOR_SCROLLED_INSTRUCTIONS_TENTH = 5
@@ -138,10 +138,11 @@ class Machine
         $one('div.machine .console').scrollTop =
           $one('div.machine .console').scrollHeight
       if rest == ''
-        @setTimeout callback, MILLIS_FOR_OUTPUT
+        @setTimeout callback, MILLIS_FOR_OUTPUT_AFTER
       else
-        @setTimeout (-> outputNextLetter rest), MILLIS_FOR_OUTPUT_LETTER
+        @setTimeout (-> outputNextLetter rest), millis_for_each_letter
     output = @_executeNextLineGettingOutput()
+    millis_for_each_letter = MILLIS_FOR_OUTPUT_DURING / (output.length || 1)
     outputNextLetter output
 
   _unboldNextLine: (callback) ->
