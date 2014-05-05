@@ -169,6 +169,7 @@ body.machine {
         font-size: $console-font-size;
         overflow: scroll;
         font-family: monospace;
+        word-wrap: break-word;
 
         .before-cursor {
           margin: 0;
