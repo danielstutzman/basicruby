@@ -149,7 +149,8 @@ body.machine {
             clear: left;
           }
           .code {
-            margin-left: 100px;
+            padding-left: 30px;
+            float: left;
 
             &.bold {
               font-weight: bold;
