@@ -22,8 +22,15 @@ class BytecodeCompiler
   class AssertionFailed < RuntimeError
   end
 
+  class DebuggerDoesntYetSupport < RuntimeError
+  end
+
   def assert bool
     raise AssertionFailed if !bool
+  end
+
+  def no feature
+    raise DebuggerDoesntYetSupport.new(feature)
   end
 
   def statement_to_pos sexp
