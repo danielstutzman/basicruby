@@ -22,21 +22,31 @@ describe BytecodeCompiler, '#compile' do
   it 'compiles puts 3' do
     program('puts 3').should == {
       :start=>"1,0",
-      "1,0"=>[[:int, 3], [:arg], [:call, :puts], [:done]],
+      "1,0"=>[
+        [:start_call], [:arg], [:int, 3], [:arg], [:call, :puts], [:done]
+      ],
     }
   end
   it 'compiles puts 3; puts 4' do
     program('puts 3; puts 4').should == {
       :start=>"1,0",
-     "1,0" => [[:int, 3], [:arg], [:call, :puts], [:goto, "1,8"]],
-     "1,8" => [[:int, 4], [:arg], [:call, :puts], [:done]],
+     "1,0" => [
+       [:start_call], [:arg], [:int, 3], [:arg], [:call, :puts], [:goto, "1,8"]
+     ],
+     "1,8" => [
+       [:start_call], [:arg], [:int, 4], [:arg], [:call, :puts], [:done]
+     ],
     }
   end
   it 'compiles puts 3\nputs 4' do
     program("puts 3\nputs 4").should == {
       :start=>"1,0",
-     "1,0" => [[:int, 3], [:arg], [:call, :puts], [:goto, "2,0"]],
-     "2,0" => [[:int, 4], [:arg], [:call, :puts], [:done]],
+     "1,0" => [
+       [:start_call], [:arg], [:int, 3], [:arg], [:call, :puts], [:goto, "2,0"]
+     ],
+     "2,0" => [
+       [:start_call], [:arg], [:int, 4], [:arg], [:call, :puts], [:done]
+     ],
     }
   end
 
@@ -44,13 +54,22 @@ describe BytecodeCompiler, '#compile' do
     exp('3').should == [[:int, 3]]
   end
   it 'compiles expression 3 + 4' do
-    exp('3 + 4').should ==
-      [[:int, 3], [:receiver], [:int, 4], [:arg], [:call, :+]]
+    exp('3 + 4').should == [
+      [:start_call], [:int, 3], [:arg], [:int, 4], [:arg], [:call, :+]
+    ]
   end
   it 'compiles expression 3 + 4 + 5' do
     exp('3 + 4 + 5').should == [
-      [:int, 3], [:receiver], [:int, 4], [:arg], [:call, :+],
-      [:receiver], [:int, 5], [:arg], [:call, :+]
+      [:start_call],
+      [:start_call], [:int, 3], [:arg], [:int, 4], [:arg], [:call, :+],
+      [:arg], [:int, 5], [:arg], [:call, :+]
+    ]
+  end
+  it 'compiles expression 3 + (4 + 5)' do
+    exp('3 + (4 + 5)').should == [
+      [:start_call], [:int, 3], [:arg],
+      [:start_call], [:int, 4], [:arg], [:int, 5], [:arg], [:call, :+],
+      [:arg], [:call, :+]
     ]
   end
 end

@@ -68,19 +68,22 @@ class BytecodeCompiler
   def compile_expression sexp
     head, tail = sexp[0], sexp[1..-1]
     case head
-      when :call then compile_call tail
-      when :int  then compile_int tail
-      else no "unknown s-exp head #{head}"
+      when :call  then compile_call tail
+      when :int   then compile_int tail
+      when :paren then compile_paren tail
+      else no "s-exp with head #{head}"
     end
   end
   def compile_call tail
     bytecodes = []
     receiver, method, arglist = tail
 
+    bytecodes.push [:start_call]
+
     if receiver
       bytecodes.concat compile_expression(receiver)
-      bytecodes.push [:receiver]
     end
+    bytecodes.push [:arg]
 
     assert arglist[0] == :arglist
     arglist[1..-1].each do |arg|
@@ -96,5 +99,9 @@ class BytecodeCompiler
     assert tail.size == 1
     assert tail[0] == tail[0].to_i
     [[:int, tail[0]]]
+  end
+  def compile_paren tail
+    assert tail.size == 1
+    compile_expression tail[0]
   end
 end
