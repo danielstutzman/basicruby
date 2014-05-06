@@ -43,4 +43,7 @@ describe BytecodeCompiler, '#compile' do
   it 'compiles expression 3' do
     exp('3').should == [[:int, 3]]
   end
+  it 'compiles expression 3 + 4' do
+    exp('3 + 4').should == [[:int, 4], [:arg], [[:int, 3]], [:call, :+]]
+  end
 end
