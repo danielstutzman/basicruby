@@ -1,2 +1,2 @@
 #!/bin/bash
-rspec bytecode_compiler_spec.rb --format nested
+rspec *_spec.rb --format nested
