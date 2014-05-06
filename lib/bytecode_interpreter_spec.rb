@@ -1,11 +1,12 @@
 require './bytecode_interpreter'
 
-main = self
+$main = self
 Compiler2 = BytecodeCompiler.new
-Interpreter = BytecodeInterpreter.new(main)
 def output_of ruby_code
   hash = Compiler2.compile_ruby_program_to_hash ruby_code
-  Interpreter.execute_hash hash
+  interpreter = BytecodeInterpreter.new $main, hash
+  interpreter.run
+  interpreter.output
 end
 
 describe BytecodeInterpreter, '#execute_hash' do

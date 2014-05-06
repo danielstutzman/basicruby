@@ -18,17 +18,5 @@
       %br
       Click Step three times to run the program.
     %textarea.code-editor= "puts 1\nputs 2\nputs 3\n"
-  .machine.off
-    .buttons
-      = step_button
-      = run_button
-      = power_button
-    %label Instructions
-    .instructions
-      .pointer &rarr;
-      .content
-    %label Input &amp; Output
-    .console<
-      %span.before-cursor>
-      .cursor>
+  .debugger
   %br(clear='all')

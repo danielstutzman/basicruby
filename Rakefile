@@ -16,8 +16,7 @@ end
 
 if defined?(before)
   before 'assets:precompile' do
-    Rake::Task['app/assets/javascripts/browserified.js'].invoke
-    Rake::Task['app/assets/javascripts/ruby_to_pos_to_result.js'].invoke
+    Rake::Task['js'].invoke
   end
 end
 
@@ -47,3 +46,32 @@ file 'app/assets/javascripts/ruby_to_pos_to_result.js' =>
   ].join(' ')
   create_with_sh command, task.name
 end
+
+file 'app/assets/javascripts/bytecode_compiler.js' =>
+    'lib/bytecode_compiler.rb' do |task|
+  command = %W[
+    bundle exec opal
+      -c
+      -I lib
+      -- bytecode_compiler
+  ].join(' ')
+  create_with_sh command, task.name
+end
+
+file 'app/assets/javascripts/bytecode_interpreter.js' =>
+    'lib/bytecode_interpreter.rb' do |task|
+  command = %W[
+    bundle exec opal
+      -c
+      -I lib
+      -- bytecode_interpreter
+  ].join(' ')
+  create_with_sh command, task.name
+end
+
+task :js => %w[
+  app/assets/javascripts/browserified.js
+  app/assets/javascripts/ruby_to_pos_to_result.js
+  app/assets/javascripts/bytecode_compiler.js
+  app/assets/javascripts/bytecode_interpreter.js
+]

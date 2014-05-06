@@ -17,4 +17,6 @@
 
 //= require browserified.js
 //= require ruby_to_pos_to_result.js
+//= require bytecode_compiler.js
+//= require bytecode_interpreter.js
 require('./coffee/application.coffee');

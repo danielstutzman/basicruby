@@ -1,3 +1,5 @@
+DebuggerAnimator = require('./DebuggerAnimator.coffee')
+
 $one = (selector) -> document.querySelector(selector)
 $all = (selector) -> document.querySelectorAll(selector)
 
@@ -177,19 +179,22 @@ class Machine
       $content.style.display = 'none'
       @setTimeout callback, MILLIS_FOR_SCROLLED_INSTRUCTIONS
 
-setupMachine = (code_mirror) ->
-  setTimeout = (f, seconds) -> window.setTimeout(f, seconds)
-  machine = new Machine(40, setTimeout, code_mirror)
-  for button in $all('div.machine button.power')
-    button.addEventListener 'click', ->
-      machine.clickPower()
-  for button in $all('div.machine button.step')
-    button.addEventListener 'click', ->
-      machine.clickStep()
-  for button in $all('div.machine button.fast-forward')
-    button.addEventListener 'click', ->
-      machine.clickRun()
-  machine.refreshDisplays()
+setupMachine = (codeMirror) ->
+  if false
+    setTimeout = (f, seconds) -> window.setTimeout(f, seconds)
+    machine = new Machine(40, setTimeout, code_mirror)
+    for button in $all('div.machine button.power')
+      button.addEventListener 'click', ->
+        machine.clickPower()
+    for button in $all('div.machine button.step')
+      button.addEventListener 'click', ->
+        machine.clickStep()
+    for button in $all('div.machine button.fast-forward')
+      button.addEventListener 'click', ->
+        machine.clickRun()
+    machine.refreshDisplays()
+
+  (new DebuggerAnimator(codeMirror)).run()
 
 module.exports =
   setupMachine: setupMachine

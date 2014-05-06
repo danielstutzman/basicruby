@@ -2,69 +2,81 @@ class BytecodeInterpreter
   class ResultIsUnassigned
   end
 
-  def initialize(main)
+  attr_accessor :pos, :partial_calls, :output, :result
+
+  def initialize main, hash
     @main = main
+    @hash = hash
+    @output = ''
+    @pos = hash[:start]
+    @partial_calls = []
+    @result = ResultIsUnassigned
   end
-  def execute_hash hash
-    output = ''
-    line = hash[:start]
-    partial_call = []
-    result = ResultIsUnassigned
-    while line
-      bytecodes = hash[line]
-      bytecodes.each do |bytecode|
-        head, arg0 = bytecode
-        case head
-          when :start_call
-            partial_call.push []
-          when :arg
-            partial_call.last.push result
-          when :int
-            result = arg0
-          when :nil
-            result = nil
-          when :call
-            receiver, *args = partial_call.pop
-            method_name = arg0
-            if receiver == ResultIsUnassigned && method_name == :puts
-              if args.size == 0
-                output += "\n"
-              else
-                output += args.map { |arg| "#{arg}\n" }.join
-              end
-              result = nil
-            elsif receiver == ResultIsUnassigned && method_name == :p
-              if args.size == 0
-                result = nil
-              elsif args.size == 1
-                output += "#{args[0].inspect}\n"
-                result = args[0]
-              else
-                output += args.map { |arg| "#{arg.inspect}\n" }.join
-                result = args
-              end
-            else
-              if receiver == ResultIsUnassigned
-                receiver = @main
-              end
-              if receiver.private_methods.include?(method_name)
-                message = "private method `#{method_name}' called for " +
-                  "#{receiver.inspect}:#{receiver.class}"
-                raise NoMethodError.new(message)
-              else
-                result = receiver.send method_name, *args 
-              end
-            end
-          when :done
-            line = nil
-          when :goto
-            result = ResultIsUnassigned
-            line = arg0
-          else
-            raise "Unknown bytecode head #{head}"
-        end
+
+  def run
+    while @pos
+      step
+    end
+  end
+
+  def step
+    raise "No more instructions" if @pos.nil?
+
+    bytecodes = @hash[@pos]
+    bytecodes.each do |bytecode|
+      head, arg0 = bytecode
+      case head
+        when :start_call
+          @partial_calls.push []
+        when :arg
+          @partial_calls.last.push result
+        when :int
+          @result = arg0
+        when :nil
+          @result = nil
+        when :call
+          do_call arg0
+        when :done
+          @pos = nil
+        when :goto
+          @result = ResultIsUnassigned
+          @pos = arg0
+        else
+          raise "Unknown bytecode head #{head}"
       end
     end
-    output
+  end
+
+  def do_call method_name
+    receiver, *args = @partial_calls.pop
+    if receiver == ResultIsUnassigned && method_name == :puts
+      if args.size == 0
+        @output += "\n"
+      else
+        @output += args.map { |arg| "#{arg}\n" }.join
+      end
+      @result = nil
+    elsif receiver == ResultIsUnassigned && method_name == :p
+      if args.size == 0
+        @result = nil
+      elsif args.size == 1
+        @output += "#{args[0].inspect}\n"
+        @result = args[0]
+      else
+        @output += args.map { |arg| "#{arg.inspect}\n" }.join
+        @result = args
+      end
+    else
+      if receiver == ResultIsUnassigned
+        receiver = @main
+      end
+      if receiver.private_methods.include?(method_name)
+        message = "private method `#{method_name}' called for " +
+          "#{receiver.inspect}:#{receiver.class}"
+        raise NoMethodError.new(message)
+      else
+        @result = receiver.send method_name, *args
+      end
+    end
   end
 end
