@@ -8,8 +8,8 @@ class BytecodeInterpreter
     pos = @interpreter.$pos()
     if pos == Opal.NIL then null else pos
 
-  getOutput: ->
-    @interpreter.$output()
+  getStepOutput: ->
+    @interpreter.$step_output()
 
   step: ->
     try

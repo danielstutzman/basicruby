@@ -69,7 +69,7 @@ DebuggerComponent = React.createClass
       label {}, 'Input & Output'
         div { className: 'console' },
           span { className: 'before-cursor' },
-            @props.output
+            @props.console
           div { className: 'cursor' }
 
       br { clear: 'all' }
