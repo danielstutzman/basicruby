@@ -9,17 +9,17 @@ resizeDivs = (w, h) ->
                 actions_div.getBoundingClientRect().top
   else
     actions_h = 0
-  console_y = $one('div.machine .console').getBoundingClientRect().top
+  console_y = $one('.section.stretch-section div.machine .console').getBoundingClientRect().top
 
   height_total = Math.floor(h - assignment_y2 - actions_h)
   height_above_console = Math.ceil(console_y - assignment_y2)
   height_console = height_total - height_above_console
 
-  for div in $all('.code-editor, .CodeMirror')
+  for div in $all('.section.stretch-section .CodeMirror')
     div.style.height = "#{height_total}px"
-  for div in $all('div.machine .console')
+  for div in $all('.section.stretch-section div.machine .console')
     div.style.height = "#{height_console}px"
-  for div in $all('div.machine')
+  for div in $all('.section.stretch-section div.machine')
     div.style.height = "#{height_total}px"
 
 setupResizeHandler = (code_mirror) ->
