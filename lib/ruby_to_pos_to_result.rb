@@ -1,28 +1,30 @@
 class BasicRubyDoesntYetSupport < RuntimeError
 end
 
+class Compilation
+  attr_accessor :output
+  attr_accessor :_return
+  def initialize(output, _return)
+    @output = output
+    @_return = _return
+  end
+end
+
 def no(message)
   raise BasicRubyDoesntYetSupport.new(message)
 end
 
-def literal_to_output(sexp)
-  if sexp[0] == :int
-    sexp[1].to_s + "\n"
-  elsif sexp[0] == :str
-    sexp[1] + "\n"
-  else
-    no "literal type #{sexp[0]}"
-  end
-end
-
-def expr_to_output(sexp)
+def compile_expr(sexp)
   if sexp[0] == :call
     if sexp[1] == nil
       if sexp[2] == :puts
         if sexp[3] && sexp[3][0] == :arglist
-          sexp[3][1..-1].map { |sexp|
-            literal_to_output(sexp)
+          output = sexp[3][1..-1].map { |sexp|
+            compilation = compile_expr(sexp)
+            "#{compilation.output}#{compilation._return}\n"
           }.join
+          _return = nil
+          Compilation.new(output, _return)
         else
           no "puts method calls without :arglist"
         end
@@ -32,6 +34,10 @@ def expr_to_output(sexp)
     else
       no "method calls with receivers"
     end
+  elsif sexp[0] == :int
+    Compilation.new('', sexp[1])
+  elsif sexp[0] == :str
+    Compilation.new('', sexp[1])
   else
     no "expression type #{sexp[0]}"
   end
@@ -69,7 +75,7 @@ def block_to_pos_to_result(sexp)
     pos_to_result = {}
     sexp[1..-1].each_with_index do |sexp, i|
       pos = sexp_to_pos(sexp)
-      output = expr_to_output(sexp)
+      output = compile_expr(sexp).output # ignore _return
       result = { output: output, next: poses[i + 1] }
       pos_to_result[pos] = result
     end
@@ -92,7 +98,7 @@ if __FILE__ == $0
   parser = Opal::Parser.new
   compiler = Opal::Compiler.new
 
-  code = "puts 3\nputs 4"
+  code = "puts 8\nputs(puts(4))\nputs 5"
   p code
 
   sexp = parser.parse(code)
@@ -113,5 +119,5 @@ if __FILE__ == $0
   result = fragments.map(&:code)
   puts "{\n#{result.join}\n}"
 
-  puts code_to_pos_to_result("puts 3\nputs 4")
+  puts code_to_pos_to_result(code)
 end
