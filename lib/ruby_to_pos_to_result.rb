@@ -31,8 +31,26 @@ def compile_expr(sexp)
       else
         no "receiverless method calls besides puts"
       end
+    elsif sexp[1][0] == :int
+      my_value = sexp[1][1]
+      if sexp[2] == :+
+        if sexp[3] && sexp[3][0] == :arglist
+          args = sexp[3][1..-1]
+          if args.size == 1
+            arg0 = compile_expr(sexp[3][1])
+            _return = my_value + arg0._return
+            Compilation.new(arg0.output, _return)
+          else
+            raise ArgumentError.new "wrong number of arguments (#{args.size} for 1)"
+          end
+        else
+          no "+ method call without :arglist"
+        end
+      else
+        no "methods on ints except +"
+      end
     else
-      no "method calls with receivers"
+      no "receivers for method calls besides nil and int literals"
     end
   elsif sexp[0] == :int
     Compilation.new('', sexp[1])
@@ -98,7 +116,7 @@ if __FILE__ == $0
   parser = Opal::Parser.new
   compiler = Opal::Compiler.new
 
-  code = "puts 8\nputs(puts(4))\nputs 5"
+  code = "puts 3 + 4"
   p code
 
   sexp = parser.parse(code)
