@@ -1,15 +1,20 @@
 class BytecodeCompiler
-  def compile_program ruby_code
+  def compile_ruby_program_to_hash ruby_code
     # expects Opal to already be required, so that the Opal compiler
     # won't pull it all in when compiling this file
     parser = Opal::Parser.new
     sexp = parser.parse(ruby_code)
     if sexp
       sexp = [:block, sexp] if sexp[0] != :block
-      compile_block_to_top sexp
+      compile_block_to_hash sexp
     else
       {}
     end
+  end
+  def compile_ruby_expression_to_bytecodes ruby_code
+    parser = Opal::Parser.new
+    sexp = parser.parse(ruby_code)
+    compile_expression sexp
   end
 
   private
@@ -26,15 +31,15 @@ class BytecodeCompiler
     "#{sexp.source[0]},#{sexp.source[1]}"
   end
 
-  def compile_block_to_top sexp
-    top = {}
+  def compile_block_to_hash sexp
+    hash = {}
     head, tail = sexp[0], sexp[1..-1]
     assert head == :block
 
     poses = tail.map { |statement| statement_to_pos(statement) }
     assert poses.uniq == poses
 
-    top[:start] = poses.first
+    hash[:start] = poses.first
 
     tail.each_with_index do |statement, i|
       bytecodes = compile_expression statement
@@ -47,10 +52,10 @@ class BytecodeCompiler
       end
 
       pos = statement_to_pos statement
-      top[pos] = bytecodes
+      hash[pos] = bytecodes
     end
 
-    top
+    hash
   end
 
   def compile_expression sexp
