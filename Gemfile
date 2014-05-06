@@ -57,3 +57,5 @@ gem 'rake-hooks', group: :assets # so I can run deploy tasks for Heroku
 
 gem 'guard', group: :development
 gem 'guard-shell', group: :development
+
+gem 'rspec', group: :development
