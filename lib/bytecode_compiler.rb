@@ -70,14 +70,15 @@ class BytecodeCompiler
     bytecodes = []
     receiver, method, arglist = tail
 
+    if receiver
+      bytecodes.concat compile_expression(receiver)
+      bytecodes.push [:receiver]
+    end
+
     assert arglist[0] == :arglist
     arglist[1..-1].each do |arg|
       bytecodes.concat compile_expression(arg)
       bytecodes.push [:arg]
-    end
-
-    if receiver
-      bytecodes.push compile_expression(receiver)
     end
 
     bytecodes.push [:call, method]
