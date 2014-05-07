@@ -14,6 +14,7 @@ class BytecodeInterpreter
     @pos = hash[:start]
     @partial_calls = []
     @result = ResultIsUnassigned
+    @vars = {}
   end
 
   def run
@@ -52,6 +53,11 @@ class BytecodeInterpreter
             @pos = nil
           when :goto
             @pos = arg0
+          when :assign_to
+            @vars[arg0] = @result
+            # leave result unchanged
+          when :lookup_var
+            @result = @vars[arg0]
           else
             raise "Unknown bytecode head #{head}"
         end
@@ -94,6 +100,8 @@ class BytecodeInterpreter
           @result = receiver.send method_name, *args
         end
       rescue NoMethodError => e
+        raise ProgramTerminated.new e
+      rescue TypeError => e
         raise ProgramTerminated.new e
       end
     end

@@ -88,6 +88,8 @@ class BytecodeCompiler
       when :str   then compile_string tail
       when :nil   then compile_nil tail
       when :paren then compile_paren tail
+      when :lasgn then compile_lasgn tail
+      when :lvar  then compile_lvar tail
       else no "s-exp with head #{head}"
     end
   end
@@ -134,5 +136,14 @@ class BytecodeCompiler
   def compile_paren tail
     assert tail.size == 1
     compile_expression tail[0]
+  end
+  def compile_lasgn tail
+    assert tail.size == 2
+    var_name, expression = tail
+    compile_expression(expression) + [[:assign_to, var_name]]
+  end
+  def compile_lvar tail
+    assert tail.size == 1
+    [[:lookup_var, tail[0]]]
   end
 end

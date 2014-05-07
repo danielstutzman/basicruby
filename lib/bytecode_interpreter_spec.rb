@@ -46,4 +46,8 @@ describe BytecodeInterpreter, '#execute_hash' do
   it 'runs p p 3, 4' do
     output_of("p p 3, 4").should == "3\n4\n[3, 4]\n"
   end
+
+  it 'runs x = 3 \n p x' do
+    output_of("x = 3\np x").should == "3\n"
+  end
 end

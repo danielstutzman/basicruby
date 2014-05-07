@@ -83,4 +83,16 @@ describe BytecodeCompiler, '#compile' do
   it 'compiles expression "abc"' do
     exp('"abc"').should == [[:string, 'abc']]
   end
+
+  it 'compiles expression x = 3' do
+    exp('x = 3').should == [[:int, 3], [:assign_to, :x]]
+  end
+  it 'compiles x = 3 \n p x' do
+    program("x = 3\np x").should == {
+      :start=>"1,0",
+      "1,0"=>[[:int, 3], [:assign_to, :x], [:goto, "2,0"]],
+      "2,0"=>[[:start_call], [:arg],
+        [:lookup_var, :x], [:arg], [:call, :p], [:done]]
+    }
+  end
 end
