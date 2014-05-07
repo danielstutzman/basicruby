@@ -11,6 +11,9 @@ class BytecodeInterpreter
   getStepOutput: ->
     @interpreter.$step_output()
 
+  getVars: ->
+    @interpreter.$vars()
+
   step: ->
     try
       @interpreter.$step()

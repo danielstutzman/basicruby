@@ -5,7 +5,7 @@ class BytecodeInterpreter
   class ProgramTerminated < RuntimeError
   end
 
-  attr_accessor :pos, :partial_calls, :step_output, :result
+  attr_accessor :pos, :partial_calls, :step_output, :result, :vars
 
   def initialize main, hash
     @main = main

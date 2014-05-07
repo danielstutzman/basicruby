@@ -118,6 +118,14 @@ body.machine {
         background-color: black;
         border: 2px #222 solid;
         border-bottom: 2px #444 solid;
+        color: #0f0;
+        font-size: 20pt;
+        width: 100%;
+
+        th {
+          background-color: #0f0;
+          color: black;
+        }
       }
 
       .instructions {

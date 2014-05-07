@@ -17,6 +17,7 @@ class DebuggerAnimator
       console:       ''
       instructions:  ''
       highlightLine: false
+      vars:          {}
       doCommand:
         power: => @_handlePower.apply this, arguments
         step:  => @_handleStep.apply  this, arguments
@@ -65,6 +66,7 @@ class DebuggerAnimator
 
   _doJustStep: (callback) ->
     @interpreter.step()
+    @props.vars = @interpreter.getVars()
     # @props.pos = @interpreter.getPos() # wait to show this
     @_slowlyOutput @interpreter.getStepOutput(), =>
       callback()

@@ -1,5 +1,6 @@
 ConsoleComponent      = require './ConsoleComponent.coffee'
 InstructionsComponent = require './InstructionsComponent.coffee'
+VariablesComponent    = require './VariablesComponent.coffee'
 
 POWER_SYMBOL   = '\u233d'
 RIGHT_TRIANGLE = '\u25b6'
@@ -16,6 +17,7 @@ DebuggerComponent = React.createClass
     instructions:  type.string.isRequired
     highlightLine: type.bool.isRequired
     doCommand:     type.object.isRequired
+    vars:          type.object.isRequired
 
   render: ->
     { br, button, div, label, span } = React.DOM
@@ -49,6 +51,10 @@ DebuggerComponent = React.createClass
         pos: @props.pos
         instructions: @props.instructions
         highlightLine: @props.highlightLine
+
+      label {}, 'Variables'
+      VariablesComponent
+        vars: @props.vars
 
       label {}, 'Input & Output'
       ConsoleComponent
