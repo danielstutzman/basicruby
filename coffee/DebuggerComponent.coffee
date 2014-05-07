@@ -41,6 +41,9 @@ DebuggerComponent = React.createClass
   componentDidUpdate: (prevProps, prevState) ->
     if @props.pos != prevProps.pos && @props.pos
       @_scrollInstructions (->)
+    if @props.console.split("\n").length != prevProps.console.split("\n").length
+      document.querySelector('div.machine .console').scrollTop =
+        document.querySelector('div.machine .console').scrollHeight
 
   _scrollInstructions: (callback) ->
     $one     = (selector) -> document.querySelector selector

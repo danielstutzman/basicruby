@@ -58,9 +58,6 @@ class DebuggerAnimator
       @props.console += nextLetter
       @_render()
 
-      #if nextLetter == "\n"
-      #  $one('div.machine .console').scrollTop =
-      #    $one('div.machine .console').scrollHeight
       if rest != ''
         window.setTimeout (-> outputNextLetter rest), millis_for_each_letter
       else
