@@ -50,4 +50,11 @@ describe BytecodeInterpreter, '#execute_hash' do
   it 'runs x = 3 \n p x' do
     output_of("x = 3\np x").should == "3\n"
   end
+  it 'raises NameError from p x' do
+    output_of("p x").should ==
+      "undefined local variable or method `x' for main:Object\n"
+  end
+  it 'prints main from puts to_s' do
+    output_of("puts to_s").should == "main\n"
+  end
 end

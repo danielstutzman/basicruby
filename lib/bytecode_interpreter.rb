@@ -87,15 +87,23 @@ class BytecodeInterpreter
         @step_output += args.map { |arg| "#{arg.inspect}\n" }.join
         @result = args
       end
+    elsif receiver == ResultIsUnassigned
+      if @main.methods.include? method_name
+        @result = @main.send method_name, *args
+      else
+        begin
+          raise NameError.new "undefined local variable or method " +
+            "`#{method_name}' for main:Object"
+        rescue NameError => e
+          raise ProgramTerminated.new e
+        end
+      end
     else
       begin
-        if receiver == ResultIsUnassigned
-          receiver = @main
-        end
-        if receiver.private_methods.include?(method_name)
+        if receiver.private_methods.include? method_name
           message = "private method `#{method_name}' called for " +
             "#{receiver.inspect}:#{receiver.class}"
-          raise NoMethodError.new(message)
+          raise NoMethodError.new message
         else
           @result = receiver.send method_name, *args
         end
