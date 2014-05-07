@@ -27,6 +27,7 @@ DebuggerComponent = React.createClass
     for line in lines
       html.push div
         key: "num#{line_num}"
+        ref: "num#{line_num}"
         className: "num _#{line_num}"
         line_num
       html.push div
@@ -42,21 +43,19 @@ DebuggerComponent = React.createClass
     if @props.pos != prevProps.pos && @props.pos
       @_scrollInstructions (->)
     if @props.console.split("\n").length != prevProps.console.split("\n").length
-      document.querySelector('div.machine .console').scrollTop =
-        document.querySelector('div.machine .console').scrollHeight
+      @_scrollConsole()
 
   _scrollInstructions: (callback) ->
-    $one     = (selector) -> document.querySelector selector
-    $pointer = $one '.machine .instructions .pointer'
-    $content = $one '.machine .instructions .content'
+    $pointer = @refs.pointer.getDOMNode()
+    $content = @refs.content.getDOMNode()
     line_num = @props.pos.split(',')[0]
     $pointer.style.display = 'block'
     $content.style.display = 'block'
-    element_1 = $one "div.machine .instructions .content .num._1"
-    element_n = $one "div.machine .instructions .content .num._#{line_num}"
+    $element_1 = @refs["num1"].getDOMNode()
+    $element_n = @refs["num#{line_num}"].getDOMNode()
     old_scroll_top = $content.scrollTop
-    new_scroll_top = element_n.getBoundingClientRect().top -
-                     element_1.getBoundingClientRect().top
+    new_scroll_top = $element_n.getBoundingClientRect().top -
+                     $element_1.getBoundingClientRect().top
     animateScrollTop = (progress) ->
       progress = 1.0 if progress > 1.0
       $content.scrollTop = (1.0 - progress) * old_scroll_top +
@@ -68,6 +67,10 @@ DebuggerComponent = React.createClass
         window.setTimeout callback, MILLIS_FOR_SCROLLED_INSTRUCTIONS
     animateScrollTop 0.1
 
+  _scrollConsole: ->
+    $console = @refs.console.getDOMNode()
+    $console.scrollTop = $console.scrollHeight
+
   render: ->
     { br, button, div, label, span } = React.DOM
 
@@ -77,7 +80,8 @@ DebuggerComponent = React.createClass
         (@props.state == 'OFF' && 'off ' || '') +
         (@props.state != 'OFF' && 'on ' || '')
 
-      div { className: 'buttons' },
+      div
+        className: 'buttons'
         button
           className: 'step'
           onClick: => @props.doCommand.step()
@@ -95,16 +99,26 @@ DebuggerComponent = React.createClass
           "#{POWER_SYMBOL} Power"
 
       label {}, 'Instructions'
-        div { className: 'instructions' },
-          div { className: 'pointer' }, RIGHT_ARROW
-          div { className: 'content' },
-            @_instructionsToHtml()
+      div
+        className: 'instructions'
+        div
+          className: 'pointer'
+          ref: 'pointer'
+          RIGHT_ARROW
+        div
+          className: 'content'
+          ref: 'content'
+          @_instructionsToHtml()
 
       label {}, 'Input & Output'
-        div { className: 'console' },
-          span { className: 'before-cursor' },
-            @props.console
-          div { className: 'cursor' }
+      div
+        className: 'console'
+        ref: 'console'
+        span
+          className: 'before-cursor'
+          @props.console
+        div
+          className: 'cursor'
 
       br { clear: 'all' }
 
