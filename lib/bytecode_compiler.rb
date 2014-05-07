@@ -84,6 +84,8 @@ class BytecodeCompiler
     case head
       when :call  then compile_call tail
       when :int   then compile_int tail
+      when :float then compile_float tail
+      when :str   then compile_string tail
       when :nil   then compile_nil tail
       when :paren then compile_paren tail
       else no "s-exp with head #{head}"
@@ -114,6 +116,16 @@ class BytecodeCompiler
     assert tail.size == 1
     assert tail[0] == tail[0].to_i
     [[:int, tail[0]]]
+  end
+  def compile_float tail
+    assert tail.size == 1
+    assert tail[0] == tail[0].to_f
+    [[:float, tail[0]]]
+  end
+  def compile_string tail
+    assert tail.size == 1
+    assert tail[0] == tail[0].to_s
+    [[:string, tail[0]]]
   end
   def compile_nil tail
     assert tail == []

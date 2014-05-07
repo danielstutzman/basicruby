@@ -39,6 +39,10 @@ class BytecodeInterpreter
             @partial_calls.last.push result
           when :int
             @result = arg0
+          when :float
+            @result = arg0
+          when :string
+            @result = arg0
           when :nil
             @result = nil
           when :call

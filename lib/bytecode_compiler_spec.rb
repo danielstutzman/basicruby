@@ -76,4 +76,11 @@ describe BytecodeCompiler, '#compile' do
       [:arg], [:call, :+]
     ]
   end
+
+  it 'compiles expression 0.5' do
+    exp('0.5').should == [[:float, 0.5]]
+  end
+  it 'compiles expression "abc"' do
+    exp('"abc"').should == [[:string, 'abc']]
+  end
 end
