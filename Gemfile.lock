@@ -1,5 +1,7 @@
-PATH
-  remote: /Users/daniel/dev/opal
+GIT
+  remote: git://github.com/danielstutzman/opal.git
+  revision: 689221ffdf491cd5eec9f580888fe087a44bbf23
+  branch: line-num-for-syntax-error
   specs:
     opal (0.7.0.dev)
       source_map

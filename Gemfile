@@ -53,8 +53,8 @@ gem 'rails_12factor'
 
 # Ruby to JavaScript transpiler
 #gem 'opal', github: 'opal/opal', ref: '680eb8fa'
-#gem 'opal', github: 'danielstutzman/opal'
-gem 'opal', path: '/Users/daniel/dev/opal'
+gem 'opal', github: 'danielstutzman/opal', branch: 'line-num-for-syntax-error'
+#gem 'opal', path: '/Users/daniel/dev/opal', group: :development
 
 gem 'rake-hooks', group: :assets # so I can run deploy tasks for Heroku
 
