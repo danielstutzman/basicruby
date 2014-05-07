@@ -87,6 +87,8 @@ class BytecodeInterpreter
         @step_output += args.map { |arg| "#{arg.inspect}\n" }.join
         @result = args
       end
+    elsif receiver == ResultIsUnassigned && method_name == :__STRINTERP
+      @result = args.map { |arg| arg.to_s }.join
     elsif receiver == ResultIsUnassigned
       if @main.methods.include? method_name
         @result = @main.send method_name, *args

@@ -95,4 +95,17 @@ describe BytecodeCompiler, '#compile' do
         [:lookup_var, :x], [:arg], [:call, :p], [:done]]
     }
   end
+
+  it 'compiles "#{4}"' do
+    exp('"#{4}"').should == [[:start_call], [:arg],
+      [:int, 4], [:arg], [:call, :__STRINTERP]]
+  end
+  it 'compiles "3#{4}"' do
+    exp('"3#{4}"').should == [[:start_call], [:arg], [:string, "3"], [:arg],
+      [:int, 4], [:arg], [:call, :__STRINTERP]]
+  end
+  it 'compiles "3#{4}5"' do
+    exp('"3#{4}5"').should == [[:start_call], [:arg], [:string, "3"], [:arg],
+      [:int, 4], [:arg], [:string, "5"], [:arg], [:call, :__STRINTERP]]
+  end
 end

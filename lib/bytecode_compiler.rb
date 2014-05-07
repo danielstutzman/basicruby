@@ -90,6 +90,7 @@ class BytecodeCompiler
       when :paren then compile_paren tail
       when :lasgn then compile_lasgn tail
       when :lvar  then compile_lvar tail
+      when :dstr  then compile_dstr tail
       else no "s-exp with head #{head}"
     end
   end
@@ -145,5 +146,30 @@ class BytecodeCompiler
   def compile_lvar tail
     assert tail.size == 1
     [[:lookup_var, tail[0]]]
+  end
+  def compile_dstr tail
+    bytecodes = []
+    bytecodes.push [:start_call]
+    bytecodes.push [:arg] # no receiver
+    if tail[0] != ''
+      bytecodes.push [:string, tail[0]]
+      bytecodes.push [:arg]
+    end
+    tail[1..-1].each do |arg|
+      case arg[0]
+      when :evstr
+        assert arg.size == 2
+        bytecodes.concat compile_expression(arg[1])
+        bytecodes.push [:arg]
+      when :str
+        assert arg.size == 2
+        bytecodes.push [:string, arg[1]]
+        bytecodes.push [:arg]
+      else
+        no "s-exp of type #{arg[0]} in s-exp type :dstr"
+      end
+    end
+    bytecodes.push [:call, :__STRINTERP]
+    bytecodes
   end
 end

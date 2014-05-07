@@ -57,4 +57,8 @@ describe BytecodeInterpreter, '#execute_hash' do
   it 'prints main from puts to_s' do
     output_of("puts to_s").should == "main\n"
   end
+
+  it 'runs puts "3#{4}5"' do
+    output_of('puts "3#{4}5"').should == "345\n"
+  end
 end
