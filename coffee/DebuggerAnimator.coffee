@@ -76,12 +76,12 @@ class DebuggerAnimator
 
   _slowlyOutput: (output, callback) ->
     outputNextLetter = (rest) =>
-      nextLetter = rest[0]
-      rest = rest[1..-1]
-      @props.console += nextLetter
-      @_render()
-
       if rest != ''
+        nextLetter = rest[0]
+        rest = rest[1..-1]
+        @props.console += nextLetter
+        @_render()
+
         window.setTimeout (-> outputNextLetter rest), millis_for_each_letter
       else
         callback()
