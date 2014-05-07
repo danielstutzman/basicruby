@@ -1,6 +1,5 @@
+DebuggerAnimator   = require './DebuggerAnimator.coffee'
 setupResizeHandler = require('./setup_resize_handler.coffee').setupResizeHandler
-setupMachine       = require('./machine.coffee').setupMachine
-window.compile     = require('./coffee/compile.coffee').compile
 
 $one = (selector) -> document.querySelector(selector)
 
@@ -10,6 +9,6 @@ document.addEventListener 'DOMContentLoaded', ->
       mode: 'ruby'
       lineNumbers: true
       autofocus: true
-    code_mirror = CodeMirror.fromTextArea($one('.code-editor'), options)
-    setupMachine code_mirror
-    setupResizeHandler code_mirror
+    codeMirror = CodeMirror.fromTextArea($one('.code-editor'), options)
+    (new DebuggerAnimator(codeMirror)).run()
+    setupResizeHandler codeMirror
