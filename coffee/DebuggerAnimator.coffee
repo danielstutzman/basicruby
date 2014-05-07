@@ -3,16 +3,20 @@ BytecodeInterpreter = require './BytecodeInterpreter.coffee'
 DebuggerComponent   = require './DebuggerComponent.coffee'
 
 class DebuggerAnimator
-  MILLIS_FOR_OUTPUT_DURING = 200
-  MILLIS_FOR_OUTPUT_AFTER = 300
+  MILLIS_FOR_BOLD                  = 300
+  MILLIS_FOR_OUTPUT_DURING         = 200
+  MILLIS_FOR_OUTPUT_AFTER          = 300
+  MILLIS_FOR_UNBOLD                = 500
+  MILLIS_FOR_SCROLLED_INSTRUCTIONS = 500
 
   constructor: (codeMirror) ->
     @codeMirror = codeMirror
     @props =
-      state:        'OFF'
-      pos:          null
-      console:      ''
-      instructions: ''
+      state:         'OFF'
+      pos:           null
+      console:       ''
+      instructions:  ''
+      highlightLine: false
       doCommand:
         power: => @_handlePower.apply this, arguments
         step:  => @_handleStep.apply  this, arguments
@@ -39,17 +43,26 @@ class DebuggerAnimator
       @props.console      = ''
     @_render()
 
-  _doStep: (callback) ->
+  _handleStep: (callback) ->
+    @_doWholeStep (->)
+
+  _doWholeStep: (callback) ->
+    @_addBold =>
+      @_doJustStep =>
+        @_removeBold =>
+          @_scrollInstructions =>
+            callback()
+
+  _doJustStep: (callback) ->
     @interpreter.step()
-    @props.pos = @interpreter.getPos()
+    # @props.pos = @interpreter.getPos() # wait to show this
     @_slowlyOutput @interpreter.getStepOutput(), =>
-      if @props.pos == null
-        @props.instructions = ''
-        @_render()
       callback()
 
-  _handleStep: (callback) ->
-    @_doStep (->)
+  _addBold: (callback) ->
+    @props.highlightLine = true
+    @_render()
+    window.setTimeout callback, MILLIS_FOR_BOLD
 
   _slowlyOutput: (output, callback) ->
     outputNextLetter = (rest) =>
@@ -65,11 +78,23 @@ class DebuggerAnimator
     millis_for_each_letter = MILLIS_FOR_OUTPUT_DURING / (output.length || 1)
     outputNextLetter output
 
+  _removeBold: (callback) ->
+    @props.highlightLine = false
+    @_render()
+    window.setTimeout callback, MILLIS_FOR_UNBOLD
+
+  _scrollInstructions: (callback) ->
+    @props.pos = @interpreter.getPos()
+    if @props.pos == null
+      @props.instructions = ''
+    @_render()
+    window.setTimeout callback, MILLIS_FOR_SCROLLED_INSTRUCTIONS
+
   _handleRun: ->
-    doStep = =>
+    doStepIfThereIsOne = =>
       if @interpreter.getPos() != null
-        @_doStep doStep
-    doStep()
+        @_doWholeStep doStepIfThereIsOne
+    doStepIfThereIsOne()
 
   run: ->
     @_render()

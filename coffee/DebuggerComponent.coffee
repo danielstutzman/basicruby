@@ -11,11 +11,12 @@ DebuggerComponent = React.createClass
   displayName: 'DebuggerComponent'
 
   propTypes:
-    state:        type.string.isRequired
-    pos:          type.string
-    console:      type.string.isRequired
-    instructions: type.string.isRequired
-    doCommand:    type.object.isRequired
+    state:         type.string.isRequired
+    pos:           type.string
+    console:       type.string.isRequired
+    instructions:  type.string.isRequired
+    highlightLine: type.bool.isRequired
+    doCommand:     type.object.isRequired
 
   _instructionsToHtml: ->
     lines =
@@ -24,17 +25,25 @@ DebuggerComponent = React.createClass
     { br, div } = React.DOM
     html = [ br { key: 1 } ] # blank line at beginning
     line_num = 1
+
     for line in lines
+
       html.push div
         key: "num#{line_num}"
         ref: "num#{line_num}"
         className: "num _#{line_num}"
         line_num
+
+      isHighlighted = @props.highlightLine && @props.pos &&
+        parseInt(@props.pos.split(',')[0]) == line_num
       html.push div
         key: "code#{line_num}"
-        className: "code _#{line_num}"
+        className: "code _#{line_num} " +
+          (if isHighlighted then 'bold ' else '')
         line
+
       line_num += 1
+
     html.push br { key: 2, style: { clear: 'both' } }
     html.push br { key: 3 }
     html
@@ -101,14 +110,16 @@ DebuggerComponent = React.createClass
       label {}, 'Instructions'
       div
         className: 'instructions'
-        div
-          className: 'pointer'
-          ref: 'pointer'
-          RIGHT_ARROW
-        div
-          className: 'content'
-          ref: 'content'
-          @_instructionsToHtml()
+        if @props.pos
+          div
+            className: 'pointer'
+            ref: 'pointer'
+            RIGHT_ARROW
+        if @props.pos
+          div
+            className: 'content'
+            ref: 'content'
+            @_instructionsToHtml()
 
       label {}, 'Input & Output'
       div
