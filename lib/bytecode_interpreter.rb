@@ -28,6 +28,7 @@ class BytecodeInterpreter
   def step
     raise "No more instructions" if @pos.nil?
     @step_output = ''
+    @result = ResultIsUnassigned
     begin
       bytecodes = @hash[@pos]
       bytecodes.each do |bytecode|
@@ -50,7 +51,6 @@ class BytecodeInterpreter
           when :done
             @pos = nil
           when :goto
-            @result = ResultIsUnassigned
             @pos = arg0
           else
             raise "Unknown bytecode head #{head}"
