@@ -39,10 +39,17 @@ class DebuggerAnimator
       @props.console      = ''
     @_render()
 
-  _handleStep: ->
+  _doStep: (callback) ->
     @interpreter.step()
     @props.pos = @interpreter.getPos()
-    @_slowlyOutput @interpreter.getStepOutput(), (->)
+    @_slowlyOutput @interpreter.getStepOutput(), =>
+      if @props.pos == null
+        @props.instructions = ''
+        @_render()
+      callback()
+
+  _handleStep: (callback) ->
+    @_doStep (->)
 
   _slowlyOutput: (output, callback) ->
     outputNextLetter = (rest) =>
@@ -64,9 +71,7 @@ class DebuggerAnimator
   _handleRun: ->
     doStep = =>
       if @interpreter.getPos() != null
-        @interpreter.step()
-        @props.pos = @interpreter.getPos()
-        @_slowlyOutput @interpreter.getStepOutput(), doStep
+        @_doStep doStep
     doStep()
 
   run: ->
