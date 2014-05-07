@@ -41,6 +41,8 @@ class DebuggerAnimator
       catch e
         if e.name == 'SyntaxError'
           @props.console = "SyntaxError: #{e.message}"
+        else if e.name == 'DebuggerDoesntYetSupport'
+          @props.console = "DebuggerDoesntYetSupport: #{e.message}"
         else
           throw e
       if hash
