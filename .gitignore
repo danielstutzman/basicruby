@@ -43,6 +43,5 @@ build/
 /node_modules
 /public/browserified.js.map
 /app/assets/javascripts/browserified.js
-/app/assets/javascripts/ruby_to_pos_to_result.js
 /app/assets/javascripts/bytecode_interpreter.js
 /app/assets/javascripts/bytecode_compiler.js
