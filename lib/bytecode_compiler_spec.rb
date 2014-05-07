@@ -50,6 +50,10 @@ describe BytecodeCompiler, '#compile' do
     }
   end
 
+  it 'raises SyntaxError for puts 3 4' do
+    expect { program "puts 3 4" }.to raise_error(SyntaxError)
+  end
+
   it 'compiles expression 3' do
     exp('3').should == [[:int, 3]]
   end

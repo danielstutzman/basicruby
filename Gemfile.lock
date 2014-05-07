@@ -1,7 +1,5 @@
-GIT
-  remote: git://github.com/opal/opal.git
-  revision: 680eb8fa4406f4872d7732a37284e517a7b8bb31
-  ref: 680eb8fa
+PATH
+  remote: /Users/daniel/dev/opal
   specs:
     opal (0.7.0.dev)
       source_map

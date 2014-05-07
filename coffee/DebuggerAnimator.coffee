@@ -34,13 +34,21 @@ class DebuggerAnimator
       @props.console      = ''
       @interpreter        = null
     else
-      @props.state        = 'ON'
-      @props.instructions = @codeMirror.getValue()
-      hash                = BytecodeCompiler.compile_ruby_code_to_hash \
-                              @props.instructions
-      @interpreter        = new BytecodeInterpreter hash
-      @props.pos          = @interpreter.getPos()
-      @props.console      = ''
+      @props.state   = 'ON'
+      @props.console = ''
+      try
+        hash = BytecodeCompiler.compile_ruby_code_to_hash @codeMirror.getValue()
+      catch e
+        if e.name == 'SyntaxError'
+          @props.console = "SyntaxError: #{e.message}"
+        else
+          throw e
+      if hash
+        @props.instructions = @codeMirror.getValue()
+        @interpreter        = new BytecodeInterpreter hash
+        @props.pos          = @interpreter.getPos()
+      else
+        @props.pos = null
     @_render()
 
   _handleStep: (callback) ->

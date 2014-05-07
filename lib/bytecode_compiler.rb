@@ -3,7 +3,21 @@ class BytecodeCompiler
     # expects Opal to already be required, so that the Opal compiler
     # won't pull it all in when compiling this file
     parser = Opal::Parser.new
-    sexp = parser.parse(ruby_code)
+
+    begin
+      sexp = parser.parse(ruby_code)
+    rescue RuntimeError => e
+      # SyntaxErrors get thrown as RuntimeErrors when run with Racc gem
+      if match = e.message.match(/(parse error(.*)):\(string\):([0-9]+)$/)
+        raise SyntaxError.new "SyntaxError on line #{match[3]}: #{match[1]}"
+      else
+        raise
+      end
+    rescue SyntaxError => e
+      # SyntaxErrors get thrown as SyntaxErrors when run with Opal's Racc
+      raise
+    end
+
     if sexp
       sexp = [:block, sexp] if sexp[0] != :block
       compile_block_to_hash sexp

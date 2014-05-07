@@ -51,7 +51,10 @@ gem 'thin'
 
 gem 'rails_12factor'
 
-gem 'opal', github: 'opal/opal', ref: '680eb8fa' # Ruby to JavaScript transpiler
+# Ruby to JavaScript transpiler
+#gem 'opal', github: 'opal/opal', ref: '680eb8fa'
+#gem 'opal', github: 'danielstutzman/opal'
+gem 'opal', path: '/Users/daniel/dev/opal'
 
 gem 'rake-hooks', group: :assets # so I can run deploy tasks for Heroku
 
