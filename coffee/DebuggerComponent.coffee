@@ -1,3 +1,5 @@
+ConsoleComponent = require './ConsoleComponent.coffee'
+
 RIGHT_ARROW    = '\u2192'
 POWER_SYMBOL   = '\u233d'
 RIGHT_TRIANGLE = '\u25b6'
@@ -51,8 +53,6 @@ DebuggerComponent = React.createClass
   componentDidUpdate: (prevProps, prevState) ->
     if @props.pos != prevProps.pos && @props.pos
       @_scrollInstructions (->)
-    if @props.console.split("\n").length != prevProps.console.split("\n").length
-      @_scrollConsole()
 
   _scrollInstructions: (callback) ->
     $pointer = @refs.pointer.getDOMNode()
@@ -75,10 +75,6 @@ DebuggerComponent = React.createClass
       else
         window.setTimeout callback, MILLIS_FOR_SCROLLED_INSTRUCTIONS
     animateScrollTop 0.1
-
-  _scrollConsole: ->
-    $console = @refs.console.getDOMNode()
-    $console.scrollTop = $console.scrollHeight
 
   render: ->
     { br, button, div, label, span } = React.DOM
@@ -122,14 +118,8 @@ DebuggerComponent = React.createClass
             @_instructionsToHtml()
 
       label {}, 'Input & Output'
-      div
-        className: 'console'
-        ref: 'console'
-        span
-          className: 'before-cursor'
-          @props.console
-        div
-          className: 'cursor'
+      ConsoleComponent
+        lines: @props.console
 
       br { clear: 'all' }
 
