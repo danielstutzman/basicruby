@@ -117,4 +117,9 @@ describe BytecodeInterpreter, '#execute_hash' do
     output_of("if false \n p 3 \n elsif false \n p 4 \n else \n p 5 \n end"
       ).should == "5\n"
   end
+
+  it 'disallows if inside expression' do
+    expect { output_of("x = if true then 3 end") }.to raise_exception(
+      BytecodeCompiler::DebuggerDoesntYetSupport)
+  end
 end

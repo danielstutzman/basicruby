@@ -28,7 +28,7 @@ class BytecodeCompiler
   def compile_ruby_expression_to_bytecodes ruby_code
     parser = Opal::Parser.new
     sexp = parser.parse(ruby_code)
-    compile_expression sexp, nil
+    compile_expression sexp, nil, false
   end
 
   private
@@ -64,7 +64,7 @@ class BytecodeCompiler
     tail.each_with_index do |statement, i|
       next_pos = poses[i + 1] || pos_after_block
 
-      bytecodes = compile_expression statement, next_pos
+      bytecodes = compile_expression statement, next_pos, true
 
       case statement[0]
         when :if
@@ -96,38 +96,38 @@ class BytecodeCompiler
     hash
   end
 
-  def compile_expression sexp, next_pos
+  def compile_expression sexp, next_pos, is_statement
     head, tail = sexp[0], sexp[1..-1]
     case head
-      when :call  then compile_call tail, next_pos
-      when :int   then compile_int tail, next_pos
-      when :float then compile_float tail, next_pos
-      when :str   then compile_string tail, next_pos
-      when :nil   then compile_nil tail, next_pos
-      when :paren then compile_paren tail, next_pos
-      when :lasgn then compile_lasgn tail, next_pos
-      when :lvar  then compile_lvar tail, next_pos
-      when :dstr  then compile_dstr tail, next_pos
-      when :if    then compile_if tail, next_pos
-      when :true  then compile_true tail, next_pos
-      when :false then compile_false tail, next_pos
+      when :call  then compile_call tail,   next_pos, is_statement
+      when :int   then compile_int tail,    next_pos, is_statement
+      when :float then compile_float tail,  next_pos, is_statement
+      when :str   then compile_string tail, next_pos, is_statement
+      when :nil   then compile_nil tail,    next_pos, is_statement
+      when :paren then compile_paren tail,  next_pos, is_statement
+      when :lasgn then compile_lasgn tail,  next_pos, is_statement
+      when :lvar  then compile_lvar tail,   next_pos, is_statement
+      when :dstr  then compile_dstr tail,   next_pos, is_statement
+      when :if    then compile_if tail,     next_pos, is_statement
+      when :true  then compile_true tail,   next_pos, is_statement
+      when :false then compile_false tail,  next_pos, is_statement
       else no "s-exp with head #{head}"
     end
   end
-  def compile_call tail, next_pos
+  def compile_call tail, next_pos, is_statement
     bytecodes = []
     receiver, method, arglist = tail
 
     bytecodes.push [:start_call]
 
     if receiver
-      bytecodes.concat compile_expression(receiver, next_pos)
+      bytecodes.concat compile_expression(receiver, next_pos, false)
     end
     bytecodes.push [:arg]
 
     assert arglist[0] == :arglist
     arglist[1..-1].each do |arg|
-      bytecodes.concat compile_expression(arg, next_pos)
+      bytecodes.concat compile_expression(arg, next_pos, false)
       bytecodes.push [:arg]
     end
 
@@ -135,39 +135,40 @@ class BytecodeCompiler
 
     bytecodes
   end
-  def compile_int tail, next_pos
+  def compile_int tail, next_pos, is_statement
     assert tail.size == 1
     assert tail[0] == tail[0].to_i
     [[:int, tail[0]]]
   end
-  def compile_float tail, next_pos
+  def compile_float tail, next_pos, is_statement
     assert tail.size == 1
     assert tail[0] == tail[0].to_f
     [[:float, tail[0]]]
   end
-  def compile_string tail, next_pos
+  def compile_string tail, next_pos, is_statement
     assert tail.size == 1
     assert tail[0] == tail[0].to_s
     [[:string, tail[0]]]
   end
-  def compile_nil tail, next_pos
+  def compile_nil tail, next_pos, is_statement
     assert tail == []
     [[:nil]]
   end
-  def compile_paren tail, next_pos
+  def compile_paren tail, next_pos, is_statement
     assert tail.size == 1
-    compile_expression tail[0], next_pos
+    compile_expression tail[0], next_pos, false
   end
-  def compile_lasgn tail, next_pos
+  def compile_lasgn tail, next_pos, is_statement
     assert tail.size == 2
     var_name, expression = tail
-    compile_expression(expression, next_pos) + [[:assign_to, var_name]]
+    compile_expression(expression, next_pos, false) +
+      [[:assign_to, var_name]]
   end
-  def compile_lvar tail, next_pos
+  def compile_lvar tail, next_pos, is_statement
     assert tail.size == 1
     [[:lookup_var, tail[0]]]
   end
-  def compile_dstr tail, next_pos
+  def compile_dstr tail, next_pos, is_statement
     bytecodes = []
     bytecodes.push [:start_call]
     bytecodes.push [:arg] # no receiver
@@ -179,7 +180,7 @@ class BytecodeCompiler
       case arg[0]
       when :evstr
         assert arg.size == 2
-        bytecodes.concat compile_expression(arg[1], next_pos)
+        bytecodes.concat compile_expression(arg[1], next_pos, false)
         bytecodes.push [:arg]
       when :str
         assert arg.size == 2
@@ -192,10 +193,12 @@ class BytecodeCompiler
     bytecodes.push [:call, :__STRINTERP]
     bytecodes
   end
-  def compile_if tail, next_pos
+  def compile_if tail, next_pos, is_statement
+    no 'if inside expression' if !is_statement
+
     bytecodes = []
     condition = tail[0]
-    bytecodes.concat compile_expression(condition, next_pos)
+    bytecodes.concat compile_expression(condition, next_pos, false)
 
     true_block = tail[1]
     if true_block # if not an empty if condition
@@ -217,11 +220,11 @@ class BytecodeCompiler
 
     bytecodes
   end
-  def compile_true tail, next_pos
+  def compile_true tail, next_pos, is_statement
     assert tail == []
     [[:bool, true]]
   end
-  def compile_false tail, next_pos
+  def compile_false tail, next_pos, is_statement
     assert tail == []
     [[:bool, false]]
   end
