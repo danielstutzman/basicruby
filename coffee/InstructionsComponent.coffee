@@ -71,7 +71,10 @@ InstructionsComponent = React.createClass
                 num
               div
                 className: "code _#{num} #{maybe_bold(num)}"
-                line
+                if line == ''
+                  br {}
+                else
+                  line
           br { key: 2, style: { clear: 'both' } }
           br { key: 3 }
 
