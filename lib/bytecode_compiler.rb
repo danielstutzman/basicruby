@@ -20,7 +20,7 @@ class BytecodeCompiler
 
     if sexp
       sexp = [:block, sexp] if sexp[0] != :block
-      compile_block_to_hash sexp
+      compile_block_to_hash sexp, nil
     else
       {}
     end
@@ -52,24 +52,35 @@ class BytecodeCompiler
     "#{sexp.source[0]},#{sexp.source[1]}"
   end
 
-  def compile_block_to_hash sexp
+  def compile_block_to_hash sexp, pos_after_block
     hash = {}
     head, tail = sexp[0], sexp[1..-1]
     assert head == :block
 
     poses = tail.map { |statement| statement_to_pos(statement) }
     assert poses.uniq == poses
-
     hash[:start] = poses.first
 
     tail.each_with_index do |statement, i|
       bytecodes = compile_expression statement
 
-      next_pos = poses[i + 1]
-      if next_pos
-        bytecodes.push [:goto, next_pos]
-      else
-        bytecodes.push [:done]
+      next_pos = poses[i + 1] || pos_after_block
+
+      case statement[0]
+        when :if
+          true_block = statement[2]
+          if true_block
+            true_block = [:block, true_block] if true_block[0] != :block
+            true_hash = compile_block_to_hash true_block, next_pos
+            true_hash.delete :start
+            hash = hash.merge true_hash # to keep lines in order
+          end
+          bytecodes.push [:goto, next_pos]
+        when :call, :int, :float, :str, :nil, :paren, :lasgn,
+             :lvar, :dstr, :true, :false
+          bytecodes.push [:goto, next_pos]
+        else
+          no "statement s-exp with head #{statement[0]}"
       end
 
       pos = statement_to_pos statement
@@ -91,6 +102,9 @@ class BytecodeCompiler
       when :lasgn then compile_lasgn tail
       when :lvar  then compile_lvar tail
       when :dstr  then compile_dstr tail
+      when :if    then compile_if tail
+      when :true  then compile_true tail
+      when :false then compile_false tail
       else no "s-exp with head #{head}"
     end
   end
@@ -171,5 +185,24 @@ class BytecodeCompiler
     end
     bytecodes.push [:call, :__STRINTERP]
     bytecodes
+  end
+  def compile_if tail
+    bytecodes = []
+    condition = tail[0]
+    bytecodes.concat compile_expression(condition)
+    true_block = tail[1]
+    if true_block # if not an empty if condition
+      true_block = [:block, true_block] if true_block[0] != :block
+      bytecodes.push [:if_goto, true_block[1].source.join(',')]
+    end
+    bytecodes
+  end
+  def compile_true tail
+    assert tail == []
+    [[:bool, true]]
+  end
+  def compile_false tail
+    assert tail == []
+    [[:bool, false]]
   end
 end

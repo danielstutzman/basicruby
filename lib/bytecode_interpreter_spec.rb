@@ -61,4 +61,29 @@ describe BytecodeInterpreter, '#execute_hash' do
   it 'runs puts "3#{4}5"' do
     output_of('puts "3#{4}5"').should == "345\n"
   end
+
+  it 'runs if true \n p 3 \n p4 \n end \n p 5' do
+    output_of("if true \n p 3 \n p 4 \n end \n p 5").should == "3\n4\n5\n"
+  end
+  it 'runs if true \n p 3 \n end' do
+    output_of("if true \n p 3 \n end").should == "3\n"
+  end
+  it 'runs if true \n p 3 \n end \n p 4' do
+    output_of("if true \n p 3 \n end \n p 4").should == "3\n4\n"
+  end
+  it 'runs if false \n p 3 \n p4 \n end \n p 5' do
+    output_of("if false \n p 3 \n p 4 \n end \n p 5").should == "5\n"
+  end
+  it 'runs if false \n p 3 \n end' do
+    output_of("if false \n p 3 \n end").should == ""
+  end
+  it 'runs if false \n p 3 \n end \n p 4' do
+    output_of("if false \n p 3 \n end \n p 4").should == "4\n"
+  end
+  it 'runs if true \n end \n' do
+    output_of("if true \n end").should == ""
+  end
+  it 'runs if true \n end \n p 3' do
+    output_of("if true \n end \n p 3").should == "3\n"
+  end
 end

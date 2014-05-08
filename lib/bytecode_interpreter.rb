@@ -47,17 +47,24 @@ class BytecodeInterpreter
             @result = arg0
           when :nil
             @result = nil
+          when :bool
+            @result = arg0
           when :call
             do_call arg0
-          when :done
-            @pos = nil
           when :goto
             @pos = arg0
+            break
           when :assign_to
             @vars[arg0] = @result
             # leave result unchanged
           when :lookup_var
             @result = @vars[arg0]
+          when :if_goto
+            if @result != false && @result != nil
+              @pos = arg0
+              break
+            end
+            @result = ResultIsUnassigned
           else
             raise "Unknown bytecode head #{head}"
         end

@@ -16,14 +16,14 @@ describe BytecodeCompiler, '#compile' do
   it 'compiles 3' do
     program('3').should == {
       :start=>'1,0',
-      '1,0'=>[[:int, 3], [:done]],
+      '1,0'=>[[:int, 3], [:goto, nil]],
     }
   end
   it 'compiles puts 3' do
     program('puts 3').should == {
       :start=>"1,0",
       "1,0"=>[
-        [:start_call], [:arg], [:int, 3], [:arg], [:call, :puts], [:done]
+        [:start_call], [:arg], [:int, 3], [:arg], [:call, :puts], [:goto, nil]
       ],
     }
   end
@@ -34,7 +34,7 @@ describe BytecodeCompiler, '#compile' do
        [:start_call], [:arg], [:int, 3], [:arg], [:call, :puts], [:goto, "1,8"]
      ],
      "1,8" => [
-       [:start_call], [:arg], [:int, 4], [:arg], [:call, :puts], [:done]
+       [:start_call], [:arg], [:int, 4], [:arg], [:call, :puts], [:goto, nil]
      ],
     }
   end
@@ -45,7 +45,7 @@ describe BytecodeCompiler, '#compile' do
        [:start_call], [:arg], [:int, 3], [:arg], [:call, :puts], [:goto, "2,0"]
      ],
      "2,0" => [
-       [:start_call], [:arg], [:int, 4], [:arg], [:call, :puts], [:done]
+       [:start_call], [:arg], [:int, 4], [:arg], [:call, :puts], [:goto, nil]
      ],
     }
   end
@@ -92,7 +92,7 @@ describe BytecodeCompiler, '#compile' do
       :start=>"1,0",
       "1,0"=>[[:int, 3], [:assign_to, :x], [:goto, "2,0"]],
       "2,0"=>[[:start_call], [:arg],
-        [:lookup_var, :x], [:arg], [:call, :p], [:done]]
+        [:lookup_var, :x], [:arg], [:call, :p], [:goto, nil]]
     }
   end
 
@@ -107,5 +107,22 @@ describe BytecodeCompiler, '#compile' do
   it 'compiles "3#{4}5"' do
     exp('"3#{4}5"').should == [[:start_call], [:arg], [:string, "3"], [:arg],
       [:int, 4], [:arg], [:string, "5"], [:arg], [:call, :__STRINTERP]]
+  end
+
+  it 'compiles if true \n 3 \n end' do
+    program("if true\n3\nend").should == {
+      :start => "1,0",
+      "1,0" => [[:bool, true], [:if_goto, "2,0"], [:goto, nil]],
+      "2,0" => [[:int, 3], [:goto, nil]],
+    }
+  end
+  it 'compiles if true \n 3 \n 4 \n end \n 5' do
+    program("if true\n3\n4\nend\n5").should == {
+      :start=>"1,0",
+      "1,0"=>[[:bool, true], [:if_goto, "2,0"], [:goto, "5,0"]],
+      "2,0"=>[[:int, 3], [:goto, "3,0"]],
+      "3,0"=>[[:int, 4], [:goto, "5,0"]],
+      "5,0"=>[[:int, 5], [:goto, nil]]
+    }
   end
 end
