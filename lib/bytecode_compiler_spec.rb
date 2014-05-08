@@ -112,17 +112,26 @@ describe BytecodeCompiler, '#compile' do
   it 'compiles if true \n 3 \n end' do
     program("if true\n3\nend").should == {
       :start => "1,0",
-      "1,0" => [[:bool, true], [:if_goto, "2,0"], [:goto, nil]],
+      "1,0" => [[:bool, true], [:if_goto, "2,0", nil]],
       "2,0" => [[:int, 3], [:goto, nil]],
     }
   end
   it 'compiles if true \n 3 \n 4 \n end \n 5' do
     program("if true\n3\n4\nend\n5").should == {
       :start=>"1,0",
-      "1,0"=>[[:bool, true], [:if_goto, "2,0"], [:goto, "5,0"]],
+      "1,0"=>[[:bool, true], [:if_goto, "2,0", "5,0"]],
       "2,0"=>[[:int, 3], [:goto, "3,0"]],
       "3,0"=>[[:int, 4], [:goto, "5,0"]],
       "5,0"=>[[:int, 5], [:goto, nil]]
+    }
+  end
+
+  it 'compiles if true \n 3 \n else \n 4 \n end' do
+    program("if true\n3\nelse\n4\nend").should == {
+      :start => "1,0",
+      "1,0" => [[:bool, true], [:if_goto, "2,0", "4,0"]],
+      "2,0" => [[:int, 3], [:goto, nil]],
+      "4,0" => [[:int, 4], [:goto, nil]]
     }
   end
 end

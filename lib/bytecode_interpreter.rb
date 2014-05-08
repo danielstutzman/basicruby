@@ -33,7 +33,7 @@ class BytecodeInterpreter
     begin
       bytecodes = @hash[@pos]
       bytecodes.each do |bytecode|
-        head, arg0 = bytecode
+        head, arg0, arg1 = bytecode
         case head
           when :start_call
             @partial_calls.push []
@@ -62,9 +62,13 @@ class BytecodeInterpreter
           when :if_goto
             if @result != false && @result != nil
               @pos = arg0
+              @result = ResultIsUnassigned
+              break
+            else
+              @pos = arg1
+              @result = ResultIsUnassigned
               break
             end
-            @result = ResultIsUnassigned
           else
             raise "Unknown bytecode head #{head}"
         end

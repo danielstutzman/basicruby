@@ -86,4 +86,35 @@ describe BytecodeInterpreter, '#execute_hash' do
   it 'runs if true \n end \n p 3' do
     output_of("if true \n end \n p 3").should == "3\n"
   end
+
+  it 'runs if true \n p 3 \n else \n p 4 \n end \n p 5' do
+    output_of("if true \n p 3 \n else \n p 4 \n end \n p 5").should ==
+      "3\n5\n"
+  end
+  it 'runs if false \n p 3 \n else \n p 4 \n end \n p 5' do
+    output_of("if false \n p 3 \n else \n p 4 \n end \n p 5").should ==
+      "4\n5\n"
+  end
+
+  it 'runs if true \n p 3 \n elsif false \n p 4 \n end' do
+    output_of("if true \n p 3 \n elsif false \n p 4 \n end").should == "3\n"
+  end
+  it 'runs if false \n p 3 \n elsif true \n p 4 \n end' do
+    output_of("if false \n p 3 \n elsif true \n p 4 \n end").should == "4\n"
+  end
+  it 'runs if false \n p 3 \n elsif false \n p 4 \n end' do
+    output_of("if false \n p 3 \n elsif false \n p 4 \n end").should == ""
+  end
+  it 'runs if true \n p 3 \n elsif false \n p 4 \n else \n p 5 \n end' do
+    output_of("if true \n p 3 \n elsif false \n p 4 \n else \n p 5 \n end"
+      ).should == "3\n"
+  end
+  it 'runs if false \n p 3 \n elsif true \n p 4 \n else \n p 5 \n end' do
+    output_of("if false \n p 3 \n elsif true \n p 4 \n else \n p 5 \n end"
+      ).should == "4\n"
+  end
+  it 'runs if false \n p 3 \n elsif false \n p 4 \n else \n p 5 \n end' do
+    output_of("if false \n p 3 \n elsif false \n p 4 \n else \n p 5 \n end"
+      ).should == "5\n"
+  end
 end
