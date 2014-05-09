@@ -1,14 +1,24 @@
+require 'opal'
+require './ast_to_bytecode_compiler'
 require './bytecode_interpreter'
 
 $main = self
-Compiler2 = BytecodeCompiler.new
+
 def output_of ruby_code
-  hash = Compiler2.compile_ruby_program_to_hash ruby_code
-  interpreter = BytecodeInterpreter.new $main, hash
+  parser = Opal::Parser.new
+  sexp = parser.parse ruby_code
+  compiler = AstToBytecodeCompiler.new $main
+  bytecodes = compiler.compile sexp
+  output = ''
+  interpreter = BytecodeInterpreter.new $main, bytecodes
+  interpreter.set_output_handler { |new_output|
+    output += new_output
+  }
   interpreter.run
+  output
 end
 
-describe BytecodeInterpreter, '#execute_hash' do
+describe BytecodeInterpreter, '#run' do
   it 'runs puts 3' do
     output_of('puts 3').should == "3\n"
   end
@@ -51,8 +61,7 @@ describe BytecodeInterpreter, '#execute_hash' do
     output_of("x = 3\np x").should == "3\n"
   end
   it 'raises NameError from p x' do
-    output_of("p x").should ==
-      "undefined local variable or method `x' for main:Object\n"
+    expect { output_of("p x") }.to raise_exception(NameError)
   end
   it 'prints main from puts to_s' do
     output_of("puts to_s").should == "main\n"
@@ -118,8 +127,11 @@ describe BytecodeInterpreter, '#execute_hash' do
       ).should == "5\n"
   end
 
-  it 'disallows if inside expression' do
-    expect { output_of("x = if true then 3 end") }.to raise_exception(
-      BytecodeCompiler::DebuggerDoesntYetSupport)
+  it 'runs x = if true then 3 end; p x' do
+    output_of("x = if true then 3 end; p x").should == "3\n"
   end
+  it 'runs x = if false then 3 end; p x' do
+    output_of("x = if false then 3 end; p x").should == "nil\n"
+  end
+
 end

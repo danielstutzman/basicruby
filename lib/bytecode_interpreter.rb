@@ -1,42 +1,160 @@
+require './interpreter_state'
+
 class BytecodeInterpreter
-  class ResultIsUnassigned
-  end
-
-  class ProgramTerminated < RuntimeError
-  end
-
-  attr_accessor :pos, :partial_calls, :step_output, :result, :vars
-
-  def initialize main, hash
+  def initialize main, bytecodes
     @main = main
-    @hash = hash
-    @step_output = nil
-    @pos = hash[:start]
-    @partial_calls = []
-    @result = ResultIsUnassigned
-    @vars = {}
+    @bytecodes = bytecodes
+    @counter = 0
+    @state = InterpreterState.new
+    @label_to_counter = label_to_counter(bytecodes)
+  end
+
+  def set_output_handler &do_output
+    @do_output = do_output
   end
 
   def run
-    all_output = ''
-    while @pos
-      step
-      all_output += @step_output
+    while @counter < @bytecodes.size
+      bytecode = @bytecodes[@counter]
+      break if bytecode.nil?
+
+      case bytecode[0]
+        when :call
+          result = do_call *@state.pop_call
+          @state.result result
+        when :token, :position, :label
+          # noop
+        when :if_goto
+          if bytecode[1] == @state.if_was_true?
+            @counter = @label_to_counter.fetch bytecode[2]
+          end
+        when :start_call, :result, :arg, :token, :discard, :push_if, :pop_if,
+             :to_var, :from_var
+          @state.send *bytecode
+        else
+          raise "Unknown bytecode head #{bytecode[0]}"
+      end
+
+      @counter += 1 # ok to step past label
     end
-    all_output
   end
 
-  def step
-    raise "No more instructions" if @pos.nil?
-    @step_output = ''
-    @result = ResultIsUnassigned
-    begin
-      bytecodes = @hash[@pos]
-      bytecodes.each do |bytecode|
-        head, arg0, arg1 = bytecode
-        case head
-          when :start_call
-            @partial_calls.push []
+  private
+
+  def label_to_counter bytecodes
+    hash = {}
+    bytecodes.each_with_index do |bytecode, counter|
+      if bytecode[0] == :label
+        label_name = bytecode[1]
+        hash[label_name] = counter
+      end
+    end
+    hash
+  end
+
+  def do_call receiver, method_name, *args
+    #p [receiver, method_name, *args]
+    if receiver == @main && method_name == :puts
+      do_call_puts *args
+    elsif receiver == @main && method_name == :p
+      do_call_p *args
+    elsif receiver == @main && method_name == :__STR_INTERP
+      args.map { |arg| "#{arg}" }.join
+    elsif receiver == @main
+      if @main.methods.include? method_name
+        @main.send method_name, *args
+      else
+        raise NameError.new "undefined local variable or method " +
+          "`#{method_name}' for main:Object"
+      end
+    else
+      receiver.send(method_name, *args)
+    end
+  end
+
+  def do_call_puts *args
+    if args.size == 0
+      @do_output.call "\n"
+    else
+      @do_output.call args.map { |arg| "#{arg}\n" }.join
+    end
+    nil
+  end
+
+  def do_call_p *args
+    if args.size == 0
+      nil
+    elsif args.size == 1
+      @do_output.call "#{args[0].inspect}\n"
+      args[0]
+    else
+      @do_output.call args.map { |arg| "#{arg.inspect}\n" }.join
+      args
+    end
+  end
+end
+
+
+=begin
+    when :push_arg
+      new_partial_calls = state[:partial_calls].clone
+      partial_call = new_partial_calls.last
+      raise 'Hit bottom of result stack' if state[:result].size == 0
+      partial_call.push state[:result].pop
+      state[:partial_calls] = new_partial_calls
+    when :enter
+      state[:pos] = state[:pos] + [0]
+    when :exit
+      if state[:pos][0...-1] == []
+        state[:pos] = nil # done with program
+      else
+        state[:pos] = state[:pos][0...-2] + [state[:pos][-2] + 1]
+      end
+    when :call
+      new_partial_calls = state[:partial_calls].clone
+      receiver, method_name, *args = new_partial_calls.pop
+      results = do_call receiver, method_name, args
+      state[:result].push results[:new_result]
+      state[:output] += results[:new_output]
+      state[:partial_calls] = new_partial_calls
+    when :set_result
+      state[:result].push todo[1]
+    when :next
+      advance_pos(state)
+    when :assign_to
+      var_name = todo[1]
+      raise 'Hit bottom of result stack' if state[:result].size == 0
+      value = state[:result].pop
+      state[:vars][var_name] = value
+      state[:result].push value
+    when :pop_result
+      raise 'Hit bottom of result stack' if state[:result].size == 0
+      state[:result].pop
+    when :lookup_var
+      var_name = todo[1]
+      state[:result].push state[:vars][var_name]
+    when :push_if
+      raise 'Hit bottom of result stack' if state[:result].size == 0
+      state[:ifs].push state[:result].pop
+    when :enter_if
+      if state[:ifs].last == todo[1] # compare the two bools
+        state[:pos] = state[:pos] + [0] # enter
+      else
+        advance_pos(state)
+      end
+    when :pop_if
+      raise 'Hit bottom of ifs stack' if state[:ifs].size == 0
+      state[:ifs].pop
+    when :highlight
+      p [todo[0], todo[1], @start_pos_to_end_pos[todo[1]]]
+=end
+
+
+
+
+
+
+=begin
           when :arg
             @partial_calls.last.push result
           when :int
@@ -128,3 +246,4 @@ class BytecodeInterpreter
     end
   end
 end
+=end
