@@ -1,4 +1,8 @@
-require './interpreter_state'
+if RUBY_VERSION == 'opal'
+  require 'interpreter_state'
+else
+  send :require, './interpreter_state'
+end
 
 class BytecodeInterpreter
   def initialize main, bytecodes

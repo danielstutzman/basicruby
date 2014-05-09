@@ -44,4 +44,4 @@ build/
 /public/browserified.js.map
 /app/assets/javascripts/browserified.js
 /app/assets/javascripts/bytecode_interpreter.js
-/app/assets/javascripts/bytecode_compiler.js
+/app/assets/javascripts/ast_to_bytecode_compiler.js

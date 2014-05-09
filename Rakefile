@@ -36,13 +36,13 @@ file 'app/assets/javascripts/browserified.js' =>
   create_with_sh command, task.name
 end
 
-file 'app/assets/javascripts/bytecode_compiler.js' =>
-    'lib/bytecode_compiler.rb' do |task|
+file 'app/assets/javascripts/ast_to_bytecode_compiler.js' =>
+    'lib/ast_to_bytecode_compiler.rb' do |task|
   command = %W[
     bundle exec opal
       -c
       -I lib
-      -- bytecode_compiler
+      -- ast_to_bytecode_compiler
   ].join(' ')
   create_with_sh command, task.name
 end
@@ -60,6 +60,6 @@ end
 
 task :js => %w[
   app/assets/javascripts/browserified.js
-  app/assets/javascripts/bytecode_compiler.js
+  app/assets/javascripts/ast_to_bytecode_compiler.js
   app/assets/javascripts/bytecode_interpreter.js
 ]
