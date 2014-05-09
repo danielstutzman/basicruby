@@ -106,22 +106,20 @@ class AstToBytecodeCompiler
     _, condition, then_block, else_block = sexp
     bytecodes = []
     bytecodes.concat compile(condition)
-    bytecodes.push [:push_if]
     label_else = "else_#{sexp.source.join('_')}"
     label_endif = "endif_#{sexp.source.join('_')}"
-    bytecodes.push [:if_goto, false, label_else]
+    bytecodes.push [:goto_if_not, label_else]
     if then_block && then_block.source
       bytecodes.push [:position] + then_block.source
     end
     bytecodes.concat compile(then_block)
-    bytecodes.push [:if_goto, true, label_endif]
+    bytecodes.push [:goto, label_endif]
     bytecodes.push [:label, label_else]
     if else_block && else_block.source
       bytecodes.push [:position] + else_block.source
     end
     bytecodes.concat compile(else_block)
     bytecodes.push [:label, label_endif]
-    bytecodes.push [:pop_if]
     bytecodes
   end
 

@@ -28,11 +28,13 @@ class BytecodeInterpreter
           @state.result result
         when :token, :position, :label
           # noop
-        when :if_goto
-          if bytecode[1] == @state.if_was_true?
-            @counter = @label_to_counter.fetch bytecode[2]
+        when :goto
+          @counter = @label_to_counter.fetch bytecode[1]
+        when :goto_if_not
+          if !@state.result_is_true?
+            @counter = @label_to_counter.fetch bytecode[1]
           end
-        when :start_call, :result, :arg, :token, :discard, :push_if, :pop_if,
+        when :start_call, :result, :arg, :token, :discard,
              :to_var, :from_var
           @state.send *bytecode
         else

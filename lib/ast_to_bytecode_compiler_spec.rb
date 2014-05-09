@@ -50,15 +50,14 @@ describe AstToBytecodeCompiler, '#compile' do
   end
   it 'compiles x = if true then 3 end' do
     compile('x = if true then 3 end').should == [
-      [:token, 1, 7], [:result, true], [:push_if],
-      [:if_goto, false, "else_1_4"],
+      [:token, 1, 7], [:result, true],
+      [:goto_if_not, "else_1_4"],
       [:position, 1, 17],
       [:token, 1, 17], [:result, 3],
-      [:if_goto, true, "endif_1_4"],
+      [:goto, "endif_1_4"],
       [:label, "else_1_4"],
       [:result, nil],
       [:label, "endif_1_4"],
-      [:pop_if],
       [:token, 1, 0], [:to_var, :x],
     ]
   end
