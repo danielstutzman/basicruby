@@ -33,23 +33,27 @@ class Interpreter
     state = state.clone
     locator, progress = state[:pos][0...-1], state[:pos][-1]
     sexp = locate_sexp locator, ast
-    todos = case sexp[0]
-      when :block   then interpret_block   sexp, progress
-      when :int     then interpret_int     sexp, progress
-      when :str     then interpret_str     sexp, progress
-      when :true    then interpret_true    sexp, progress
-      when :false   then interpret_false   sexp, progress
-      when :nil     then interpret_nil     sexp, progress
-      when :float   then interpret_float   sexp, progress
-      when :call    then interpret_call    sexp, progress
-      when :arglist then interpret_arglist sexp, progress
-      when :paren   then interpret_paren   sexp, progress
-      when :lasgn   then interpret_lasgn   sexp, progress
-      when :lvar    then interpret_lvar    sexp, progress
-      when :if      then interpret_if      sexp, progress
-      when :dstr    then interpret_dstr    sexp, progress
-      when :evstr   then interpret_evstr   sexp, progress
-      else no "s-exp with head #{sexp[0]}"
+    todos =
+      if sexp.nil?
+        [[:set_result, nil], [:exit]]
+      else case sexp[0]
+        when :block   then interpret_block   sexp, progress
+        when :int     then interpret_int     sexp, progress
+        when :str     then interpret_str     sexp, progress
+        when :true    then interpret_true    sexp, progress
+        when :false   then interpret_false   sexp, progress
+        when :nil     then interpret_nil     sexp, progress
+        when :float   then interpret_float   sexp, progress
+        when :call    then interpret_call    sexp, progress
+        when :arglist then interpret_arglist sexp, progress
+        when :paren   then interpret_paren   sexp, progress
+        when :lasgn   then interpret_lasgn   sexp, progress
+        when :lvar    then interpret_lvar    sexp, progress
+        when :if      then interpret_if      sexp, progress
+        when :dstr    then interpret_dstr    sexp, progress
+        when :evstr   then interpret_evstr   sexp, progress
+        else no "s-exp with head #{sexp[0]}"
+      end
     end
 
     todos.each do |todo|
@@ -101,26 +105,11 @@ class Interpreter
     when :push_if
       raise 'Hit bottom of result stack' if state[:result].size == 0
       state[:ifs].push state[:result].pop
-    when :enter_if_true
-      if state[:ifs].last
-        state[:pos] = state[:pos] + [0]
+    when :enter_if
+      if state[:ifs].last == todo[1] # compare the two bools
+        state[:pos] = state[:pos] + [0] # enter
       else
         advance_pos(state)
-      end
-    when :nil_result_if_true
-      if state[:ifs].last
-        state[:result].push nil
-      end
-    when :enter_if_false
-      if state[:ifs].last
-        advance_pos(state)
-      else
-        state[:pos] = state[:pos] + [0]
-      end
-    when :nil_result_if_false
-      if state[:ifs].last
-      else
-        state[:result].push nil
       end
     when :pop_if
       raise 'Hit bottom of ifs stack' if state[:ifs].size == 0
@@ -286,17 +275,9 @@ class Interpreter
       when 0 then [[:next]] # :if
       when 1 then [[:enter]] # condition
       when 2 # block for true
-        if sexp[2] != nil
-          [[:push_if], [:enter_if_true]]
-        else
-          [[:push_if], [:nil_result_if_true], [:next]]
-        end
+        [[:push_if], [:enter_if, true]]
       when 3 # block for false
-        if sexp[3] != nil
-          [[:enter_if_false]]
-        else
-          [[:nil_result_if_false], [:next]]
-        end
+        [[:enter_if, false]]
       when 4 then [[:pop_if], [:exit]]
     end
   end
