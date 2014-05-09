@@ -1,4 +1,5 @@
 require 'opal'
+require './lexer.rb'
 require './interpreter.rb'
 
 $main = self
@@ -7,9 +8,11 @@ def run code
   parser = Opal::Parser.new
   sexp = parser.parse code
   state = Interpreter.start
+  start_pos_to_end_pos = Lexer.new.build_start_pos_to_end_pos code
+  interpreter = Interpreter.new $main, start_pos_to_end_pos
   if sexp
     while state[:pos] != nil
-      state = Interpreter.new($main).advance state, sexp
+      state = interpreter.advance state, sexp
     end
   end
   state

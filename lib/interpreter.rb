@@ -13,8 +13,9 @@ class Interpreter
     raise DebuggerDoesntYetSupport.new(feature)
   end
 
-  def initialize main
+  def initialize main, start_pos_to_end_pos
     @main = main
+    @start_pos_to_end_pos = start_pos_to_end_pos
   end
 
   def self.start
@@ -124,6 +125,8 @@ class Interpreter
     when :pop_if
       raise 'Hit bottom of ifs stack' if state[:ifs].size == 0
       state[:ifs].pop
+    when :highlight
+      p [todo[0], todo[1], @start_pos_to_end_pos[todo[1]]]
     else
       no "todo with head #{todo[0]}"
     end
@@ -184,40 +187,40 @@ class Interpreter
   def interpret_int sexp, progress
     case progress
       when 0 then [[:next]] # :int
-      when 1 then [[:set_result, sexp[1]], [:next]]
+      when 1 then [[:highlight, sexp.source], [:set_result, sexp[1]], [:next]]
       when 2 then [[:exit]]
     end
   end
   def interpret_str sexp, progress
     case progress
       when 0 then [[:next]] # :str
-      when 1 then [[:set_result, sexp[1]], [:next]]
+      when 1 then [[:highlight, sexp.source], [:set_result, sexp[1]], [:next]]
       when 2 then [[:exit]]
     end
   end
   def interpret_true sexp, progress
     case progress
       when 0 then [[:next]] # :true
-      when 1 then [[:set_result, true], [:exit]]
+      when 1 then [[:highlight, sexp.source], [:set_result, true], [:exit]]
     end
   end
   def interpret_false sexp, progress
     case progress
       when 0 then [[:next]] # :false
-      when 1 then [[:set_result, false], [:exit]]
+      when 1 then [[:highlight, sexp.source], [:set_result, false], [:exit]]
     end
   end
   def interpret_nil sexp, progress
     case progress
       when 0 then [[:next]] # :nil
-      when 1 then [[:set_result, nil], [:exit]]
+      when 1 then [[:highlight, sexp.source], [:set_result, nil], [:exit]]
     end
   end
   def interpret_float sexp, progress
     case progress
       when 0 then [[:next]] # :float
       when 1 then [[:set_result, sexp[1]], [:next]]
-      when 2 then [[:exit]]
+      when 2 then [[:highlight, sexp.source], [:exit]]
     end
   end
   def interpret_call sexp, progress
@@ -235,7 +238,7 @@ class Interpreter
       when 3 # arglist
         [[:enter]]
       when 4
-        [[:exit]]
+        [[:highlight, sexp.source], [:call], [:exit]]
     end
   end
   def interpret_arglist sexp, progress
@@ -249,9 +252,9 @@ class Interpreter
       end
     else
       if sexp.size > 1
-        [[:push_arg], [:call], [:exit]]
+        [[:push_arg], [:exit]]
       else
-        [[:call], [:exit]]
+        [[:exit]]
       end
     end
   end
@@ -267,13 +270,14 @@ class Interpreter
       when 0 then [[:next]] # :lasgn
       when 1 then [[:next]] # varname
       when 2 then [[:enter]] # expr
-      when 3 then [[:assign_to, sexp[1]], [:exit]]
+      when 3 then [[:highlight, sexp.source], [:assign_to, sexp[1]], [:exit]]
     end
   end
   def interpret_lvar sexp, progress
     case progress
       when 0 then [[:next]] # :lvar
-      when 1 then [[:lookup_var, sexp[1]], [:next]] # varname
+      when 1 # varname
+        [[:highlight, sexp.source], [:lookup_var, sexp[1]], [:next]]
       when 2 then [[:exit]]
     end
   end
