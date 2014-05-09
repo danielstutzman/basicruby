@@ -1,2 +1,2 @@
 #!/bin/bash
-rspec *_spec.rb --format nested
+rspec interpreter_spec.rb --format nested
