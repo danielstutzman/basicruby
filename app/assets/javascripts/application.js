@@ -16,6 +16,6 @@
 // - require_tree .
 
 //= require browserified.js
-//= require bytecode_compiler.js
+//= require ast_to_bytecode_compiler.js
 //= require bytecode_interpreter.js
 require('./coffee/application.coffee');
