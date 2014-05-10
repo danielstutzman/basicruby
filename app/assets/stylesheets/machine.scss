@@ -271,7 +271,7 @@ body.machine {
       }
 
       .value {
-        .string {
+        .string, .symbol {
           font-family: monospace;
           white-space: pre-wrap;
           background-color: #040;

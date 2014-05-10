@@ -43,6 +43,14 @@ class InterpreterState
     @result.push @vars[var_name]
   end
 
+  def make_symbol
+    result = pop_result
+    if RUBY_PLATFORM == 'opal'
+      `result.is_symbol = true;`
+    end
+    @result.push result
+  end
+
   ## Below are non-bytecode methods
 
   def result_is_true?

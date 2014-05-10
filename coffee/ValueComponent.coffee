@@ -6,22 +6,28 @@ ValueComponent = React.createClass
     { div } = React.DOM
 
     value = @props.value
-    type = value.$class().$to_s()
 
-    css_class =
-      switch type
-        when 'String' then 'string'
-        else ''
+    if value.is_symbol
+      type = 'Symbol'
+    else
+      type = value.$class().$to_s()
+
     display =
       switch type
+        when 'Symbol' then value.$to_s()
         when 'String' then value.$to_s()
         else value.$inspect()
 
-    if display == 'main'
-      css_class += ' main'
-
-    if type == 'String' && display == ''
-      css_class += ' empty'
+    css_class =
+      if display == 'main'
+        'main'
+      else if type == 'String' && display == ''
+        'string empty'
+      else
+        switch type
+          when 'String' then 'string'
+          when 'Symbol' then 'symbol'
+          else ''
 
     div { className: 'value' },
       div { key: 'value', className: css_class },
@@ -37,6 +43,7 @@ ValueComponent = React.createClass
             when 'Boolean'  then 'Bool.'
             when 'NilClass' then 'Nil.'
             when 'Object'   then 'Obj.'
+            when 'Symbol'   then 'Sym.'
             else type
 
 module.exports = ValueComponent

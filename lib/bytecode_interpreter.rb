@@ -57,7 +57,8 @@ class BytecodeInterpreter
         if !@state.result_is_true?
           @counter = @label_to_counter.fetch bytecode[1]
         end
-      when :start_call, :result, :arg, :discard, :to_var, :from_var, :top
+      when :start_call, :result, :arg, :discard, :to_var, :from_var, :top,
+           :make_symbol
         @state.send *bytecode
       else
         raise "Unknown bytecode head #{bytecode[0]}"

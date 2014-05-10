@@ -89,6 +89,7 @@ class AstToBytecodeCompiler
 
     bytecodes.push [:token] + sexp.source
     bytecodes.push [:result, method_name]
+    bytecodes.push [:make_symbol]
     bytecodes.push [:arg]
     
     bytecodes.concat compile(arglist)
