@@ -75,7 +75,8 @@ class DebuggerAnimator
             window.setTimeout callback, 300 if callback
             return
         when 'call'
-          if window.$output_to_stdout.length > @last_output_length
+          if window.$output_to_stdout &&
+             window.$output_to_stdout.length > @last_output_length
             new_output =
               window.$output_to_stdout.slice(@last_output_length).join('')
             @last_output_length = window.$output_to_stdout.length
