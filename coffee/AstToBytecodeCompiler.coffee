@@ -3,7 +3,7 @@ compile = (ruby_code) ->
   sexp = parser.$parse ruby_code
   main = Opal.top
   compiler = Opal.AstToBytecodeCompiler.$new main
-  compiler.$compile sexp
+  compiler.$compile_program sexp
 
 module.exports =
   compile: compile

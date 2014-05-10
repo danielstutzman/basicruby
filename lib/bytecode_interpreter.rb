@@ -1,48 +1,67 @@
-if RUBY_PLATFORM == 'opal'
-  require 'interpreter_state.rb'
-else
+if RUBY_PLATFORM != 'opal'
   send :require, './interpreter_state'
+else
+  require 'interpreter_state.rb'
+
+  def $stdout.write(string)
+    `if (!window.$output_to_stdout) { window.$output_to_stdout = []; };`
+    `window.$output_to_stdout.push(string + "\n");`
+  end
+end
+
+class String
+  def <<(*args)
+    self + args.map { |arg| "#{arg}" }.join
+  end
 end
 
 class BytecodeInterpreter
-  def initialize main, bytecodes
-    @main = main
+  attr_reader :state
+
+  def initialize bytecodes
     @bytecodes = bytecodes
     @counter = 0
     @state = InterpreterState.new
     @label_to_counter = label_to_counter(bytecodes)
-  end
-
-  def set_output_handler &do_output
-    @do_output = do_output
+    @main = (RUBY_PLATFORM == 'opal') ?
+      `Opal.top` : TOPLEVEL_BINDING.eval('self')
   end
 
   def run
-    while @counter < @bytecodes.size
-      bytecode = @bytecodes[@counter]
-      break if bytecode.nil?
-
-      case bytecode[0]
-        when :call
-          result = do_call *@state.pop_call
-          @state.result result
-        when :token, :position, :label
-          # noop
-        when :goto
-          @counter = @label_to_counter.fetch bytecode[1]
-        when :goto_if_not
-          if !@state.result_is_true?
-            @counter = @label_to_counter.fetch bytecode[1]
-          end
-        when :start_call, :result, :arg, :token, :discard,
-             :to_var, :from_var
-          @state.send *bytecode
-        else
-          raise "Unknown bytecode head #{bytecode[0]}"
-      end
-
-      @counter += 1 # ok to step past label
+    while have_more_bytecodes?
+      self.run_next_bytecode
     end
+  end
+
+  def have_more_bytecodes?
+    @counter < @bytecodes.size
+  end
+
+  def run_next_bytecode
+    bytecode = @bytecodes[@counter]
+    case bytecode[0]
+      when :call
+        result = do_call *@state.pop_call
+        @state.result result
+      when :position
+        # noop
+      when :token
+        # noop
+      when :label
+        # noop
+      when :goto
+        @counter = @label_to_counter.fetch bytecode[1]
+      when :goto_if_not
+        if !@state.result_is_true?
+          @counter = @label_to_counter.fetch bytecode[1]
+        end
+      when :start_call, :result, :arg, :discard, :to_var, :from_var, :top
+        @state.send *bytecode
+      else
+        raise "Unknown bytecode head #{bytecode[0]}"
+    end
+    @counter += 1 # ok to step past label
+    bytecode
   end
 
   private
@@ -60,42 +79,15 @@ class BytecodeInterpreter
 
   def do_call receiver, method_name, *args
     #p [receiver, method_name, *args]
-    if receiver == @main && method_name == :puts
-      do_call_puts *args
-    elsif receiver == @main && method_name == :p
-      do_call_p *args
-    elsif receiver == @main && method_name == :__STR_INTERP
-      args.map { |arg| "#{arg}" }.join
-    elsif receiver == @main
-      if @main.methods.include? method_name
+    if receiver == @main
+      begin
         @main.send method_name, *args
-      else
+      rescue NoMethodError => e
         raise NameError.new "undefined local variable or method " +
           "`#{method_name}' for main:Object"
       end
     else
       receiver.send(method_name, *args)
-    end
-  end
-
-  def do_call_puts *args
-    if args.size == 0
-      @do_output.call "\n"
-    else
-      @do_output.call args.map { |arg| "#{arg}\n" }.join
-    end
-    nil
-  end
-
-  def do_call_p *args
-    if args.size == 0
-      nil
-    elsif args.size == 1
-      @do_output.call "#{args[0].inspect}\n"
-      args[0]
-    else
-      @do_output.call args.map { |arg| "#{arg.inspect}\n" }.join
-      args
     end
   end
 end

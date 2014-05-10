@@ -12,9 +12,3 @@ document.addEventListener 'DOMContentLoaded', ->
     codeMirror = CodeMirror.fromTextArea($one('.code-editor'), options)
     (new DebuggerAnimator(codeMirror)).run()
     setupResizeHandler codeMirror
-
-code = 'puts 3 + 5 + 6'
-sexp = require('./coffee/AstToBytecodeCompiler.coffee').compile(code)
-BytecodeInterpreter = require('./coffee/BytecodeInterpreter.coffee')
-interpreter = new BytecodeInterpreter(sexp)
-interpreter.run()

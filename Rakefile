@@ -48,7 +48,7 @@ file 'app/assets/javascripts/ast_to_bytecode_compiler.js' =>
 end
 
 file 'app/assets/javascripts/bytecode_interpreter.js' =>
-    'lib/bytecode_interpreter.rb' do |task|
+    %w[lib/bytecode_interpreter.rb lib/interpreter_state.rb] do |task|
   command = %W[
     bundle exec opal
       -c

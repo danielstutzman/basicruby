@@ -1,6 +1,30 @@
 class AstToBytecodeCompiler
-  def initialize main
-    @main = main
+  def compile_program sexp
+    if sexp.nil?
+      position = []
+    elsif sexp[0] == :block
+      position = [] # because position will be printed anyway
+    elsif sexp.source
+      position = [[:position] + sexp.source]
+    end
+
+    position + compile(sexp)
+  end
+
+  private
+
+  class AssertionFailed < RuntimeError
+  end
+
+  class DebuggerDoesntYetSupport < RuntimeError
+  end
+
+  def assert bool
+    raise AssertionFailed if !bool
+  end
+
+  def no feature
+    raise DebuggerDoesntYetSupport.new(feature)
   end
 
   def compile sexp
@@ -25,29 +49,13 @@ class AstToBytecodeCompiler
     end
   end
 
-  private
-
-  class AssertionFailed < RuntimeError
-  end
-
-  class DebuggerDoesntYetSupport < RuntimeError
-  end
-
-  def assert bool
-    raise AssertionFailed if !bool
-  end
-
-  def no feature
-    raise DebuggerDoesntYetSupport.new(feature)
-  end
-
   def compile_block sexp
     _, *statements = sexp
     bytecodes = []
 
     statements.each_with_index do |statement, i|
-      if sexp.source
-        bytecodes.push [:position] + sexp.source
+      if statement.source
+        bytecodes.push [:position] + statement.source
       end
       bytecodes.concat compile(statement)
       if i < statements.size - 1
@@ -66,7 +74,7 @@ class AstToBytecodeCompiler
     if receiver
       bytecodes.concat compile(receiver)
     else
-      bytecodes.push [:result, @main]
+      bytecodes.push [:top]
     end
     bytecodes.push [:arg]
 
@@ -127,11 +135,9 @@ class AstToBytecodeCompiler
     _, str, *strs_or_evstrs = sexp
     bytecodes = []
     bytecodes.push [:start_call]
-    bytecodes.push [:result, @main]
-    bytecodes.push [:arg]
-    bytecodes.push [:result, :__STR_INTERP]
-    bytecodes.push [:arg]
     bytecodes.push [:result, str]
+    bytecodes.push [:arg]
+    bytecodes.push [:result, :<<]
     bytecodes.push [:arg]
     strs_or_evstrs.each do |str_or_evstr|
       bytecodes.concat compile(str_or_evstr)

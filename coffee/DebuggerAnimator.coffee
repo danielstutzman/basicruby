@@ -1,6 +1,6 @@
-BytecodeCompiler    = require './BytecodeCompiler.coffee'
-BytecodeInterpreter = require './BytecodeInterpreter.coffee'
-DebuggerComponent   = require './DebuggerComponent.coffee'
+AstToBytecodeCompiler = require './AstToBytecodeCompiler.coffee'
+BytecodeInterpreter   = require './BytecodeInterpreter.coffee'
+DebuggerComponent     = require './DebuggerComponent.coffee'
 
 class DebuggerAnimator
   MILLIS_FOR_BOLD                  = 300
@@ -19,11 +19,12 @@ class DebuggerAnimator
       highlightLine: false
       vars:          {}
       doCommand:
-        power: => @_handlePower.apply this, arguments
-        step:  => @_handleStep.apply  this, arguments
-        run:   => @_handleRun.apply   this, arguments
+        power: => @_handlePower.apply this, []
+        step:  => @_handleStep.apply  this, []
+        run:   => @_handleRun.apply   this, []
     @interpreter = null
     @$div = document.querySelector 'div.debugger'
+    @last_output_length = 0
 
   _render: ->
     React.renderComponent DebuggerComponent(@props), @$div
@@ -33,12 +34,14 @@ class DebuggerAnimator
       @props.state        = 'OFF'
       @props.instructions = ''
       @props.console      = ''
+      @props.vars         = {}
       @interpreter        = null
     else
       @props.state   = 'ON'
       @props.console = ''
       try
-        hash = BytecodeCompiler.compile_ruby_code_to_hash @codeMirror.getValue()
+        code = @codeMirror.getValue()
+        bytecodes = AstToBytecodeCompiler.compile code
       catch e
         if e.name == 'SyntaxError'
           @props.console = "SyntaxError: #{e.message}"
@@ -46,35 +49,42 @@ class DebuggerAnimator
           @props.console = "DebuggerDoesntYetSupport: #{e.message}"
         else
           throw e
-      if hash
+      if bytecodes
         @props.instructions = @codeMirror.getValue()
-        @interpreter        = new BytecodeInterpreter hash
-        @props.pos          = @interpreter.getPos()
-      else
-        @props.pos = null
+        @interpreter = new BytecodeInterpreter bytecodes
+        @props.vars = @interpreter.vars()
+        @_handleStep() # run step until the first position
     @_render()
 
-  _handleStep: (callback) ->
-    @_doWholeStep (->)
+  _handleStep: ->
+    @_doStep null
 
-  _doWholeStep: (callback) ->
-    @_addBold =>
-      @_doJustStep =>
-        @_removeBold =>
-          @_scrollInstructions =>
-            callback()
+  _doStep: (callback) ->
+    while @interpreter.have_more_bytecodes()
+      bytecode = @interpreter.run_next_bytecode()
+      switch bytecode[0]
+        when 'to_var'
+          @props.vars = @interpreter.vars()
+          @_render()
+        when 'position'
+          # only stop if we're going from one line to another,
+          # not for an inline if expression like "if x then y else z end"
+          if !@props.pos || "#{bytecode[1]}" != @props.pos.split(',')[0]
+            @props.pos = "#{bytecode[1]},#{bytecode[2]}"
+            @_render()
+            window.setTimeout callback, 300 if callback
+            return
+        when 'call'
+          if window.$output_to_stdout.length > @last_output_length
+            new_output =
+              window.$output_to_stdout.slice(@last_output_length).join('')
+            @last_output_length = window.$output_to_stdout.length
+            @_slowlyOutput new_output, (=> @_doStep(callback))
+            return
 
-  _doJustStep: (callback) ->
-    @interpreter.step()
-    @props.vars = @interpreter.getVars()
-    # @props.pos = @interpreter.getPos() # wait to show this
-    @_slowlyOutput @interpreter.getStepOutput(), =>
-      callback()
-
-  _addBold: (callback) ->
-    @props.highlightLine = true
-    @_render()
-    window.setTimeout callback, MILLIS_FOR_BOLD
+    if !@interpreter.have_more_bytecodes()
+      @props.pos = null
+      @_render()
 
   _slowlyOutput: (output, callback) ->
     outputNextLetter = (rest) =>
@@ -90,22 +100,11 @@ class DebuggerAnimator
     millis_for_each_letter = MILLIS_FOR_OUTPUT_DURING / (output.length || 1)
     outputNextLetter output
 
-  _removeBold: (callback) ->
-    @props.highlightLine = false
-    @_render()
-    window.setTimeout callback, MILLIS_FOR_UNBOLD
-
-  _scrollInstructions: (callback) ->
-    @props.pos = @interpreter.getPos()
-    if @props.pos == null
-      @props.instructions = ''
-    @_render()
-    window.setTimeout callback, MILLIS_FOR_SCROLLED_INSTRUCTIONS
-
   _handleRun: ->
     doStepIfThereIsOne = =>
-      if @interpreter.getPos() != null
-        @_doWholeStep doStepIfThereIsOne
+      @_doStep =>
+        if @interpreter.have_more_bytecodes()
+          doStepIfThereIsOne()
     doStepIfThereIsOne()
 
   run: ->

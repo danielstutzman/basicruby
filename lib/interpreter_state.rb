@@ -5,6 +5,8 @@ class InterpreterState
     @partial_calls = []
     @result = [] # a stack with 0 or 1 items in it
     @vars = {}
+    @main = (RUBY_PLATFORM == 'opal') ?
+      `Opal.top` : TOPLEVEL_BINDING.eval('self')
   end
 
   ## Below are bytecode methods
@@ -38,6 +40,14 @@ class InterpreterState
 
   def result_is_true?
     !!pop_result
+  end
+
+  def result_from_call new_result
+    self.result new_result
+  end
+
+  def top
+    self.result @main
   end
 
   ## Below are non-bytecode methods

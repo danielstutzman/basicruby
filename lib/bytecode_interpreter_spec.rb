@@ -1,21 +1,12 @@
 require 'opal'
 require './ast_to_bytecode_compiler'
 require './bytecode_interpreter'
+require './rspec_ruby_runner'
 
 $main = self
 
 def output_of ruby_code
-  parser = Opal::Parser.new
-  sexp = parser.parse ruby_code
-  compiler = AstToBytecodeCompiler.new $main
-  bytecodes = compiler.compile sexp
-  output = ''
-  interpreter = BytecodeInterpreter.new $main, bytecodes
-  interpreter.set_output_handler { |new_output|
-    output += new_output
-  }
-  interpreter.run
-  output
+  RspecRubyRunner.new.output_from ruby_code
 end
 
 describe BytecodeInterpreter, '#run' do
@@ -133,5 +124,4 @@ describe BytecodeInterpreter, '#run' do
   it 'runs x = if false then 3 end; p x' do
     output_of("x = if false then 3 end; p x").should == "nil\n"
   end
-
 end
