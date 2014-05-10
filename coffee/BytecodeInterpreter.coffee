@@ -36,4 +36,11 @@ class BytecodeInterpreter
       console.error e.stack
       throw e
 
+  partial_calls: ->
+    try
+      @interpreter['$state']()['$partial_calls']()
+    catch e
+      console.error e.stack
+      throw e
+
 module.exports = BytecodeInterpreter

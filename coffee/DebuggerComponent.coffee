@@ -1,6 +1,7 @@
 ConsoleComponent      = require './ConsoleComponent.coffee'
 InstructionsComponent = require './InstructionsComponent.coffee'
 VariablesComponent    = require './VariablesComponent.coffee'
+PartialCallsComponent = require './PartialCallsComponent.coffee'
 
 POWER_SYMBOL   = '\u233d'
 RIGHT_TRIANGLE = '\u25b6'
@@ -51,6 +52,9 @@ DebuggerComponent = React.createClass
         pos: @props.pos
         instructions: @props.instructions
         highlightLine: @props.highlightLine
+
+      PartialCallsComponent
+        partial_calls: @props.partial_calls
 
       label {}, 'Variables'
       VariablesComponent

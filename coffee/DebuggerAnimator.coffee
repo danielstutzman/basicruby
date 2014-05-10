@@ -8,6 +8,7 @@ class DebuggerAnimator
   MILLIS_FOR_OUTPUT_AFTER          = 300
   MILLIS_FOR_UNBOLD                = 500
   MILLIS_FOR_SCROLLED_INSTRUCTIONS = 500
+  MILLIS_FOR_PARTIAL_CALL_UPDATE   = 500
 
   constructor: (codeMirror) ->
     @codeMirror = codeMirror
@@ -18,6 +19,7 @@ class DebuggerAnimator
       instructions:  ''
       highlightLine: false
       vars:          {}
+      partial_calls: []
       doCommand:
         power: => @_handlePower.apply this, []
         step:  => @_handleStep.apply  this, []
@@ -63,6 +65,12 @@ class DebuggerAnimator
     while @interpreter.have_more_bytecodes()
       bytecode = @interpreter.run_next_bytecode()
       switch bytecode[0]
+        when 'start_call', 'arg'
+          @props.partial_calls = @interpreter.partial_calls()
+          @_render()
+          window.setTimeout (=> @_doStep(callback)),
+            MILLIS_FOR_PARTIAL_CALL_UPDATE
+          return
         when 'to_var'
           @props.vars = @interpreter.vars()
           @_render()
@@ -75,6 +83,7 @@ class DebuggerAnimator
             window.setTimeout callback, 300 if callback
             return
         when 'call'
+          @props.partial_calls = @interpreter.partial_calls()
           if window.$output_to_stdout &&
              window.$output_to_stdout.length > @last_output_length
             new_output =
@@ -82,6 +91,8 @@ class DebuggerAnimator
             @last_output_length = window.$output_to_stdout.length
             @_slowlyOutput new_output, (=> @_doStep(callback))
             return
+          else
+            @_render()
 
     if !@interpreter.have_more_bytecodes()
       @props.pos = null

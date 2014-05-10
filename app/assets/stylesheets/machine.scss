@@ -108,8 +108,34 @@ body.machine {
         background-color: #333;
         display: block;
         padding-left: 10px;
-        font-weight: bold;
         font-size: 10pt;
+      }
+
+      .partial-calls {
+        table {
+          border-collapse: collapse;
+        }
+        th {
+          text-align: left;
+          font-size: 10pt;
+          text-transform: uppercase;
+          color: #000;
+          background-color: #333;
+          padding: 0 10px;
+          &.extra-space {
+            width: 100%;
+          }
+          white-space: nowrap;
+        }
+        td {
+          background-color: black;
+          color: #0f0;
+          font-size: 20pt;
+          text-align: center;
+          &.extra-space {
+            width: 100%;
+          }
+        }
       }
 
       .variables {
