@@ -10,9 +10,9 @@ InstructionsComponent = React.createClass
   displayName: 'InstructionsComponent'
 
   propTypes:
-    pos:           type.string
-    instructions:  type.string.isRequired
-    highlightLine: type.bool.isRequired
+    pos:               type.string
+    instructions:      type.string.isRequired
+    highlighted_range: type.array
 
   _instructionsToHtml: ->
 
@@ -43,11 +43,10 @@ InstructionsComponent = React.createClass
     animateScrollTop 0.1
 
   render: ->
-    { br, div } = React.DOM
+    { br, div, span } = React.DOM
 
-    maybe_bold = (line_num) =>
-      if @props.highlightLine && @props.pos &&
-        parseInt(@props.pos.split(',')[0]) == line_num then 'bold ' else ''
+    if @props.highlighted_range
+      [line0, col0, line1, col1] = @props.highlighted_range
 
     div
       className: 'instructions'
@@ -63,16 +62,23 @@ InstructionsComponent = React.createClass
           br { key: 1 } # blank line at beginning
           _.map @props.instructions.split("\n"), (line, i) ->
             num = i + 1
-            div
-              key: num
+            div { key: num },
               div
                 ref: "num#{num}"
                 className: "num _#{num}"
                 num
               div
-                className: "code _#{num} #{maybe_bold(num)}"
+                className: "code _#{num}"
                 if line == ''
                   br {}
+                else if num == line0 && num == line1
+                  div {},
+                    span { key: 'before-highlight' },
+                      line.substring 0, col0
+                    span { key: 'highlight', className: 'highlight' },
+                      line.substring col0, col1
+                    span { key: 'after-highlight' },
+                      line.substring col1
                 else
                   line
           br { key: 2, style: { clear: 'both' } }

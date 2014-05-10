@@ -28,3 +28,8 @@ class Lexer
     start_pos_to_end_pos
   end
 end
+
+if __FILE__ == $0
+  send :require, 'opal'
+  p Lexer.build_start_pos_to_end_pos('puts 3')
+end

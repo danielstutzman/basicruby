@@ -16,11 +16,11 @@ DebuggerComponent = React.createClass
     pos:           type.string
     console:       type.string.isRequired
     instructions:  type.string.isRequired
-    highlightLine: type.bool.isRequired
     doCommand:     type.object.isRequired
     vars:          type.object.isRequired
     partial_calls: type.array.isRequired
     num_partial_call_executing: type.number
+    highlighted_range: type.array
 
   render: ->
     { br, button, div, label, span } = React.DOM
@@ -53,7 +53,7 @@ DebuggerComponent = React.createClass
       InstructionsComponent
         pos: @props.pos
         instructions: @props.instructions
-        highlightLine: @props.highlightLine
+        highlighted_range: @props.highlighted_range
 
       PartialCallsComponent
         partial_calls: @props.partial_calls

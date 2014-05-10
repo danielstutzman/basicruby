@@ -18,4 +18,5 @@
 //= require browserified.js
 //= require ast_to_bytecode_compiler.js
 //= require bytecode_interpreter.js
+//= require lexer.js
 require('./coffee/application.coffee');

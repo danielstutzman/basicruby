@@ -1,6 +1,7 @@
 AstToBytecodeCompiler = require './AstToBytecodeCompiler.coffee'
 BytecodeInterpreter   = require './BytecodeInterpreter.coffee'
 DebuggerComponent     = require './DebuggerComponent.coffee'
+Lexer                 = require './Lexer.coffee'
 
 class DebuggerAnimator
   MILLIS_FOR_BOLD                  = 300
@@ -8,8 +9,9 @@ class DebuggerAnimator
   MILLIS_FOR_OUTPUT_AFTER          = 300
   MILLIS_FOR_UNBOLD                = 500
   MILLIS_FOR_SCROLLED_INSTRUCTIONS = 500
-  MILLIS_FOR_PARTIAL_CALL_UPDATE   = 500
-  MILLIS_FOR_PARTIAL_CALL_EXECUTE  = 300
+  MILLIS_FOR_PARTIAL_CALL_UPDATE   = 800
+  MILLIS_FOR_PARTIAL_CALL_EXECUTE  = 500
+  MILLIS_FOR_HIGHLIGHT             = 600
 
   constructor: (codeMirror) ->
     @codeMirror = codeMirror
@@ -18,10 +20,10 @@ class DebuggerAnimator
       pos:           null
       console:       ''
       instructions:  ''
-      highlightLine: false
       vars:          {}
       partial_calls: []
       num_partial_call_executing: null
+      highlighted_range: null
       doCommand:
         power: => @_handlePower.apply this, []
         step:  => @_handleStep.apply  this, []
@@ -29,6 +31,7 @@ class DebuggerAnimator
     @interpreter = null
     @$div = document.querySelector 'div.debugger'
     @last_output_length = 0
+    @start_pos_to_end_pos = {}
 
   _render: ->
     React.renderComponent DebuggerComponent(@props), @$div
@@ -40,11 +43,13 @@ class DebuggerAnimator
       @props.console      = ''
       @props.vars         = {}
       @interpreter        = null
+      @start_pos_to_end_pos = {}
     else
       @props.state   = 'ON'
       @props.console = ''
       try
         code = @codeMirror.getValue()
+        @start_pos_to_end_pos = Lexer.build_start_pos_to_end_pos code
         bytecodes = AstToBytecodeCompiler.compile code
       catch e
         if e.name == 'SyntaxError'
@@ -67,7 +72,20 @@ class DebuggerAnimator
     while @interpreter.have_more_bytecodes()
       bytecode = @interpreter.run_next_bytecode()
       switch bytecode[0]
+        when 'token'
+          line0 = bytecode[1]
+          col0 = bytecode[2]
+          start_pos = "#{bytecode[1]},#{bytecode[2]}"
+          end_pos = @start_pos_to_end_pos.map[start_pos]
+          if end_pos
+            line1 = end_pos['$[]'](0)
+            col1  = end_pos['$[]'](1)
+            @props.highlighted_range = [line0, col0, line1, col1]
+            @_render()
+            window.setTimeout (=> @_doStep(callback)), MILLIS_FOR_HIGHLIGHT
+            return
         when 'start_call', 'arg'
+          @props.highlighted_range = null
           @props.partial_calls = @interpreter.partial_calls()
           @_render()
           window.setTimeout (=> @_doStep(callback)),
@@ -76,7 +94,9 @@ class DebuggerAnimator
         when 'to_var'
           @props.vars = @interpreter.vars()
           @_render()
+          return
         when 'position'
+          @props.highlighted_range = null
           # only stop if we're going from one line to another,
           # not for an inline if expression like "if x then y else z end"
           if !@props.pos || "#{bytecode[1]}" != @props.pos.split(',')[0]
@@ -85,6 +105,7 @@ class DebuggerAnimator
             window.setTimeout callback, 300 if callback
             return
         when 'call'
+          @props.highlighted_range = null
           # first highlight the call being executed
           @props.num_partial_call_executing = @props.partial_calls.length - 1
           @_render()

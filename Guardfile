@@ -11,4 +11,7 @@ guard :shell do
   watch /lib\/interpreter_state.rb$/ do
     `rake app/assets/javascripts/bytecode_interpreter.js`
   end
+  watch /lib\/lexer.rb$/ do
+    `rake app/assets/javascripts/lexer.js`
+  end
 end

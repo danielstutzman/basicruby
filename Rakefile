@@ -58,8 +58,19 @@ file 'app/assets/javascripts/bytecode_interpreter.js' =>
   create_with_sh command, task.name
 end
 
+file 'app/assets/javascripts/lexer.js' => 'lib/lexer.rb' do |task|
+  command = %W[
+    bundle exec opal
+      -c
+      -I lib
+      -- lexer
+  ].join(' ')
+  create_with_sh command, task.name
+end
+
 task :js => %w[
   app/assets/javascripts/browserified.js
   app/assets/javascripts/ast_to_bytecode_compiler.js
   app/assets/javascripts/bytecode_interpreter.js
+  app/assets/javascripts/lexer.js
 ]

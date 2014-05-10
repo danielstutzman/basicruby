@@ -52,8 +52,19 @@ PartialCallsComponent = React.createClass
               className: if call_num == highlighted_call_num then 'executing'
               _.map call, (arg, arg_num) ->
                 td { key: "arg#{arg_num}" },
-                  if arg_num == 1 # method name
-                    arg.$to_s()
+                  if arg_num == 0 # receiver
+                    receiver = arg.$inspect()
+                    if receiver == 'main'
+                      div { className: 'main' }, 'main'
+                    else
+                      receiver
+                  else if arg_num == 1
+                    method_name = arg.$to_s()
+                    if method_name == '<<'
+                      div { className: 'string-interpolation' },
+                        'string interpolation'
+                    else
+                      method_name
                   else
                     arg.$inspect()
               _.times (max_num_cols - call.length), (unfilled_arg_num) ->

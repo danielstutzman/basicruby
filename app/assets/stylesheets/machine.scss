@@ -146,6 +146,13 @@ body.machine {
           &.extra-space {
             width: 100%;
           }
+          .main {
+            color: #040;
+          }
+          .string-interpolation {
+            color: #040;
+            font-size: 10pt;
+          }
         }
       }
 
@@ -197,8 +204,9 @@ body.machine {
             margin-left: 80px;
             white-space: pre-wrap;
 
-            &.bold {
-              font-weight: bold;
+            span.highlight {
+              background-color: #0f0;
+              color: black;
             }
           }
         }

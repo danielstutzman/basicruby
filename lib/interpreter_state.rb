@@ -1,5 +1,5 @@
 class InterpreterState
-  attr_accessor :partial_calls, :result, :vars
+  attr_accessor :result, :vars
 
   def initialize
     @partial_calls = []
@@ -7,6 +7,11 @@ class InterpreterState
     @vars = {}
     @main = (RUBY_PLATFORM == 'opal') ?
       `Opal.top` : TOPLEVEL_BINDING.eval('self')
+  end
+
+  def partial_calls
+    # clone so it's an independent copy that won't get accidentally updated
+    @partial_calls.map { |call| call.clone }
   end
 
   ## Below are bytecode methods
