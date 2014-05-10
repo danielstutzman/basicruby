@@ -9,6 +9,7 @@ $border-width: 5px;
 $code-font-size: 30pt;
 $console-font-size: 30pt;
 $min-width-for-extra-padding: 1000px;
+$value-min-font-size: 16pt;
 
 body.machine {
   font-family: sans-serif;
@@ -276,7 +277,14 @@ body.machine {
       .empty-string-value {
         white-space: pre;
         color: #040;
-        font-size: 10pt;
+        font-size: $value-min-font-size;
+      }
+      .true-value, .false-value {
+        font-size: $value-min-font-size;
+      }
+      .nil-value {
+        color: #040;
+        font-size: $value-min-font-size;
       }
     } // end .machine
 
