@@ -1,11 +1,15 @@
 class AstToBytecodeCompiler
+  # bytecodes need to have position at the front; the debugger is counting
+  # on this to know where to start.
   def compile_program sexp
     if sexp.nil?
-      position = []
+      position = [] # because the debugger special-cases this possibility
     elsif sexp[0] == :block
       position = [] # because position will be printed anyway
     elsif sexp.source
       position = [[:position] + sexp.source]
+    else
+      no 'top s-exp with nil source'
     end
 
     position + compile(sexp)
