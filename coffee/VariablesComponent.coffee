@@ -1,3 +1,5 @@
+ValueComponent = require './ValueComponent.coffee'
+
 type           = React.PropTypes
 
 VariablesComponent = React.createClass
@@ -32,7 +34,7 @@ VariablesComponent = React.createClass
           _.map var_names, (var_name) =>
             var_value = @props.vars.map[var_name]
             td { key: var_name },
-              var_value.$inspect()
+              ValueComponent value: var_value
           _.map future_var_names, (var_name) ->
             td { key: var_name, className: 'future' },
               '...'

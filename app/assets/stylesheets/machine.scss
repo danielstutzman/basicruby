@@ -266,6 +266,18 @@ body.machine {
           }
         }
       }
+
+      .string-value {
+        font-family: monospace;
+        white-space: pre-wrap;
+        background-color: #040;
+        display: inline-block; // so its width doesn't expand
+      }
+      .empty-string-value {
+        white-space: pre;
+        color: #040;
+        font-size: 10pt;
+      }
     } // end .machine
 
     .cases {

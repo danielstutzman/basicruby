@@ -1,6 +1,6 @@
+ValueComponent = require './ValueComponent.coffee'
 type           = React.PropTypes
-
-NBSP = "\u00a0"
+NBSP           = "\u00a0"
 
 PartialCallsComponent = React.createClass
 
@@ -60,11 +60,7 @@ PartialCallsComponent = React.createClass
               _.map call, (arg, arg_num) ->
                 td { key: "arg#{arg_num}" },
                   if arg_num == 0 # receiver
-                    receiver = arg.$inspect()
-                    if receiver == 'main'
-                      div { className: 'main' }, 'main'
-                    else
-                      receiver
+                    ValueComponent value: arg
                   else if arg_num == 1
                     method_name = arg.$to_s()
                     if method_name == '<<'
@@ -73,7 +69,7 @@ PartialCallsComponent = React.createClass
                     else
                       method_name
                   else
-                    arg.$inspect()
+                    ValueComponent value: arg
               _.times (max_num_cols - call.length), (unfilled_arg_num) ->
                 td { key: "unfilled-arg#{unfilled_arg_num}" },
                   # if it's the 1st unfilled arg, but not the last partial call
