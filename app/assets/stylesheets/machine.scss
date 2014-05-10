@@ -115,8 +115,17 @@ body.machine {
         table {
           border-collapse: collapse;
         }
-        tr.no-calls {
-          height: 10px;
+        tr {
+          background-color: black;
+          &.executing {
+            background-color: #0f0;
+            td {
+              color: black;
+            }
+          }
+          &.no-calls {
+            height: 10px;
+          }
         }
         th {
           text-align: left;
@@ -131,7 +140,6 @@ body.machine {
           white-space: nowrap;
         }
         td {
-          background-color: black;
           color: #0f0;
           font-size: 20pt;
           text-align: center;

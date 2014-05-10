@@ -19,6 +19,8 @@ DebuggerComponent = React.createClass
     highlightLine: type.bool.isRequired
     doCommand:     type.object.isRequired
     vars:          type.object.isRequired
+    partial_calls: type.array.isRequired
+    num_partial_call_executing: type.number
 
   render: ->
     { br, button, div, label, span } = React.DOM
@@ -55,6 +57,7 @@ DebuggerComponent = React.createClass
 
       PartialCallsComponent
         partial_calls: @props.partial_calls
+        num_partial_call_executing: @props.num_partial_call_executing
 
       label {}, 'Variables'
       VariablesComponent

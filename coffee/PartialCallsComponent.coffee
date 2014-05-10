@@ -8,11 +8,13 @@ PartialCallsComponent = React.createClass
 
   propTypes:
     partial_calls: type.array.isRequired
+    num_partial_call_executing: type.number
 
   render: ->
     { div, table, tbody, td, th, thead, tr } = React.DOM
 
     calls = @props.partial_calls
+    highlighted_call_num = @props.num_partial_call_executing
 
     max_num_cols = 3
     for call in calls
@@ -45,7 +47,9 @@ PartialCallsComponent = React.createClass
               td { key: 'extra-space', className: 'extra-space' }
   
           _.map calls, (call, call_num) ->
-            tr { key: "data#{call_num}" },
+            tr
+              key: "data#{call_num}"
+              className: if call_num == highlighted_call_num then 'executing'
               _.map call, (arg, arg_num) ->
                 td { key: "arg#{arg_num}" },
                   if arg_num == 1 # method name

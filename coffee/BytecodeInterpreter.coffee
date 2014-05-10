@@ -38,7 +38,7 @@ class BytecodeInterpreter
 
   partial_calls: ->
     try
-      @interpreter['$state']()['$partial_calls']()
+      @interpreter['$state']()['$partial_calls']()['$clone']()
     catch e
       console.error e.stack
       throw e

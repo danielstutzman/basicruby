@@ -9,6 +9,7 @@ class DebuggerAnimator
   MILLIS_FOR_UNBOLD                = 500
   MILLIS_FOR_SCROLLED_INSTRUCTIONS = 500
   MILLIS_FOR_PARTIAL_CALL_UPDATE   = 500
+  MILLIS_FOR_PARTIAL_CALL_EXECUTE  = 300
 
   constructor: (codeMirror) ->
     @codeMirror = codeMirror
@@ -20,6 +21,7 @@ class DebuggerAnimator
       highlightLine: false
       vars:          {}
       partial_calls: []
+      num_partial_call_executing: null
       doCommand:
         power: => @_handlePower.apply this, []
         step:  => @_handleStep.apply  this, []
@@ -83,16 +85,24 @@ class DebuggerAnimator
             window.setTimeout callback, 300 if callback
             return
         when 'call'
-          @props.partial_calls = @interpreter.partial_calls()
-          if window.$output_to_stdout &&
-             window.$output_to_stdout.length > @last_output_length
-            new_output =
-              window.$output_to_stdout.slice(@last_output_length).join('')
-            @last_output_length = window.$output_to_stdout.length
-            @_slowlyOutput new_output, (=> @_doStep(callback))
-            return
-          else
-            @_render()
+          # first highlight the call being executed
+          @props.num_partial_call_executing = @props.partial_calls.length - 1
+          @_render()
+          then_remove_it_and_show_any_output = =>
+            @props.num_partial_call_executing = null
+            @props.partial_calls = @interpreter.partial_calls()
+            if window.$output_to_stdout &&
+               window.$output_to_stdout.length > @last_output_length
+              new_output =
+                window.$output_to_stdout.slice(@last_output_length).join('')
+              @last_output_length = window.$output_to_stdout.length
+              @_slowlyOutput new_output, (=> @_doStep(callback))
+            else
+              @_render()
+              @_doStep callback
+          setTimeout then_remove_it_and_show_any_output,
+            MILLIS_FOR_PARTIAL_CALL_EXECUTE
+          return
 
     if !@interpreter.have_more_bytecodes()
       @props.pos = null
