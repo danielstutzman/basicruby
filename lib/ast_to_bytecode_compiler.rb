@@ -36,7 +36,12 @@ class AstToBytecodeCompiler
     case sexp[0]
       when :int     then [[:token] + sexp.source, [:result, sexp[1]]]
       when :float   then [[:token] + sexp.source, [:result, sexp[1]]]
-      when :str     then [[:token] + sexp.source, [:result, sexp[1]]]
+      when :str
+        if sexp.source # will be nil for "" literal
+          [[:token] + sexp.source, [:result, sexp[1]]]
+        else
+          [[:result, sexp[1]]]
+        end
       when :nil     then [[:token] + sexp.source, [:result, nil]]
       when :true    then [[:token] + sexp.source, [:result, true]]
       when :false   then [[:token] + sexp.source, [:result, false]]

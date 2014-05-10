@@ -71,4 +71,11 @@ describe AstToBytecodeCompiler, '#compile' do
       [:call],
     ]
   end
+  it 'compiles puts ""' do
+    compile('puts ""').should == [
+      [:position, 1, 0], [:start_call], [:top], [:arg],
+      [:token, 1, 0], [:result, :puts], [:arg],
+      [:result, ""], [:arg], [:call]
+    ]
+  end
 end
