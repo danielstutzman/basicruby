@@ -137,13 +137,15 @@ body.machine {
           padding: 0 10px;
           &.extra-space {
             width: 100%;
+            padding: 0;
           }
           white-space: nowrap;
         }
         td {
+          text-align: left;
+          padding: 0 10px;
           color: #0f0;
           font-size: 20pt;
-          text-align: center;
           &.extra-space {
             width: 100%;
           }
@@ -268,23 +270,21 @@ body.machine {
         }
       }
 
-      .string-value {
-        font-family: monospace;
-        white-space: pre-wrap;
-        background-color: #040;
-        display: inline-block; // so its width doesn't expand
-      }
-      .empty-string-value {
-        white-space: pre;
-        color: #040;
-        font-size: $value-min-font-size;
-      }
-      .true-value, .false-value {
-        font-size: $value-min-font-size;
-      }
-      .nil-value {
-        color: #040;
-        font-size: $value-min-font-size;
+      .value {
+        .string {
+          font-family: monospace;
+          white-space: pre-wrap;
+          background-color: #040;
+          display: inline-block; // so its width doesn't expand
+          &.empty { // a little sliver of background color
+            width: 4px;
+            height: 28px;
+          }
+        }
+        .type {
+          font-size: 12pt;
+          color: #040;
+        }
       }
     } // end .machine
 

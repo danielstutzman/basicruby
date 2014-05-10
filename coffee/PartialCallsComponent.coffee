@@ -50,7 +50,6 @@ PartialCallsComponent = React.createClass
             tr { key: 'no-calls', className: 'no-calls' },
               td { key: 'receiver' }
               td { key: 'method' }
-              td { key: 'arg0' }
               td { key: 'extra-space', className: 'extra-space' }
   
           _.map calls, (call, call_num) ->
@@ -59,15 +58,9 @@ PartialCallsComponent = React.createClass
               className: if call_num == highlighted_call_num then 'executing'
               _.map call, (arg, arg_num) ->
                 td { key: "arg#{arg_num}" },
-                  if arg_num == 0 # receiver
-                    ValueComponent value: arg
-                  else if arg_num == 1
-                    method_name = arg.$to_s()
-                    if method_name == '<<'
-                      div { className: 'string-interpolation' },
+                  if arg_num == 1 && arg.$to_s() == '<<'
+                    div { className: 'string-interpolation' },
                         'string interpolation'
-                    else
-                      method_name
                   else
                     ValueComponent value: arg
               _.times (max_num_cols - call.length), (unfilled_arg_num) ->
