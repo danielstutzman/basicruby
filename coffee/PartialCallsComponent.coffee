@@ -38,10 +38,10 @@ PartialCallsComponent = React.createClass
 
         tbody {},
           if calls.length == 0
-            tr { key: 'data0' },
-              td { key: 'receiver' }, NBSP
-              td { key: 'method' }, NBSP
-              td { key: 'arg0' }, NBSP
+            tr { key: 'no-calls', className: 'no-calls' },
+              td { key: 'receiver' }
+              td { key: 'method' }
+              td { key: 'arg0' }
               td { key: 'extra-space', className: 'extra-space' }
   
           _.map calls, (call, call_num) ->

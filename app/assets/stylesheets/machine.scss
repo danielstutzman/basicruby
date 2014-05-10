@@ -115,6 +115,9 @@ body.machine {
         table {
           border-collapse: collapse;
         }
+        tr.no-calls {
+          height: 10px;
+        }
         th {
           text-align: left;
           font-size: 10pt;
