@@ -21,6 +21,7 @@ DebuggerComponent = React.createClass
     partial_calls: type.array.isRequired
     num_partial_call_executing: type.number
     highlighted_range: type.array
+    started_var_names: type.array.isRequired
 
   render: ->
     { br, button, div, label, span } = React.DOM
@@ -62,6 +63,7 @@ DebuggerComponent = React.createClass
       label {}, 'Variables'
       VariablesComponent
         vars: @props.vars
+        started_var_names: @props.started_var_names
 
       label {}, 'Input & Output'
       ConsoleComponent

@@ -6,24 +6,40 @@ VariablesComponent = React.createClass
 
   propTypes:
     vars: type.object.isRequired
+    started_var_names: type.array.isRequired
 
   render: ->
     { br, div, table, td, th, tr } = React.DOM
 
-    div
-      className: 'variables'
-      table
-        border: true
+    if @props.vars.keys
+      var_names = _.map @props.vars.keys, (var_name) ->
+        var_name.$to_s()
+    else
+      var_names = []
+
+    future_var_names = _.difference @props.started_var_names, var_names
+
+    div { className: 'variables' },
+      table {},
         tr { key: 'var_names' },
-          _.map @props.vars.keys, (var_name) =>
-            th
-              key: var_name.$to_s()
-              var_name.$to_s()
+          _.map var_names, (var_name) ->
+            th { key: var_name },
+              var_name
+          _.map future_var_names, (var_name) ->
+            th { key: var_name, className: 'future' },
+              var_name
         tr { key: 'var_values' },
-          _.map @props.vars.keys, (var_name) =>
+          _.map var_names, (var_name) =>
             var_value = @props.vars.map[var_name]
-            td
-              key: var_name.$to_s()
+            td { key: var_name },
               var_value.$inspect()
+          _.map future_var_names, (var_name) ->
+            td { key: var_name, className: 'future' },
+              '...'
+        tr { key: 'var_pending' },
+          _.map var_names, (var_name) =>
+            td { key: var_name, className: 'future' },
+              if var_name in @props.started_var_names
+                '...'
 
 module.exports = VariablesComponent

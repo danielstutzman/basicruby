@@ -49,6 +49,8 @@ class BytecodeInterpreter
         # noop
       when :label
         # noop
+      when :start_var
+        # noop
       when :goto
         @counter = @label_to_counter.fetch bytecode[1]
       when :goto_if_not

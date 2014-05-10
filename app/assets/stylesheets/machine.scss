@@ -165,10 +165,22 @@ body.machine {
         color: #0f0;
         font-size: 20pt;
         width: 100%;
+        padding-left: 15px;
 
         th {
-          background-color: #0f0;
-          color: black;
+          font-weight: normal;
+          padding-bottom: 2px;
+          padding-right: 15px;
+          text-align: left;
+          &.future {
+            color: #080;
+          }
+        }
+        td {
+          padding-right: 15px;
+          &.future {
+            color: #080;
+          }
         }
       }
 

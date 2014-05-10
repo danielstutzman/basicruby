@@ -12,6 +12,8 @@ class DebuggerAnimator
   MILLIS_FOR_PARTIAL_CALL_UPDATE   = 800
   MILLIS_FOR_PARTIAL_CALL_EXECUTE  = 500
   MILLIS_FOR_HIGHLIGHT             = 600
+  MILLIS_FOR_STARTING_VAR          = 500
+  MILLIS_FOR_ASSIGNING_VAR         = 0
 
   constructor: (codeMirror) ->
     @codeMirror = codeMirror
@@ -24,6 +26,7 @@ class DebuggerAnimator
       partial_calls: []
       num_partial_call_executing: null
       highlighted_range: null
+      started_var_names: []
       doCommand:
         power: => @_handlePower.apply this, []
         step:  => @_handleStep.apply  this, []
@@ -91,9 +94,17 @@ class DebuggerAnimator
           window.setTimeout (=> @_doStep(callback)),
             MILLIS_FOR_PARTIAL_CALL_UPDATE
           return
+        when 'start_var'
+          @props.started_var_names.push bytecode[1].$to_s()
+          @_render()
+          window.setTimeout (=> @_doStep(callback)), MILLIS_FOR_STARTING_VAR
+          return
         when 'to_var'
+          @props.highlighted_range = null
+          @props.started_var_names = []
           @props.vars = @interpreter.vars()
           @_render()
+          window.setTimeout (=> @_doStep(callback)), MILLIS_FOR_ASSIGNING_VAR
           return
         when 'position'
           @props.highlighted_range = null

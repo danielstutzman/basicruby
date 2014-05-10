@@ -106,7 +106,12 @@ class AstToBytecodeCompiler
 
   def compile_lasgn sexp
     _, var_name, expression = sexp
-    compile(expression) + [[:token] + sexp.source, [:to_var, var_name]]
+    bytecodes = []
+    bytecodes.push [:token] + sexp.source
+    bytecodes.push [:start_var, var_name]
+    bytecodes.concat compile(expression)
+    bytecodes.push [:to_var, var_name]
+    bytecodes
   end
 
   def compile_lvar sexp
