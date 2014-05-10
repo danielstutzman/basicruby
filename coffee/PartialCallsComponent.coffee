@@ -16,7 +16,7 @@ PartialCallsComponent = React.createClass
     calls = @props.partial_calls
     highlighted_call_num = @props.num_partial_call_executing
 
-    max_num_cols = 3
+    max_num_cols = 2
     for call in calls
       if call.length > max_num_cols
         max_num_cols = call.length
@@ -32,11 +32,13 @@ PartialCallsComponent = React.createClass
             _.times (max_num_cols - 2), (arg_num) ->
               th { key: "arg#{arg_num}" },
                 switch arg_num
-                  when 0 then '1st Arg'
-                  when 1 then '2nd Arg'
-                  when 2 then '3rd Arg'
-                  else        "#{arg_num + 1}th Arg"
-            th { key: 'extra-space', className: 'extra-space' }
+                  when 0 then '1st Arg.'
+                  when 1 then '2nd Arg.'
+                  when 2 then '3rd Arg.'
+                  else        "#{arg_num + 1}th Arg."
+            th { key: 'extra-space', className: 'extra-space' },
+              if max_num_cols <= 2
+                'Arguments'
 
         tbody {},
           if calls.length == 0
