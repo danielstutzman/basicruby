@@ -17,9 +17,14 @@ PartialCallsComponent = React.createClass
     highlighted_call_num = @props.num_partial_call_executing
 
     max_num_cols = 2
-    for call in calls
-      if call.length > max_num_cols
-        max_num_cols = call.length
+    for call, i in calls
+      # append ... to the end of every partial call except the last one
+      if i < calls.length - 1
+        if call.length + 1 > max_num_cols
+          max_num_cols = call.length + 1
+      else
+        if call.length > max_num_cols
+          max_num_cols = call.length
 
     div
       className: 'partial-calls'
