@@ -38,6 +38,8 @@ class InterpreterState
     @result.push @vars[var_name]
   end
 
+  ## Below are non-bytecode methods
+
   def result_is_true?
     !!pop_result
   end
@@ -49,8 +51,6 @@ class InterpreterState
   def top
     self.result @main
   end
-
-  ## Below are non-bytecode methods
 
   def pop_call
     @partial_calls.pop
