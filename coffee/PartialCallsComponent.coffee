@@ -64,7 +64,9 @@ PartialCallsComponent = React.createClass
                   else
                     ValueComponent value: arg
               _.times (max_num_cols - call.length), (unfilled_arg_num) ->
-                td { key: "unfilled-arg#{unfilled_arg_num}" },
+                td
+                  key: "unfilled-arg#{unfilled_arg_num}"
+                  className: 'unfilled'
                   # if it's the 1st unfilled arg, but not the last partial call
                   if unfilled_arg_num == 0 && call_num < calls.length - 1
                     '...'

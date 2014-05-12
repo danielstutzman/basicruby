@@ -146,6 +146,9 @@ body.machine {
           padding: 0 10px;
           color: #0f0;
           font-size: 20pt;
+          &.unfilled {
+            height: 30px;
+          }
           &.extra-space {
             width: 100%;
           }
