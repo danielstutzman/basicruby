@@ -3,7 +3,7 @@ ValueComponent = React.createClass
   displayName: 'ValueComponent'
 
   render: ->
-    { div } = React.DOM
+    { br, div } = React.DOM
 
     value = @props.value
 
@@ -21,8 +21,6 @@ ValueComponent = React.createClass
     css_class =
       if display == 'main'
         'main'
-      else if type == 'String' && display == ''
-        'string empty'
       else
         switch type
           when 'String' then 'string'
@@ -31,7 +29,18 @@ ValueComponent = React.createClass
 
     div { className: 'value' },
       div { key: 'value', className: css_class },
-        display
+        if type == 'String'
+          lines = display.split("\n")
+          _.map lines, (line, i) ->
+            div { key: "line#{i}", className: 'line' },
+              if line == ''
+                div { className: 'empty-line' }
+              else
+                line
+              if i < lines.length - 1
+                br {}
+        else
+          display
       if display.length > 3
         div { key: 'type', className: 'type' },
           type

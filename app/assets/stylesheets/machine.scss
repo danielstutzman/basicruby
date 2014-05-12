@@ -169,7 +169,11 @@ body.machine {
         font-size: 20pt;
         width: 100%;
         padding-left: 15px;
+        overflow: scroll;
 
+        tr {
+          vertical-align: top;
+        }
         th {
           font-weight: normal;
           padding-bottom: 2px;
@@ -271,14 +275,24 @@ body.machine {
       }
 
       .value {
-        .string, .symbol {
+        .string {
           font-family: monospace;
           white-space: pre-wrap;
           background-color: #040;
-          display: inline-block; // so its width doesn't expand
-          &.empty { // a little sliver of background color
-            width: 4px;
-            height: 28px;
+          display: inline; // so its width doesn't expand
+          white-space: pre;
+          .line {
+            line-height: 0.6;
+            span {
+              background-color: #040;
+              line-height: 1.0;
+            }
+            .empty-line { // a little sliver of background color
+              width: 4px;
+              height: 28px;
+              display: inline-block;
+              background-color: #040;
+            }
           }
         }
         .type {
