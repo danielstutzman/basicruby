@@ -19,7 +19,8 @@ InstructionsComponent = React.createClass
   shouldComponentUpdate: (nextProps, nextState) ->
     if nextProps.code == @props.code &&
        nextProps.currentLine == @props.currentLine &&
-       nextProps.highlightedRange == @props.highlightedRange
+       nextProps.highlightedRange == @props.highlightedRange &&
+       nextProps.highlightedLineNum == @props.highlightedLineNum
       nextProps.animationFinished()
       false
     else
@@ -28,7 +29,8 @@ InstructionsComponent = React.createClass
   componentDidUpdate: (prevProps, prevState) ->
     millis = 0
 
-    if @props.highlightedRange != prevProps.highlightedRange
+    if @props.highlightedRange != prevProps.highlightedRange ||
+       @props.highlightedLineNum != prevProps.highlightedLineNum
       millis = MILLIS_FOR_HIGHLIGHT
     else if @props.currentLine != prevProps.currentLine && @props.currentLine
       millis = @_scrollInstructions()
@@ -60,6 +62,7 @@ InstructionsComponent = React.createClass
 
     if @props.highlightedRange
       [startLine, startCol, endLine, endCol] = @props.highlightedRange
+    highlightedLineNum = @props.highlightedLineNum
 
     div {},
       label {}, 'Instructions'
@@ -94,6 +97,9 @@ InstructionsComponent = React.createClass
                         line.substring startCol, endCol
                       span { key: 'after-highlight' },
                         line.substring endCol
+                  else if num == highlightedLineNum
+                    span { className: 'highlight' },
+                      line
                   else
                     line
             br { key: 2, style: { clear: 'both' } }

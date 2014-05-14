@@ -7,16 +7,20 @@ class RubyCodeHighlighter
     @currentLine = null
     @currentCol = null
     @highlightedRange = null
+    @highlightedLineNum = null
     @startPosToEndPos = Lexer.build_start_pos_to_end_pos code
+    @justChangedPosition = false
 
   visibleState: ->
-    code:             @code
-    currentLine:      @currentLine
-    currentCol:       @currentCol
-    highlightedRange: @highlightedRange
+    code:               @code
+    currentLine:        @currentLine
+    currentCol:         @currentCol
+    highlightedRange:   @highlightedRange
+    highlightedLineNum: @highlightedLineNum
 
   interpret: (bytecode) ->
     @highlightedRange = null
+    @highlightedLineNum = null
 
     switch bytecode[0]
 
@@ -32,22 +36,17 @@ class RubyCodeHighlighter
           endLine = startLine
           endCol = startCol + 1
         @highlightedRange = [startLine, startCol, endLine, endCol]
-        600
+        if @justChangedPosition
+          @highlightedLineNum = startLine
+          @justChangedPosition = false
   
       when 'position'
-        newLine = parseInt bytecode[1]
-        newCol = parseInt bytecode[2]
-        millis = if newLine != @currentLine then 300 else null
-        @currentLine = newLine
-        @currentCol = newCol
-        millis
+        @currentLine = parseInt bytecode[1]
+        @currentCol = parseInt bytecode[2]
+        @justChangedPosition = true
 
       when 'done'
         @currentLine = null
         @currentCol = null
-        null
-
-      else
-        null
 
 module.exports = RubyCodeHighlighter
