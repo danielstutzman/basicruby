@@ -16,6 +16,15 @@ InstructionsComponent = React.createClass
     currentCol:       type.number
     highlightedRange: type.array
 
+  shouldComponentUpdate: (nextProps, nextState) ->
+    if nextProps.code == @props.code &&
+       nextProps.currentLine == @props.currentLine &&
+       nextProps.highlightedRange == @props.highlightedRange
+      nextProps.animationFinished()
+      false
+    else
+      true
+
   componentDidUpdate: (prevProps, prevState) ->
     millis = 0
 

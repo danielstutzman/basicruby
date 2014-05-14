@@ -27,8 +27,8 @@ DebuggerComponent = React.createClass
     animationFinished = (name) =>
       finishedComponents[name] = true
       if _.keys(finishedComponents).length == 3
-        animationFinished = -> # so it's not accidentally called again
-        @props.animationFinished()
+        animationFinished = -> console.log 'BLOCKED'
+        window.setTimeout @props.animationFinished, 0
 
     div
       className: 'machine ' + (if @props.isOn then 'on ' else 'off ')
