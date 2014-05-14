@@ -1,8 +1,4 @@
-if RUBY_PLATFORM != 'opal'
-  send :require, './interpreter_state'
-else
-  require 'interpreter_state.rb'
-
+if RUBY_PLATFORM == 'opal'
   def gets
     `window.$stdin_is_waiting = true;`
   end
