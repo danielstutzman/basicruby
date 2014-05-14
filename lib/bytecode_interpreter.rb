@@ -14,8 +14,7 @@ class <<$stdout
         $captured_stdout = $captured_stdout.clone +
           args.map { |arg| "#{arg}\n" }
       else
-        $captured_stdout = $captured_stdout.clone +
-          args.map { |arg| "#{arg}\n" }
+        $captured_stdout = $captured_stdout.clone + args.map { |arg| "#{arg}" }
       end
     else
       old_write *args
