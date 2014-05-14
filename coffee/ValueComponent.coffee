@@ -41,18 +41,7 @@ ValueComponent = React.createClass
                 br {}
         else
           display
-      if display.length > 3
-        div { key: 'type', className: 'type' },
-          type
-      else
-        div { key: 'type', className: 'type', title: type },
-          switch type
-            when 'String'   then 'Str.'
-            when 'Numeric'  then 'Num.'
-            when 'Boolean'  then 'Bool.'
-            when 'NilClass' then 'Nil.'
-            when 'Object'   then 'Obj.'
-            when 'Symbol'   then 'Sym.'
-            else type
+      div { key: 'type', className: 'type' },
+        type
 
 module.exports = ValueComponent
