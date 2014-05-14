@@ -12,5 +12,13 @@ document.addEventListener 'DOMContentLoaded', ->
     codeMirror = CodeMirror.fromTextArea($one('.code-editor'), options)
     retrieveNewCode = -> codeMirror.getValue()
     $div = $one 'div.debugger'
-    new DebuggerController(retrieveNewCode, $div).setup()
+    features =
+      showStepButton: true
+      showRunButton: true
+      showPartialCalls: false
+      showVariables: false
+      showInstructions: true
+      showConsole: true
+      highlightTokens: true
+    new DebuggerController(retrieveNewCode, $div, features).setup()
     setupResizeHandler codeMirror

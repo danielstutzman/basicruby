@@ -47,45 +47,47 @@ InstructionsComponent = React.createClass
     MILLIS_FOR_SCROLLED_INSTRUCTIONS
 
   render: ->
-    { br, div, span } = React.DOM
+    { br, div, label, span } = React.DOM
 
     if @props.highlightedRange
       [startLine, startCol, endLine, endCol] = @props.highlightedRange
 
-    div
-      className: 'instructions'
-      if @props.currentLine
-        div
-          className: 'pointer'
-          ref: 'pointer'
-          RIGHT_ARROW
-      if @props.currentLine
-        div
-          className: 'content'
-          ref: 'content'
-          br { key: 1 } # blank line at beginning
-          _.map @props.code.split("\n"), (line, i) ->
-            num = i + 1
-            div { key: num },
-              div
-                ref: "num#{num}"
-                className: "num _#{num}"
-                num
-              div
-                className: "code _#{num}"
-                if line == ''
-                  br {}
-                else if num == startLine && num == endLine
-                  div {},
-                    span { key: 'before-highlight' },
-                      line.substring 0, startCol
-                    span { key: 'highlight', className: 'highlight' },
-                      line.substring startCol, endCol
-                    span { key: 'after-highlight' },
-                      line.substring endCol
-                else
-                  line
-          br { key: 2, style: { clear: 'both' } }
-          br { key: 3 }
+    div {},
+      label {}, 'Instructions'
+      div
+        className: 'instructions'
+        if @props.currentLine
+          div
+            className: 'pointer'
+            ref: 'pointer'
+            RIGHT_ARROW
+        if @props.currentLine
+          div
+            className: 'content'
+            ref: 'content'
+            br { key: 1 } # blank line at beginning
+            _.map @props.code.split("\n"), (line, i) ->
+              num = i + 1
+              div { key: num },
+                div
+                  ref: "num#{num}"
+                  className: "num _#{num}"
+                  num
+                div
+                  className: "code _#{num}"
+                  if line == ''
+                    br {}
+                  else if num == startLine && num == endLine
+                    div {},
+                      span { key: 'before-highlight' },
+                        line.substring 0, startCol
+                      span { key: 'highlight', className: 'highlight' },
+                        line.substring startCol, endCol
+                      span { key: 'after-highlight' },
+                        line.substring endCol
+                  else
+                    line
+            br { key: 2, style: { clear: 'both' } }
+            br { key: 3 }
 
 module.exports = InstructionsComponent

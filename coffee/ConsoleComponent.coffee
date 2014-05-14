@@ -43,30 +43,32 @@ ConsoleComponent = React.createClass
     $console.scrollTop = $console.scrollHeight
 
   render: ->
-    { div, input, span } = React.DOM
+    { div, input, label, span } = React.DOM
 
     numCharsToEmit = @state.numEmittedOutputChars
 
-    div
-      className: 'console'
-      ref: 'console'
-      span
-        className: 'before-cursor'
-        _.map (@props.output || []), (text) ->
-          if numCharsToEmit > 0
-            substring = text.substring 0, numCharsToEmit
-            numCharsToEmit -= substring.length
-            substring
-      if @props.acceptingInput
-        input
-          ref: 'stdin'
-          type: 'text'
-          className: 'stdin'
-          onKeyPress: (e) =>
-            if e.keyCode == 13
-              @props.doInput "#{e.target.value}\n"
-      else
-        div
-          className: 'cursor'
+    div {},
+      label {}, 'Input & Output'
+      div
+        className: 'console'
+        ref: 'console'
+        span
+          className: 'before-cursor'
+          _.map (@props.output || []), (text) ->
+            if numCharsToEmit > 0
+              substring = text.substring 0, numCharsToEmit
+              numCharsToEmit -= substring.length
+              substring
+        if @props.acceptingInput
+          input
+            ref: 'stdin'
+            type: 'text'
+            className: 'stdin'
+            onKeyPress: (e) =>
+              if e.keyCode == 13
+                @props.doInput "#{e.target.value}\n"
+        else
+          div
+            className: 'cursor'
 
 module.exports = ConsoleComponent

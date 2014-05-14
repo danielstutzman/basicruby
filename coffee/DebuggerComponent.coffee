@@ -13,6 +13,7 @@ DebuggerComponent = React.createClass
 
   propTypes:
     isOn:              type.bool.isRequired
+    features:          type.object.isRequired
     buttons:           type.object
     instructions:      type.object
     interpreter:       type.object
@@ -32,47 +33,58 @@ DebuggerComponent = React.createClass
 
       div
         className: 'buttons'
-        button
-          className: 'step ' + (if @props.buttons?.breakpoint ==
-            'NEXT_POSITION' && @props.buttons?.numStepsQueued >
-            0 then 'active ' else '')
-          onClick: => @props.doCommand.nextPosition()
-          disabled: !@props.isOn || @props.buttons?.isDone
-          "#{RIGHT_TRIANGLE} Step"
-        button
-          className: 'fast-forward ' + (if @props.buttons?.breakpoint ==
-            'DONE' && @props.buttons?.numStepsQueued >
-            0 then 'active ' else '')
-          onClick: => @props.doCommand.run()
-          disabled: !@props.isOn || @props.buttons?.isDone
-          "#{RIGHT_TRIANGLE}#{RIGHT_TRIANGLE} Run"
+        if @props.features.showStepButton
+          button
+            className: 'step ' + (if @props.buttons?.breakpoint ==
+              'NEXT_POSITION' && @props.buttons?.numStepsQueued >
+              0 then 'active ' else '')
+            onClick: => @props.doCommand.nextPosition()
+            disabled: !@props.isOn || @props.buttons?.isDone
+            "#{RIGHT_TRIANGLE} Step"
+        if @props.features.showRunButton
+          button
+            className: 'fast-forward ' + (if @props.buttons?.breakpoint ==
+              'DONE' && @props.buttons?.numStepsQueued >
+              0 then 'active ' else '')
+            onClick: => @props.doCommand.run()
+            disabled: !@props.isOn || @props.buttons?.isDone
+            "#{RIGHT_TRIANGLE}#{RIGHT_TRIANGLE} Run"
         button
           className: 'power ' + (if @props.isOn then 'active ' else '')
           onClick: => @props.doCommand.togglePower()
           "#{POWER_SYMBOL} Power"
 
-      label {}, 'Instructions'
-      InstructionsComponent
-        code:             @props.instructions?.code
-        currentLine:      @props.instructions?.currentLine
-        currentCol:       @props.instructions?.currentCol
-        highlightedRange: @props.instructions?.highlightedRange
-        animationFinished: animationFinished
+      if @props.features.showInstructions
+        InstructionsComponent
+          code:             @props.instructions?.code
+          currentLine:      @props.instructions?.currentLine
+          currentCol:       @props.instructions?.currentCol
+          highlightedRange:
+            @props.features.highlightTokens &&
+              @props.instructions?.highlightedRange || null
+          animationFinished: animationFinished
+      else
+        animationFinished()
 
-      PartialCallsComponent
-        partialCalls: @props.interpreter?.partialCalls || []
-        numPartialCallExecuting: @props.interpreter?.numPartialCallExecuting
-        animationFinished: animationFinished
+      if @props.features.showPartialCalls
+        PartialCallsComponent
+          partialCalls: @props.interpreter?.partialCalls || []
+          numPartialCallExecuting: @props.interpreter?.numPartialCallExecuting
+          animationFinished: animationFinished
+      else
+        animationFinished()
 
-      label {}, 'Variables'
-      VariablesComponent @props.interpreter
+      if @props.features.showVariables
+        VariablesComponent @props.interpreter
 
-      label {}, 'Input & Output'
-      ConsoleComponent
-        output: @props.interpreter?.output
-        acceptingInput: @props.interpreter?.acceptingInput
-        doInput: (text) => @props.doCommand.doInput text
-        animationFinished: animationFinished
+      if @props.features.showConsole
+        ConsoleComponent
+          output: @props.interpreter?.output
+          acceptingInput: @props.interpreter?.acceptingInput
+          doInput: (text) => @props.doCommand.doInput text
+          animationFinished: animationFinished
+      else
+        animationFinished()
 
       br { clear: 'all' }
 

@@ -5,9 +5,10 @@ DebuggerComponent     = require './DebuggerComponent.coffee'
 RubyCodeHighlighter   = require './RubyCodeHighlighter.coffee'
 
 class DebuggerController
-  constructor: (retrieveNewCode, $div) ->
+  constructor: (retrieveNewCode, $div, features) ->
     @retrieveNewCode = retrieveNewCode
     @$div = $div
+    @features = features
     @isOn = false
     @spool = null
     @highlighter = null
@@ -20,6 +21,7 @@ class DebuggerController
     numRenderCall = @mostRecentNumRenderCall += 1
     props =
       isOn:         @isOn
+      features:     @features
       buttons:      @spool?.visibleState()
       instructions: @highlighter?.visibleState()
       interpreter:  @interpreter?.visibleState()

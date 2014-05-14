@@ -11,7 +11,7 @@ VariablesComponent = React.createClass
     startedVarNames: type.array
 
   render: ->
-    { br, div, table, td, th, tr } = React.DOM
+    { br, div, label, table, td, th, tr } = React.DOM
 
     if @props.vars and @props.vars.keys
       var_names = _.map @props.vars.keys, (var_name) ->
@@ -24,27 +24,29 @@ VariablesComponent = React.createClass
     else
       future_var_names = []
 
-    div { className: 'variables' },
-      table {},
-        tr { key: 'var_names' },
-          _.map var_names, (var_name) ->
-            th { key: var_name },
-              var_name
-          _.map future_var_names, (var_name) ->
-            th { key: var_name, className: 'future' },
-              var_name
-        tr { key: 'var_values' },
-          _.map var_names, (var_name) =>
-            var_value = @props.vars.map[var_name]
-            td { key: var_name },
-              ValueComponent value: var_value
-          _.map future_var_names, (var_name) ->
-            td { key: var_name, className: 'future' },
-              '...'
-        tr { key: 'var_pending' },
-          _.map var_names, (var_name) =>
-            td { key: var_name, className: 'future' },
-              if var_name in @props.startedVarNames
+    div {},
+      label {}, 'Variables'
+      div { className: 'variables' },
+        table {},
+          tr { key: 'var_names' },
+            _.map var_names, (var_name) ->
+              th { key: var_name },
+                var_name
+            _.map future_var_names, (var_name) ->
+              th { key: var_name, className: 'future' },
+                var_name
+          tr { key: 'var_values' },
+            _.map var_names, (var_name) =>
+              var_value = @props.vars.map[var_name]
+              td { key: var_name },
+                ValueComponent value: var_value
+            _.map future_var_names, (var_name) ->
+              td { key: var_name, className: 'future' },
                 '...'
+          tr { key: 'var_pending' },
+            _.map var_names, (var_name) =>
+              td { key: var_name, className: 'future' },
+                if var_name in @props.startedVarNames
+                  '...'
 
 module.exports = VariablesComponent
