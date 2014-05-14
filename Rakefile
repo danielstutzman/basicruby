@@ -48,7 +48,7 @@ file 'app/assets/javascripts/ast_to_bytecode_compiler.js' =>
 end
 
 file 'app/assets/javascripts/bytecode_interpreter.js' =>
-    %w[lib/bytecode_interpreter.rb lib/interpreter_state.rb] do |task|
+    %w[lib/bytecode_interpreter.rb] do |task|
   command = %W[
     bundle exec opal
       -c
@@ -68,9 +68,21 @@ file 'app/assets/javascripts/lexer.js' => 'lib/lexer.rb' do |task|
   create_with_sh command, task.name
 end
 
+file 'app/assets/javascripts/bytecode_spool.js' =>
+    'lib/bytecode_spool.rb' do |task|
+  command = %W[
+    bundle exec opal
+      -c
+      -I lib
+      -- bytecode_spool
+  ].join(' ')
+  create_with_sh command, task.name
+end
+
 task :js => %w[
-  app/assets/javascripts/browserified.js
   app/assets/javascripts/ast_to_bytecode_compiler.js
+  app/assets/javascripts/browserified.js
   app/assets/javascripts/bytecode_interpreter.js
+  app/assets/javascripts/bytecode_spool.js
   app/assets/javascripts/lexer.js
 ]

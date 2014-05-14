@@ -7,14 +7,14 @@ PartialCallsComponent = React.createClass
   displayName: 'PartialCallsComponent'
 
   propTypes:
-    partial_calls: type.array.isRequired
-    num_partial_call_executing: type.number
+    partialCalls: type.array
+    numPartialCallExecuting: type.number
 
   render: ->
     { div, table, tbody, td, th, thead, tr } = React.DOM
 
-    calls = @props.partial_calls
-    highlighted_call_num = @props.num_partial_call_executing
+    calls = @props.partialCalls || []
+    highlighted_call_num = @props.numPartialCallExecuting
 
     max_num_cols = 2
     for call, i in calls

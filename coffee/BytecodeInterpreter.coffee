@@ -1,44 +1,38 @@
 class BytecodeInterpreter
 
-  constructor: (bytecodes) ->
+  constructor: ->
     try
-      @bytecodes   = bytecodes
-      @interpreter = Opal.BytecodeInterpreter.$new bytecodes
+      @interpreter = Opal.BytecodeInterpreter.$new()
     catch e
       console.error e.stack
       throw e
 
-  run: ->
+  interpret: (bytecode) ->
     try
-      @interpreter.$run()
+      @interpreter.$interpret bytecode
     catch e
       console.error e.stack
       throw e
 
-  have_more_bytecodes: ->
+  visibleState: ->
     try
-      @interpreter['$have_more_bytecodes?']()
+      map = @interpreter.$visible_state().map
+      partialCalls: map.partial_calls
+      numPartialCallExecuting: @_nilToNull map.num_partial_call_executing
+      vars: map.vars
+      startedVarNames: _.map map.started_var_names, (x) -> x.$to_s()
+      output: map.output
+      acceptingInput: map.accepting_input
     catch e
       console.error e.stack
       throw e
 
-  run_next_bytecode: ->
-    try
-      @interpreter.$run_next_bytecode()
-    catch e
-      console.error e.stack
-      throw e
+  _nilToNull: (x) ->
+    if x == Opal.NIL then null else x
 
-  vars: ->
+  setInput: (text) ->
     try
-      @interpreter['$state']()['$vars']()
-    catch e
-      console.error e.stack
-      throw e
-
-  partial_calls: ->
-    try
-      @interpreter['$state']()['$partial_calls']()
+      @interpreter.$set_input text
     catch e
       console.error e.stack
       throw e

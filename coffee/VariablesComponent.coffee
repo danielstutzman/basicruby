@@ -7,19 +7,22 @@ VariablesComponent = React.createClass
   displayName: 'VariablesComponent'
 
   propTypes:
-    vars: type.object.isRequired
-    started_var_names: type.array.isRequired
+    vars:            type.object
+    startedVarNames: type.array
 
   render: ->
     { br, div, table, td, th, tr } = React.DOM
 
-    if @props.vars.keys
+    if @props.vars and @props.vars.keys
       var_names = _.map @props.vars.keys, (var_name) ->
         var_name.$to_s()
     else
       var_names = []
 
-    future_var_names = _.difference @props.started_var_names, var_names
+    if @props.startedVarNames
+      future_var_names = _.difference @props.startedVarNames, var_names
+    else
+      future_var_names = []
 
     div { className: 'variables' },
       table {},
@@ -41,7 +44,7 @@ VariablesComponent = React.createClass
         tr { key: 'var_pending' },
           _.map var_names, (var_name) =>
             td { key: var_name, className: 'future' },
-              if var_name in @props.started_var_names
+              if var_name in @props.startedVarNames
                 '...'
 
 module.exports = VariablesComponent

@@ -94,6 +94,7 @@ class AstToBytecodeCompiler
     
     bytecodes.concat compile(arglist)
 
+    bytecodes.push [:pre_call]
     bytecodes.push [:call]
     bytecodes
   end
@@ -158,6 +159,7 @@ class AstToBytecodeCompiler
       bytecodes.concat compile(str_or_evstr)
       bytecodes.push [:arg]
     end
+    bytecodes.push [:pre_call]
     bytecodes.push [:call]
     bytecodes
   end

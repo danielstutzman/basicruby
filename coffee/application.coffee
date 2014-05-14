@@ -1,4 +1,4 @@
-DebuggerAnimator   = require './DebuggerAnimator.coffee'
+DebuggerController = require './DebuggerController.coffee'
 setupResizeHandler = require('./setup_resize_handler.coffee').setupResizeHandler
 
 $one = (selector) -> document.querySelector(selector)
@@ -10,5 +10,7 @@ document.addEventListener 'DOMContentLoaded', ->
       lineNumbers: true
       autofocus: true
     codeMirror = CodeMirror.fromTextArea($one('.code-editor'), options)
-    (new DebuggerAnimator(codeMirror)).run()
+    retrieveNewCode = -> codeMirror.getValue()
+    $div = $one 'div.debugger'
+    new DebuggerController(retrieveNewCode, $div).setup()
     setupResizeHandler codeMirror

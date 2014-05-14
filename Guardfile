@@ -8,8 +8,8 @@ guard :shell do
   watch /lib\/bytecode_interpreter.rb$/ do
     `rake app/assets/javascripts/bytecode_interpreter.js`
   end
-  watch /lib\/interpreter_state.rb$/ do
-    `rake app/assets/javascripts/bytecode_interpreter.js`
+  watch /lib\/bytecode_spool.rb$/ do
+    `rake app/assets/javascripts/bytecode_spool.js`
   end
   watch /lib\/lexer.rb$/ do
     `rake app/assets/javascripts/lexer.js`

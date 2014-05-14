@@ -20,7 +20,7 @@ describe AstToBytecodeCompiler, '#compile' do
       [:position, 1, 0], [:start_call], [:top], [:arg],
       [:token, 1, 0], [:result, :puts], [:make_symbol], [:arg],
       [:token, 1, 5], [:result, 3], [:arg],
-      [:call],
+      [:pre_call], [:call],
     ]
   end
   it 'compiles 3; 4' do
@@ -68,14 +68,14 @@ describe AstToBytecodeCompiler, '#compile' do
       [:result, :<<], [:arg],
       [:token, 1, 4], [:result, 2], [:arg],
       [:token, 1, 6], [:result, "3"], [:arg],
-      [:call],
+      [:pre_call], [:call],
     ]
   end
   it 'compiles puts ""' do
     compile('puts ""').should == [
       [:position, 1, 0], [:start_call], [:top], [:arg],
       [:token, 1, 0], [:result, :puts], [:make_symbol], [:arg],
-      [:result, ""], [:arg], [:call]
+      [:result, ""], [:arg], [:pre_call], [:call]
     ]
   end
 end

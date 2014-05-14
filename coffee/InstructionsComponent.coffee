@@ -10,24 +10,22 @@ InstructionsComponent = React.createClass
   displayName: 'InstructionsComponent'
 
   propTypes:
-    pos:               type.string
-    instructions:      type.string.isRequired
-    highlighted_range: type.array
-
-  _instructionsToHtml: ->
+    code:             type.string
+    currentLine:      type.number
+    currentCol:       type.number
+    highlightedRange: type.array
 
   componentDidUpdate: (prevProps, prevState) ->
-    if @props.pos != prevProps.pos && @props.pos
+    if @props.currentLine != prevProps.currentLine && @props.currentLine
       @_scrollInstructions (->)
 
   _scrollInstructions: (callback) ->
     $pointer = @refs.pointer.getDOMNode()
     $content = @refs.content.getDOMNode()
-    line_num = @props.pos.split(',')[0]
     $pointer.style.display = 'block'
     $content.style.display = 'block'
     $element_1 = @refs["num1"].getDOMNode()
-    $element_n = @refs["num#{line_num}"].getDOMNode()
+    $element_n = @refs["num#{@props.currentLine}"].getDOMNode()
     old_scroll_top = $content.scrollTop
     new_scroll_top = $element_n.getBoundingClientRect().top -
                      $element_1.getBoundingClientRect().top
@@ -45,22 +43,22 @@ InstructionsComponent = React.createClass
   render: ->
     { br, div, span } = React.DOM
 
-    if @props.highlighted_range
-      [line0, col0, line1, col1] = @props.highlighted_range
+    if @props.highlightedRange
+      [startLine, startCol, endLine, endCol] = @props.highlightedRange
 
     div
       className: 'instructions'
-      if @props.pos
+      if @props.currentLine
         div
           className: 'pointer'
           ref: 'pointer'
           RIGHT_ARROW
-      if @props.pos
+      if @props.currentLine
         div
           className: 'content'
           ref: 'content'
           br { key: 1 } # blank line at beginning
-          _.map @props.instructions.split("\n"), (line, i) ->
+          _.map @props.code.split("\n"), (line, i) ->
             num = i + 1
             div { key: num },
               div
@@ -71,14 +69,14 @@ InstructionsComponent = React.createClass
                 className: "code _#{num}"
                 if line == ''
                   br {}
-                else if num == line0 && num == line1
+                else if num == startLine && num == endLine
                   div {},
                     span { key: 'before-highlight' },
-                      line.substring 0, col0
+                      line.substring 0, startCol
                     span { key: 'highlight', className: 'highlight' },
-                      line.substring col0, col1
+                      line.substring startCol, endCol
                     span { key: 'after-highlight' },
-                      line.substring col1
+                      line.substring endCol
                 else
                   line
           br { key: 2, style: { clear: 'both' } }

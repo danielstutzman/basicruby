@@ -1,18 +1,21 @@
 require './bytecode_interpreter.rb'
+require './bytecode_spool.rb'
 require 'opal'
 
 class RspecRubyRunner
   def output_from ruby_code
-    old_stdout = $stdout
-    $stdout = StringIO.new
     parser = Opal::Parser.new
     sexp = parser.parse ruby_code
     compiler = AstToBytecodeCompiler.new
     bytecodes = compiler.compile_program sexp
-    interpreter = BytecodeInterpreter.new bytecodes
-    interpreter.run
-    output = $stdout.string
-    $stdout = old_stdout
-    output
+    spool = BytecodeSpool.new bytecodes
+    spool.queue_run_until 'DONE'
+    interpreter = BytecodeInterpreter.new
+    while true
+      bytecode = spool.get_next_bytecode interpreter.is_result_truthy?
+      break if bytecode.nil?
+      interpreter.interpret bytecode
+    end
+    interpreter.visible_state[:output].join
   end
 end

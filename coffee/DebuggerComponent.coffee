@@ -12,62 +12,52 @@ DebuggerComponent = React.createClass
   displayName: 'DebuggerComponent'
 
   propTypes:
-    state:         type.string.isRequired
-    pos:           type.string
-    console:       type.string.isRequired
-    instructions:  type.string.isRequired
+    isOn:          type.bool.isRequired
+    buttons:       type.object
+    instructions:  type.object
+    interpreter:   type.object
     doCommand:     type.object.isRequired
-    vars:          type.object.isRequired
-    partial_calls: type.array.isRequired
-    num_partial_call_executing: type.number
-    highlighted_range: type.array
-    started_var_names: type.array.isRequired
 
   render: ->
     { br, button, div, label, span } = React.DOM
 
     div
-      className:
-        'machine ' +
-        (@props.state == 'OFF' && 'off ' || '') +
-        (@props.state != 'OFF' && 'on ' || '')
+      className: 'machine ' + (if @props.isOn then 'on ' else 'off ')
 
       div
         className: 'buttons'
         button
-          className: 'step'
-          onClick: => @props.doCommand.step()
-          disabled: @props.state == 'OFF' || @props.pos == null
+          className: 'step ' + (if @props.buttons?.breakpoint ==
+            'NEXT_POSITION' && @props.buttons?.numStepsQueued >
+            0 then 'active ' else '')
+          onClick: => @props.doCommand.nextPosition()
+          disabled: !@props.isOn || @props.buttons?.isDone
           "#{RIGHT_TRIANGLE} Step"
         button
-          className: 'fast-forward'
+          className: 'fast-forward ' + (if @props.buttons?.breakpoint ==
+            'DONE' && @props.buttons?.numStepsQueued >
+            0 then 'active ' else '')
           onClick: => @props.doCommand.run()
-          disabled: @props.state == 'OFF' || @props.pos == null
+          disabled: !@props.isOn || @props.buttons?.isDone
           "#{RIGHT_TRIANGLE}#{RIGHT_TRIANGLE} Run"
         button
-          className: 'power ' +
-            (@props.state != 'OFF' && 'active ' || '')
-          onClick: => @props.doCommand.power()
+          className: 'power ' + (if @props.isOn then 'active ' else '')
+          onClick: => @props.doCommand.togglePower()
           "#{POWER_SYMBOL} Power"
 
       label {}, 'Instructions'
-      InstructionsComponent
-        pos: @props.pos
-        instructions: @props.instructions
-        highlighted_range: @props.highlighted_range
+      InstructionsComponent @props.instructions
 
-      PartialCallsComponent
-        partial_calls: @props.partial_calls
-        num_partial_call_executing: @props.num_partial_call_executing
+      PartialCallsComponent @props.interpreter
 
       label {}, 'Variables'
-      VariablesComponent
-        vars: @props.vars
-        started_var_names: @props.started_var_names
+      VariablesComponent @props.interpreter
 
       label {}, 'Input & Output'
       ConsoleComponent
-        lines: @props.console
+        output: @props.interpreter?.output
+        acceptingInput: @props.interpreter?.acceptingInput
+        doInput: (text) => @props.doCommand.doInput text
 
       br { clear: 'all' }
 
