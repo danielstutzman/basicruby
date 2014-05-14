@@ -2,6 +2,9 @@ ValueComponent = require './ValueComponent.coffee'
 type           = React.PropTypes
 NBSP           = "\u00a0"
 
+MILLIS_TO_HIGHLIGHT_CALL = 500
+MILLIS_TO_HIGHLIGHT_ADDED_ARG = 500
+
 PartialCallsComponent = React.createClass
 
   displayName: 'PartialCallsComponent'
@@ -9,11 +12,27 @@ PartialCallsComponent = React.createClass
   propTypes:
     partialCalls: type.array
     numPartialCallExecuting: type.number
+    animationFinished: type.func.isRequired
+
+  componentDidUpdate: (prevProps, prevState) ->
+    millis = 0
+
+    if @props.numPartialCallExecuting != null &&
+       @props.numPartialCallExecuting != prevProps.numPartialCallExecuting
+      millis = MILLIS_TO_HIGHLIGHT_CALL
+
+    else if @props.partialCalls.length == prevProps.partialCalls.length
+      prevLastCall = prevProps.partialCalls[prevProps.partialCalls.length - 1]
+      lastCall = @props.partialCalls[@props.partialCalls.length - 1]
+      if lastCall?.length > prevLastCall?.length
+        millis = MILLIS_TO_HIGHLIGHT_ADDED_ARG
+
+    window.setTimeout @props.animationFinished, millis
 
   render: ->
     { div, table, tbody, td, th, thead, tr } = React.DOM
 
-    calls = @props.partialCalls || []
+    calls = @props.partialCalls
     highlighted_call_num = @props.numPartialCallExecuting
 
     max_num_cols = 2

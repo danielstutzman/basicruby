@@ -2,6 +2,7 @@ type           = React.PropTypes
 
 RIGHT_ARROW    = '\u2192'
 
+MILLIS_FOR_HIGHLIGHT                   = 300
 MILLIS_FOR_SCROLLED_INSTRUCTIONS       = 500
 MILLIS_FOR_SCROLLED_INSTRUCTIONS_TENTH = 5
 
@@ -16,10 +17,16 @@ InstructionsComponent = React.createClass
     highlightedRange: type.array
 
   componentDidUpdate: (prevProps, prevState) ->
-    if @props.currentLine != prevProps.currentLine && @props.currentLine
-      @_scrollInstructions (->)
+    millis = 0
 
-  _scrollInstructions: (callback) ->
+    if @props.highlightedRange != prevProps.highlightedRange
+      millis = MILLIS_FOR_HIGHLIGHT
+    else if @props.currentLine != prevProps.currentLine && @props.currentLine
+      millis = @_scrollInstructions()
+
+    window.setTimeout @props.animationFinished, millis
+
+  _scrollInstructions: ->
     $pointer = @refs.pointer.getDOMNode()
     $content = @refs.content.getDOMNode()
     $pointer.style.display = 'block'
@@ -36,9 +43,8 @@ InstructionsComponent = React.createClass
       if progress < 1.0
         window.setTimeout (=> animateScrollTop (progress + 0.1)),
           MILLIS_FOR_SCROLLED_INSTRUCTIONS_TENTH
-      else
-        window.setTimeout callback, MILLIS_FOR_SCROLLED_INSTRUCTIONS
-    animateScrollTop 0.1
+    animateScrollTop 1.0
+    MILLIS_FOR_SCROLLED_INSTRUCTIONS
 
   render: ->
     { br, div, span } = React.DOM

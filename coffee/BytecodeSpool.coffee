@@ -24,9 +24,9 @@ class BytecodeSpool
       console.error e.stack
       throw e
 
-  getNextBytecode: ->
+  getNextBytecode: (isResultTruthy) ->
     try
-      result = @spool.$get_next_bytecode()
+      result = @spool.$get_next_bytecode isResultTruthy
       if result == Opal.NIL then null else result
     catch e
       console.error e.stack

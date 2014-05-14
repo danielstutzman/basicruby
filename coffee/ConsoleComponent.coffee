@@ -1,6 +1,8 @@
 type           = React.PropTypes
 ENTER_KEY      = 13
 
+MILLIS_FOR_OUTPUT_CHAR = 10
+
 ConsoleComponent = React.createClass
 
   displayName: 'ConsoleComponent'
@@ -8,7 +10,8 @@ ConsoleComponent = React.createClass
   propTypes:
     output: type.array
     acceptingInput: type.bool
-    doInput: type.func
+    doInput: type.func.isRequired
+    animationFinished: type.func.isRequired
 
   getInitialState: ->
     numEmittedOutputChars: 0
@@ -26,11 +29,14 @@ ConsoleComponent = React.createClass
   componentDidUpdate: (prevProps, prevState) ->
     if @props.acceptingInput && !prevProps.acceptingInput
       @refs.stdin.getDOMNode().focus()
+
     if @state.numEmittedOutputChars < @state.numReceivedOutputChars
       outputOneMoreChar = =>
         @setState numEmittedOutputChars: @state.numEmittedOutputChars + 1
-      window.setTimeout outputOneMoreChar, 10
-    @_scrollConsole()
+      window.setTimeout outputOneMoreChar, MILLIS_FOR_OUTPUT_CHAR
+      @_scrollConsole()
+    else
+      window.setTimeout @props.animationFinished, 0
 
   _scrollConsole: ->
     $console = @refs.console.getDOMNode()

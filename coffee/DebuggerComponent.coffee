@@ -12,14 +12,20 @@ DebuggerComponent = React.createClass
   displayName: 'DebuggerComponent'
 
   propTypes:
-    isOn:          type.bool.isRequired
-    buttons:       type.object
-    instructions:  type.object
-    interpreter:   type.object
-    doCommand:     type.object.isRequired
+    isOn:              type.bool.isRequired
+    buttons:           type.object
+    instructions:      type.object
+    interpreter:       type.object
+    doCommand:         type.object.isRequired
+    animationFinished: type.func.isRequired
 
   render: ->
     { br, button, div, label, span } = React.DOM
+
+    numFinishedTimeouts = 0
+    animationFinished = =>
+      numFinishedTimeouts += 1
+      @props.animationFinished() if numFinishedTimeouts == 3
 
     div
       className: 'machine ' + (if @props.isOn then 'on ' else 'off ')
@@ -46,9 +52,17 @@ DebuggerComponent = React.createClass
           "#{POWER_SYMBOL} Power"
 
       label {}, 'Instructions'
-      InstructionsComponent @props.instructions
+      InstructionsComponent
+        code:             @props.instructions?.code
+        currentLine:      @props.instructions?.currentLine
+        currentCol:       @props.instructions?.currentCol
+        highlightedRange: @props.instructions?.highlightedRange
+        animationFinished: animationFinished
 
-      PartialCallsComponent @props.interpreter
+      PartialCallsComponent
+        partialCalls: @props.interpreter?.partialCalls || []
+        numPartialCallExecuting: @props.interpreter?.numPartialCallExecuting
+        animationFinished: animationFinished
 
       label {}, 'Variables'
       VariablesComponent @props.interpreter
@@ -58,6 +72,7 @@ DebuggerComponent = React.createClass
         output: @props.interpreter?.output
         acceptingInput: @props.interpreter?.acceptingInput
         doInput: (text) => @props.doCommand.doInput text
+        animationFinished: animationFinished
 
       br { clear: 'all' }
 

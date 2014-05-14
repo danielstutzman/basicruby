@@ -30,9 +30,23 @@ class BytecodeInterpreter
   _nilToNull: (x) ->
     if x == Opal.NIL then null else x
 
+  isAcceptingInput: ->
+    try
+      @interpreter['$is_accepting_input?']()
+    catch e
+      console.error e.stack
+      throw e
+
   setInput: (text) ->
     try
       @interpreter.$set_input text
+    catch e
+      console.error e.stack
+      throw e
+
+  isResultTruthy: ->
+    try
+      @interpreter['$is_result_truthy?']()
     catch e
       console.error e.stack
       throw e

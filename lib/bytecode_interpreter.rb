@@ -44,7 +44,7 @@ class BytecodeInterpreter
 
   def visible_state
     {
-      partial_calls: @partial_calls,
+      partial_calls: @partial_calls.map { |call| call.clone },
       started_var_names: @started_var_names,
       vars: @vars,
       output: $captured_stdout,
@@ -57,34 +57,27 @@ class BytecodeInterpreter
     @result[0] && !!@result[0]
   end
 
+  def is_accepting_input?
+    @accepting_input
+  end
+
   def interpret bytecode #, speed, stdin
     case bytecode[0]
       when :result
         result_is bytecode[1]
-        0
       when :discard
         pop_result
-        0
       when :start_call
         @partial_calls.push []
-        200
       when :top
         result_is @main
-        0
       when :arg
-        @partial_calls.last.push pop_result
-        if @partial_calls.last.last == @main
-          0 # don't dwell on it, because user didn't specify it
-        else
-          800
-        end
+        result = pop_result
+        @partial_calls.last.push result
       when :pre_call
         @num_partial_call_executing = @partial_calls.size - 1
         if @partial_calls.last == [@main, :gets]
           @accepting_input = true
-          30 * 1000
-        else
-          400
         end
       when :call
         @num_partial_call_executing = nil
@@ -96,35 +89,26 @@ class BytecodeInterpreter
         else
           result_is do_call *call
         end
-        if $captured_stdout.size > outputs
-          800
-        else
-          0
-        end
       when :start_var
         @started_var_names.push bytecode[1]
-        0
       when :to_var
         var_name = bytecode[1]
         @started_var_names = @started_var_names - [var_name]
         value = pop_result
         @vars[var_name] = value
         result_is value
-        0
       when :from_var
         var_name = bytecode[1]
         out = @vars[var_name]
         result_is out
-        0
       when :make_symbol
         result = pop_result
         `result.is_symbol = true;` if RUBY_PLATFORM == 'opal'
         result_is result
-        0
       when :goto_if_not
         pop_result
-        0
     end
+    nil
   end
 
   def set_input text

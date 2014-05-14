@@ -11,12 +11,13 @@ class DebuggerController
     @isOn = false
     @spool = null
     @highlighter = null
-    @timeoutForNextBytecode = null
+    @mostRecentNumRenderCall = 0
 
   setup: ->
     @render()
 
   render: ->
+    numRenderCall = @mostRecentNumRenderCall += 1
     props =
       isOn:         @isOn
       buttons:      @spool?.visibleState()
@@ -27,6 +28,9 @@ class DebuggerController
         nextPosition: => @handleClickNextPosition.apply this, []
         run:          => @handleClickRun.apply          this, []
         doInput:      => @handleInput.apply             this, arguments
+      animationFinished: =>
+        if numRenderCall == @mostRecentNumRenderCall
+          @handleNextBytecode.apply this, []
     React.renderComponent DebuggerComponent(props), @$div
 
   handleTogglePower: ->
@@ -69,25 +73,20 @@ class DebuggerController
     window.clearTimeout @timeoutForNextBytecode
     @spool.queueRunUntil 'NEXT_POSITION'
     @render()
-    @handleNextBytecode()
 
   handleClickRun: ->
     window.clearTimeout @timeoutForNextBytecode
     @spool.queueRunUntil 'DONE'
     @render()
-    @handleNextBytecode()
 
   handleNextBytecode: ->
-    bytecode = @spool.getNextBytecode()
-    if bytecode
-      millis = @highlighter.interpret bytecode
-      if millis == null
-        millis = @interpreter.interpret bytecode
-      if millis == null
-        millis = 0
-      @timeoutForNextBytecode =
-        window.setTimeout (=> @handleNextBytecode()), millis
-    @render()
+    if @spool && @highlighter && @interpreter &&
+       !@interpreter.isAcceptingInput()
+      bytecode = @spool.getNextBytecode @interpreter.isResultTruthy
+      if bytecode
+        @highlighter.interpret bytecode
+        @interpreter.interpret bytecode
+        @render()
 
   handleInput: (text) ->
     @interpreter.setInput text
