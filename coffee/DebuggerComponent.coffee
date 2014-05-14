@@ -23,10 +23,12 @@ DebuggerComponent = React.createClass
   render: ->
     { br, button, div, label, span } = React.DOM
 
-    numFinishedTimeouts = 0
-    animationFinished = =>
-      numFinishedTimeouts += 1
-      @props.animationFinished() if numFinishedTimeouts == 3
+    finishedComponents = {}
+    animationFinished = (name) =>
+      finishedComponents[name] = true
+      if _.keys(finishedComponents).length == 3
+        animationFinished = -> # so it's not accidentally called again
+        @props.animationFinished()
 
     div
       className: 'machine ' + (if @props.isOn then 'on ' else 'off ')
@@ -62,17 +64,17 @@ DebuggerComponent = React.createClass
           highlightedRange:
             @props.features.highlightTokens &&
               @props.instructions?.highlightedRange || null
-          animationFinished: animationFinished
+          animationFinished: -> animationFinished 'InstructionsComponent'
       else
-        animationFinished()
+        animationFinished 'InstructionsComponent'
 
       if @props.features.showPartialCalls
         PartialCallsComponent
           partialCalls: @props.interpreter?.partialCalls || []
           numPartialCallExecuting: @props.interpreter?.numPartialCallExecuting
-          animationFinished: animationFinished
+          animationFinished: -> animationFinished 'PartialCallsComponent'
       else
-        animationFinished()
+        animationFinished 'PartialCallsComponent'
 
       if @props.features.showVariables
         VariablesComponent @props.interpreter
@@ -82,9 +84,9 @@ DebuggerComponent = React.createClass
           output: @props.interpreter?.output
           acceptingInput: @props.interpreter?.acceptingInput
           doInput: (text) => @props.doCommand.doInput text
-          animationFinished: animationFinished
+          animationFinished: -> animationFinished 'ConsoleComponent'
       else
-        animationFinished()
+        animationFinished 'ConsoleComponent'
 
       br { clear: 'all' }
 

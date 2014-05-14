@@ -17,6 +17,15 @@ ConsoleComponent = React.createClass
     numEmittedOutputChars: 0
     numReceivedOutputChars: 0
 
+  shouldComponentUpdate: (nextProps, nextState) ->
+    if nextProps.output?.length == @props.output?.length &&
+       nextProps.acceptingInput == @props.acceptingInput &&
+       nextState.numEmittedOutputChars == @state.numEmittedOutputChars
+      nextProps.animationFinished()
+      false
+    else
+      true
+
   componentWillReceiveProps: (nextProps) ->
     if nextProps.output
       numChars = 0

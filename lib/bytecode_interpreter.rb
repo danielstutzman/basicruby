@@ -11,9 +11,11 @@ class <<$stdout
   def write *args
     if $is_capturing_stdout
       if RUBY_PLATFORM == 'opal'
-        args.each { |arg| $captured_stdout.push arg + "\n" }
+        $captured_stdout = $captured_stdout.clone +
+          args.map { |arg| "#{arg}\n" }
       else
-        args.each { |arg| $captured_stdout.push arg }
+        $captured_stdout = $captured_stdout.clone +
+          args.map { |arg| "#{arg}\n" }
       end
     else
       old_write *args
