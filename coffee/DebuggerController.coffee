@@ -51,18 +51,23 @@ class DebuggerController
     catch e
       if e.name == 'SyntaxError'
         @interpreter = visibleState: ->
-          output: "SyntaxError: #{e.message}"
+          output: ["SyntaxError: #{e.message}\n"]
       else if e.name == 'DebuggerDoesntYetSupport'
         @interpreter = visibleState: ->
-          output: "DebuggerDoesntYetSupport: #{e.message}"
+          output: ["DebuggerDoesntYetSupport: #{e.message}\n"]
       else
         throw e
     if bytecodes
       @spool = new BytecodeSpool bytecodes
       @highlighter = new RubyCodeHighlighter code
       @interpreter = new BytecodeInterpreter()
+
+    if @spool
+      # run step until the first position
+      @spool.queueRunUntil 'NEXT_POSITION'
+      bytecode = @spool.getNextBytecode
+      @highlighter.interpret bytecode
     @render()
-    @handleClickNextPosition() # run step until the first position
 
   handleTurnPowerOff: ->
     @spool = null
