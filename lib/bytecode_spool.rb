@@ -14,6 +14,10 @@ class BytecodeSpool
       is_done: @is_done }
   end
 
+  def is_done?
+    @is_done
+  end
+
   def queue_run_until breakpoint
     if @breakpoint == breakpoint
       @num_steps_queued += 1

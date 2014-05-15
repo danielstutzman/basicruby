@@ -10,8 +10,10 @@ document.addEventListener 'DOMContentLoaded', ->
       lineNumbers: true
       autofocus: true
     codeMirror = CodeMirror.fromTextArea($one('.code-editor'), options)
+
     retrieveNewCode = -> codeMirror.getValue()
-    $div = $one 'div.debugger'
+    $debuggerDiv = $one 'div.debugger'
+    $casesDiv = $one 'div.cases'
     features =
       showStepButton: true
       showRunButton: true
@@ -19,6 +21,8 @@ document.addEventListener 'DOMContentLoaded', ->
       showVariables: false
       showInstructions: true
       showConsole: true
-      highlightTokens: true
-    new DebuggerController(retrieveNewCode, $div, features).setup()
-    setupResizeHandler codeMirror
+      highlightTokens: false
+    new DebuggerController(
+      retrieveNewCode, $debuggerDiv, $casesDiv, features).setup()
+
+    #setupResizeHandler codeMirror

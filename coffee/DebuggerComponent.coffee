@@ -13,10 +13,14 @@ DebuggerComponent = React.createClass
 
   propTypes:
     isOn:              type.bool.isRequired
+    isPowerButtonDepressed: type.bool.isRequired
+    isRunButtonDepressed:   type.bool.isRequired
+    isConsoleFakeSelected:  type.bool.isRequired
     features:          type.object.isRequired
     buttons:           type.object
     instructions:      type.object
     interpreter:       type.object
+    pendingStdin:      type.string
     doCommand:         type.object.isRequired
     animationFinished: type.func.isRequired
 
@@ -47,12 +51,16 @@ DebuggerComponent = React.createClass
           button
             className: 'fast-forward ' + (if @props.buttons?.breakpoint ==
               'DONE' && @props.buttons?.numStepsQueued >
-              0 then 'active ' else '')
+              0 then 'active ' else '') +
+              (if @props.isRunButtonDepressed then 'depressed ' else '')
             onClick: => @props.doCommand.run()
             disabled: !@props.isOn || @props.buttons?.isDone
             "#{RIGHT_TRIANGLE}#{RIGHT_TRIANGLE} Run"
         button
-          className: 'power ' + (if @props.isOn then 'active ' else '')
+          className:
+            'power ' +
+            (if @props.isOn then 'active ' else '') +
+            (if @props.isPowerButtonDepressed then 'depressed ' else '')
           onClick: => @props.doCommand.togglePower()
           "#{POWER_SYMBOL} Power"
 
@@ -85,8 +93,10 @@ DebuggerComponent = React.createClass
       if @props.features.showConsole
         ConsoleComponent
           output: @props.interpreter?.output
-          acceptingInput: @props.interpreter?.acceptingInput
-          doInput: (text) => @props.doCommand.doInput text
+          isConsoleFakeSelected: @props.isConsoleFakeSelected
+          pendingStdin: @props.pendingStdin
+          doChangeInput: (text) => @props.doCommand.doChangeInput text
+          doSubmitInput: (text) => @props.doCommand.doSubmitInput text
           animationFinished: -> animationFinished 'ConsoleComponent'
       else
         animationFinished 'ConsoleComponent'

@@ -9,8 +9,10 @@ ConsoleComponent = React.createClass
 
   propTypes:
     output: type.array
-    acceptingInput: type.bool
-    doInput: type.func.isRequired
+    isConsoleFakeSelected: type.bool.isRequired
+    pendingStdin: type.string
+    doChangeInput: type.func.isRequired
+    doSubmitInput: type.func.isRequired
     animationFinished: type.func.isRequired
 
   getInitialState: ->
@@ -19,8 +21,9 @@ ConsoleComponent = React.createClass
 
   shouldComponentUpdate: (nextProps, nextState) ->
     if nextProps.output?.length == @props.output?.length &&
-       nextProps.acceptingInput == @props.acceptingInput &&
-       nextState.numEmittedOutputChars == @state.numEmittedOutputChars
+       nextProps.pendingStdin == @props.pendingStdin &&
+       nextState.numEmittedOutputChars == @state.numEmittedOutputChars &&
+       nextProps.isConsoleFakeSelected == @props.isConsoleFakeSelected
       nextProps.animationFinished()
       false
     else
@@ -36,7 +39,8 @@ ConsoleComponent = React.createClass
       @setState numEmittedOutputChars: 0, numReceivedOutputChars: 0
 
   componentDidUpdate: (prevProps, prevState) ->
-    if @props.acceptingInput && !prevProps.acceptingInput
+    if @props.pendingStdin != prevProps.pendingStdin &&
+       @props.pendingStdin != null
       @refs.stdin.getDOMNode().focus()
 
     if @state.numEmittedOutputChars < @state.numReceivedOutputChars
@@ -59,7 +63,8 @@ ConsoleComponent = React.createClass
     div {},
       label {}, 'Input & Output'
       div
-        className: 'console'
+        className: 'console ' +
+          (if @props.isConsoleFakeSelected then 'fake-selected ' else '')
         ref: 'console'
         span
           className: 'before-cursor'
@@ -68,14 +73,17 @@ ConsoleComponent = React.createClass
               substring = text.substring 0, numCharsToEmit
               numCharsToEmit -= substring.length
               substring
-        if @props.acceptingInput
+        if @props.pendingStdin != null
           input
             ref: 'stdin'
             type: 'text'
             className: 'stdin'
+            value: @props.pendingStdin
+            onChange: (e) =>
+              @props.doChangeInput e.target.value
             onKeyPress: (e) =>
               if e.keyCode == 13
-                @props.doInput "#{e.target.value}\n"
+                @props.doSubmitInput "#{e.target.value}\n"
         else
           div
             className: 'cursor'

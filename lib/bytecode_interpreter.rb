@@ -117,6 +117,10 @@ class BytecodeInterpreter
     @accepting_input = false
   end
 
+  def get_output
+    $captured_stdout.join
+  end
+
   private
 
   def result_is new_result

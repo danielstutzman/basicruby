@@ -27,6 +27,12 @@
       return $hash2(["breakpoint", "num_steps_queued", "is_done"], {"breakpoint": self.breakpoint, "num_steps_queued": self.num_steps_queued, "is_done": self.is_done});
     };
 
+    def['$is_done?'] = function() {
+      var self = this;
+
+      return self.is_done;
+    };
+
     def.$queue_run_until = function(breakpoint) {
       var self = this;
 

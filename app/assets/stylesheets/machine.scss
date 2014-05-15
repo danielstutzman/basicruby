@@ -48,14 +48,14 @@ body.machine {
     }
 
     textarea.code, .CodeMirror {
-      width: 50%;
+      width: 40%;
       height: 289px;
       float: left;
       background-color: #ddd;
       font-family:monospace;
       font-size: $code-font-size;
       @media all and (min-width: $min-width-for-extra-padding) {
-        width: 48%;
+        width: 38%;
         margin-right: 2%;
       }
 
@@ -75,10 +75,10 @@ body.machine {
       float: left;
       border: $border-width #222 solid;
       border-top: $border-width #555 solid;
-      width: 50%;
+      width: 40%;
       @media all and (min-width: $min-width-for-extra-padding) {
         margin-left: 2%;
-        width: 44%;
+        width: 34%;
         margin-right: 4%;
       }
 
@@ -98,6 +98,12 @@ body.machine {
           &:disabled {
             color: #aaa;
             opacity: 1.0;
+          }
+          &.depressed {
+            background-color: #888;
+            border: 2px transparent solid;
+            border-top: 0;
+            border-bottom: 0;
           }
         }
       }
@@ -266,6 +272,12 @@ body.machine {
           display: inline-block;
           line-height: 0;
         }
+        &.fake-selected {
+          background-color: #4c6f9a;
+          .before-cursor {
+            background-color: #4c6f9a;
+          }
+        }
       } // end .console
 
       &.off {
@@ -284,39 +296,13 @@ body.machine {
         }
       }
 
-      .value {
-        .string {
-          font-family: monospace;
-          white-space: pre-wrap;
-          background-color: #040;
-          display: inline; // so its width doesn't expand
-          white-space: pre;
-          .line {
-            line-height: 0.6;
-            span {
-              background-color: #040;
-              line-height: 1.0;
-            }
-            .empty-line { // a little sliver of background color
-              width: 4px;
-              height: 28px;
-              display: inline-block;
-              background-color: #040;
-            }
-          }
-        }
-        .type {
-          font-size: 12pt;
-          color: #040;
-        }
-      }
     } // end .machine
 
     .cases {
       margin-left: 20px;
       float: left;
       background-color: #333;
-      width: 150px;
+      width: 200px;
       padding: 5px;
       border: 3px #272727 solid;
       border-top: 3px #444 solid;
@@ -326,26 +312,79 @@ body.machine {
         padding-bottom: 8px;
 
         button {
-          padding: 4px 6px;
+          padding: 12px 14px;
+          font-size: 12pt;
+          &.active {
+            color: #0a0;
+            text-shadow: 0px 0px 6px #0f0;
+          }
         }
       }
 
       table {
         border-spacing: 0px 4px;
+        width: 100%;
       }
       th {
-        padding: 2px 5px;
         color: #333;
         text-shadow: 1px 1px #444;
         text-transform: uppercase;
         font-size: 10pt;
+        text-align: left;
       }
-      td {
-        color: white;
-        text-align: right;
-        padding: 2px 5px;
-        font-family: monospace;
+      tr {
+        vertical-align: top;
+        &.highlighted td {
+          background-color: #ca0;
+          color: black;
+        }
+        td {
+          font-size: 20pt;
+          font-family: monospace;
+
+          &.input {
+            span {
+              color: yellow;
+              background-color: #440;
+            }
+          }
+          &.output {
+            .dot-dot-dot {
+              font-size: 10pt;
+            }
+            span {
+              color: #0f0;
+              white-space: pre;
+              background-color: #040;
+            }
+          }
+        }
       }
+    }
+
+    .string {
+      font-family: monospace;
+      white-space: pre-wrap;
+      background-color: #040;
+      display: inline; // so its width doesn't expand
+      white-space: pre;
+      .line {
+        line-height: 0.6;
+        span {
+          background-color: #040;
+          line-height: 1.0;
+        }
+        .empty-line { // a little sliver of background color
+          width: 4px;
+          height: 28px;
+          display: inline-block;
+          background-color: #040;
+        }
+      }
+    }
+    .type {
+      font-size: 12pt;
+      color: #040;
     }
 
     &.section1 {

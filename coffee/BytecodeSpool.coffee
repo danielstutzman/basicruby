@@ -32,4 +32,11 @@ class BytecodeSpool
       console.error e.stack
       throw e
 
+  isDone: ->
+    try
+      @spool['$is_done?']()
+    catch e
+      console.error e.stack
+      throw e
+
 module.exports = BytecodeSpool
