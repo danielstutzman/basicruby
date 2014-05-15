@@ -47,17 +47,29 @@ body.machine {
       }
     }
 
-    textarea.code, .CodeMirror {
-      width: 40%;
-      height: 289px;
+    .col-1-of-2 {
       float: left;
-      background-color: #ddd;
-      font-family:monospace;
-      font-size: $code-font-size;
+      width: 50%;
+      @media all and (min-width: $min-width-for-extra-padding) {
+        width: 48%;
+        margin-right: 2%;
+      }
+    }
+    .col-1-of-3 {
+      float: left;
+      width: 40%;
       @media all and (min-width: $min-width-for-extra-padding) {
         width: 38%;
         margin-right: 2%;
       }
+    }
+
+    textarea.code, .CodeMirror {
+      width: 100%;
+      height: 289px;
+      background-color: #ddd;
+      font-family:monospace;
+      font-size: $code-font-size;
 
       .CodeMirror-linenumbers {
         width: 25px;
@@ -70,17 +82,30 @@ body.machine {
       }
     }
 
-    .machine {
-      background-color: #333;
+    .col-2-of-2 {
       float: left;
-      border: $border-width #222 solid;
-      border-top: $border-width #555 solid;
+      width: 50%;
+      @media all and (min-width: $min-width-for-extra-padding) {
+        margin-left: 2%;
+        width: 44%;
+        margin-right: 4%;
+      }
+    }
+    .col-2-of-3 {
+      float: left;
       width: 40%;
       @media all and (min-width: $min-width-for-extra-padding) {
         margin-left: 2%;
         width: 34%;
-        margin-right: 4%;
+        margin-right: 2%;
       }
+    }
+
+    .machine {
+      width: 100%;
+      background-color: #333;
+      border: $border-width #222 solid;
+      border-top: $border-width #555 solid;
 
       .buttons {
         text-align: right;
@@ -298,11 +323,20 @@ body.machine {
 
     } // end .machine
 
+    .col-3-of-3 {
+      float: left;
+      width: 20%;
+      @media all and (min-width: $min-width-for-extra-padding) {
+        margin-left: 2%;
+        width: 16%;
+        margin-right: 4%;
+      }
+    }
+
     .cases {
-      margin-left: 20px;
       float: left;
       background-color: #333;
-      width: 200px;
+      width: 100%;
       padding: 5px;
       border: 3px #272727 solid;
       border-top: 3px #444 solid;
