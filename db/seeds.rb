@@ -12,13 +12,13 @@ code: |
   puts 1
   puts 2
   puts 3
-cases:
-- input: "5\\n1"
-  expected_output: 25
-- input: "5\\n1"
-  expected_output: 16
 features: step instructions console
 END
+#cases:
+#- input: "5\\n1"
+#  expected_output: 25
+#- input: "5\\n1"
+#  expected_output: 16
 
   Exercise.create! path: '1.1.2',
     title: 'Fix the `NoMethodError`',
