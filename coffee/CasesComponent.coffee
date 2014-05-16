@@ -14,6 +14,9 @@ CasesComponent = React.createClass
   render: ->
     { br, button, div, span, table, td, th, tr } = React.DOM
 
+    doCasesHaveInput = _.every @props.cases.cases, (_case) ->
+      _case.input != undefined
+
     multiLineString = (string) ->
       if string
         lines = string.split("\n")
@@ -35,7 +38,8 @@ CasesComponent = React.createClass
           "#{RIGHT_TRIANGLE}#{RIGHT_TRIANGLE} Run test cases"
       table {},
         tr {},
-          th {}, 'Input'
+          if doCasesHaveInput
+            th {}, 'Input'
           th {}, 'Expected', br {}, 'Output'
           th {}, 'Actual', br {}, 'Output'
         _.map @props.cases.cases, (_case, case_num) =>
@@ -44,9 +48,10 @@ CasesComponent = React.createClass
             className:
               if @props.cases.currentCaseNum == case_num
                 'highlighted'
-            td { className: 'input' },
-              div { className: 'string' },
-                multiLineString _case.input
+            if doCasesHaveInput
+              td { className: 'input' },
+                div { className: 'string' },
+                  multiLineString _case.input
             td { className: 'expected-output' },
               div { className: 'string' },
                 multiLineString _case.expectedOutput

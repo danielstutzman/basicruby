@@ -31,7 +31,7 @@ class DebuggerController
       currentCaseNum: null
       currentCaseStage: null
       cases: _.map exerciseYaml['cases'], (_case) ->
-        input: _case.input.toString()
+        input: if _case.input != undefined then _case.input.toString()
         expectedOutput: _case.expected_output.toString()
 
   setup: ->
