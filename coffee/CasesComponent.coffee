@@ -36,7 +36,8 @@ CasesComponent = React.createClass
       table {},
         tr {},
           th {}, 'Input'
-          th {}, 'Output'
+          th {}, 'Expected', br {}, 'Output'
+          th {}, 'Actual', br {}, 'Output'
         _.map @props.cases.cases, (_case, case_num) =>
           tr
             key: "case#{case_num}"
@@ -46,7 +47,10 @@ CasesComponent = React.createClass
             td { className: 'input' },
               div { className: 'string' },
                 multiLineString _case.input
-            td { className: 'output' },
+            td { className: 'expected-output' },
+              div { className: 'string' },
+                multiLineString _case.expectedOutput
+            td { className: 'actual-output' },
               if _case.actualOutput == null
                 if @props.cases.currentCaseNum != null
                   div { className: 'dot-dot-dot' }, '...'
