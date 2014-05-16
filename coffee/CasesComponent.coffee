@@ -17,6 +17,8 @@ CasesComponent = React.createClass
     doCasesHaveInput = _.every @props.cases.cases, (_case) ->
       _case.input != undefined
 
+    s = if @props.cases.cases.length == 1 then '' else 's'
+
     multiLineString = (string) ->
       if string
         lines = string.split("\n")
@@ -35,7 +37,7 @@ CasesComponent = React.createClass
           onClick: @props.runTestCases
           className:
             (if @props.cases.currentCaseNum != null then 'active ' else '')
-          "#{RIGHT_TRIANGLE}#{RIGHT_TRIANGLE} Run test cases"
+          "#{RIGHT_TRIANGLE}#{RIGHT_TRIANGLE} Run test case#{s}"
       table {},
         tr {},
           if doCasesHaveInput
