@@ -25,7 +25,7 @@ DebuggerComponent = React.createClass
     animationFinished: type.func.isRequired
 
   render: ->
-    { br, button, div, label, span } = React.DOM
+    { button, div, label, span } = React.DOM
 
     finishedComponents = {}
     animationFinished = (name) =>
@@ -34,9 +34,7 @@ DebuggerComponent = React.createClass
         animationFinished = -> console.log 'BLOCKED'
         window.setTimeout @props.animationFinished, 0
 
-    div
-      className: 'machine ' + (if @props.isOn then 'on ' else 'off ')
-
+    div { className: (if @props.isOn then 'on ' else 'off ') },
       div
         className: 'buttons'
         if @props.features.showStepButton
@@ -100,7 +98,5 @@ DebuggerComponent = React.createClass
           animationFinished: -> animationFinished 'ConsoleComponent'
       else
         animationFinished 'ConsoleComponent'
-
-      br { clear: 'all' }
 
 module.exports = DebuggerComponent

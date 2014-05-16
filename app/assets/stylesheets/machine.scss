@@ -59,6 +59,7 @@ body.machine {
     .col-1-of-3 {
       float: left;
       width: 38%;
+      height: 100%;
       @media all and (min-width: $min-width-for-extra-padding) {
         width: 37%;
         margin-right: 1%;
@@ -67,7 +68,7 @@ body.machine {
 
     textarea.code, .CodeMirror {
       width: 100%;
-      height: 289px;
+      height: 100%;
       background-color: #ddd;
       font-family:monospace;
       font-size: $code-font-size;
@@ -86,6 +87,7 @@ body.machine {
     .col-2-of-2 {
       float: left;
       width: 50%;
+      height: 100%;
       @media all and (min-width: $min-width-for-extra-padding) {
         margin-left: 1%;
         width: 47%;
@@ -95,6 +97,7 @@ body.machine {
     .col-2-of-3 {
       float: left;
       width: 33%;
+      height: 100%;
       @media all and (min-width: $min-width-for-extra-padding) {
         margin-left: 1%;
         width: 29%;
@@ -102,7 +105,7 @@ body.machine {
       }
     }
 
-    .machine {
+    .debugger {
       width: 100%;
       background-color: #333;
       border: $border-width #222 solid;
@@ -306,7 +309,7 @@ body.machine {
         }
       } // end .console
 
-      &.off {
+      .off {
         .instructions {
           .pointer {
             display: none;
@@ -322,11 +325,12 @@ body.machine {
         }
       }
 
-    } // end .machine
+    } // end .debugger
 
     .col-3-of-3 {
       float: left;
       width: 29%;
+      height: 100%;
       @media all and (min-width: $min-width-for-extra-padding) {
         margin-left: 1%;
         width: 28%;
@@ -337,8 +341,14 @@ body.machine {
     .cases {
       float: left;
       background-color: #333;
-      border: 3px #272727 solid;
-      border-top: 3px #444 solid;
+      height: 100%;
+      border: $border-width #272727 solid;
+      border-top: $border-width #444 solid;
+
+      > div {
+        height: 100%;
+        background-color: black;
+      }
 
       .buttons {
         text-align: right;
@@ -347,6 +357,7 @@ body.machine {
         button {
           padding: 12px 14px;
           font-size: 12pt;
+          margin: 0;
           &.active {
             color: #0a0;
             text-shadow: 0px 0px 6px #0f0;
@@ -473,7 +484,7 @@ body.machine {
       }
       .machine {
         background-color: #117;
-        border: 3px #004 solid;
+        border: $border-width #004 solid;
         border-top: 3px #227 solid;
         .console {
           height: 70px;
@@ -483,7 +494,7 @@ body.machine {
       }
       .cases {
         background-color: #117;
-        border: 3px #004 solid;
+        border: $border-width #004 solid;
         border-top: 3px #227 solid;
         th {
           color: #117;
@@ -518,7 +529,7 @@ body.machine {
           color: white;
         }
       }
-      .machine {
+      .debugger {
         background-color: #b80;
         border: $border-width #750 solid;
         border-top: $border-width #c90 solid;
@@ -526,8 +537,11 @@ body.machine {
       }
       .cases {
         background-color: #b80;
-        border: 3px #750 solid;
-        border-top: 3px #c90 solid;
+        border: $border-width #750 solid;
+        border-top: $border-width #c90 solid;
+        .buttons {
+          background-color: #b80;
+        }
       }
     } // end .answer-section
 

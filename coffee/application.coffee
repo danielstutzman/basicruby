@@ -25,4 +25,4 @@ document.addEventListener 'DOMContentLoaded', ->
     new DebuggerController(
       retrieveNewCode, $debuggerDiv, $casesDiv, features).setup()
 
-    #setupResizeHandler codeMirror
+    setupResizeHandler codeMirror
