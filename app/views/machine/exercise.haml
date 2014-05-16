@@ -1,0 +1,37 @@
+- content_for :title, "#{@exercise.path} #{@exercise.title}"
+
+%script
+  casesFromYaml = #{@exercise.yaml_loaded['cases'].to_json.html_safe};
+
+.breadcrumbs
+  %a(href='/')
+    = image_tag 'basic_ruby.png'
+  &mdash;
+  %a(href='/1') 1. Output
+  &mdash;
+  %a(href='/1.1') 1.1. Output numbers
+  &mdash;
+  %a{href: "/#{@exercise.path}"} #{@exercise.path} #{@exercise.title}
+
+.section.stretch-section{class: @exercise.color}
+  .assignment-above
+    = image_tag_for_exercise @exercise
+    %p= assignment_split_with_br @exercise
+  .consistent-height
+    - if @exercise.yaml_loaded['cases']
+      .col-1-of-3
+        %textarea.code-editor= @exercise.yaml_loaded['code']
+      .col-2-of-3
+        .debugger
+      .col-3-of-3
+        .cases
+    - else
+      .col-1-of-2
+        %textarea.code-editor= @exercise.yaml_loaded['code']
+      .col-2-of-2
+        .debugger
+
+.actions
+  %button Help
+  %button Forward
+  %button Show Answer

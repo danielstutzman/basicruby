@@ -6,7 +6,8 @@ DebuggerComponent     = require './DebuggerComponent.coffee'
 RubyCodeHighlighter   = require './RubyCodeHighlighter.coffee'
 
 class DebuggerController
-  constructor: (retrieveNewCode, $debuggerDiv, $casesDiv, features) ->
+  constructor: (retrieveNewCode, $debuggerDiv, $casesDiv, casesFromYaml,
+      features) ->
     @retrieveNewCode = retrieveNewCode
     @$debuggerDiv = $debuggerDiv
     @$casesDiv = $casesDiv
@@ -19,14 +20,12 @@ class DebuggerController
     @highlighter = null
     @mostRecentNumRenderCall = 0
     @pendingStdin = null
-    @cases = {
-      currentCaseNum: null,
-      currentCaseStage: null,
-      cases: [
-        { input: '5\n1', actualOutput: '25', expectedOutput: '25' },
-        { input: '4\n1', actualOutput: '16', expectedOutput: '16' },
-      ]
-    }
+    @cases =
+      currentCaseNum: null
+      currentCaseStage: null
+      cases: _.map casesFromYaml, (_case) ->
+        input: _case.input.toString()
+        expectedOutput: _case.expected_output.toString()
 
   setup: ->
     @render()
@@ -53,10 +52,12 @@ class DebuggerController
         if numRenderCall == @mostRecentNumRenderCall
           @handleNextBytecode.apply this, []
     React.renderComponent DebuggerComponent(props), @$debuggerDiv
-    props =
-      cases:        @cases
-      runTestCases: => @handleRunTestCases.apply this, []
-    React.renderComponent CasesComponent(props), @$casesDiv
+
+    if @$casesDiv
+      props =
+        cases:        @cases
+        runTestCases: => @handleRunTestCases.apply this, []
+      React.renderComponent CasesComponent(props), @$casesDiv
 
   handleTogglePower: ->
     if @isOn

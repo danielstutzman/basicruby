@@ -507,7 +507,7 @@ body.machine {
       }
     } // end .section1
 
-    &.answer-section {
+    &.gold {
       padding-top: 10px;
       background-color: #960;
 
@@ -547,9 +547,9 @@ body.machine {
           background-color: #b80;
         }
       }
-    } // end .answer-section
+    } // end .gold
 
-    &.bug-section {
+    &.red {
       background-color: #400;
 
       textarea.code, .CodeMirror {
@@ -561,7 +561,7 @@ body.machine {
           color: white;
         }
       }
-    } // end .bug-section
+    } // end .red
 
   } // end .section
 
