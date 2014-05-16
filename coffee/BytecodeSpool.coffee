@@ -39,4 +39,11 @@ class BytecodeSpool
       console.error e.stack
       throw e
 
+  terminateEarly: ->
+    try
+      @spool['$terminate_early']()
+    catch e
+      console.error e.stack
+      throw e
+
 module.exports = BytecodeSpool

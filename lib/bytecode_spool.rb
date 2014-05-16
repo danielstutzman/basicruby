@@ -28,7 +28,9 @@ class BytecodeSpool
   end
 
   def get_next_bytecode is_result_truthy
-    if @counter >= @bytecodes.size
+    if @is_done
+      nil
+    elsif @counter >= @bytecodes.size
       nil
     elsif @num_steps_queued == 0
       nil
@@ -50,6 +52,11 @@ class BytecodeSpool
       @counter += 1 # ok to step past label
       bytecode
     end
+  end
+
+  def terminate_early
+    @is_done = true       # so it's not possible to continue
+    @num_steps_queued = 0 # so buttons aren't glowing
   end
 
   private

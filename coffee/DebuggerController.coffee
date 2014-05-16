@@ -117,7 +117,15 @@ class DebuggerController
         bytecode = @spool.getNextBytecode @interpreter.isResultTruthy
         if bytecode
           @highlighter.interpret bytecode
-          @interpreter.interpret bytecode
+
+          try
+            @interpreter.interpret bytecode
+          catch e
+            if e.name == 'ProgramTerminated'
+              @spool.terminateEarly()
+            else
+              throw e
+
           if @interpreter.isAcceptingInput()
             @pendingStdin = ''
           @render()

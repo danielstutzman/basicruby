@@ -29,6 +29,9 @@ class String
   end
 end
 
+class ProgramTerminated < RuntimeError
+end
+
 class BytecodeInterpreter
   def initialize
     @partial_calls = []
@@ -88,7 +91,12 @@ class BytecodeInterpreter
           result_is @accepted_input
           @accepted_input = nil
         else
-          result_is do_call *call
+          begin
+            result_is do_call *call
+          rescue
+            result_is nil
+            raise
+          end
         end
       when :start_var
         @started_var_names.push bytecode[1]
@@ -131,21 +139,27 @@ class BytecodeInterpreter
   end
 
   def do_call receiver, method_name, *args
-    if receiver == @main
-      begin
+    begin
+      if receiver == @main
+        begin
+          $is_capturing_stdout = true
+          result = @main.send method_name, *args
+          $is_capturing_stdout = false
+          result
+        rescue NoMethodError => e
+          raise NameError.new "undefined local variable or method " +
+            "`#{method_name}' for main:Object"
+        end
+      else
         $is_capturing_stdout = true
-        result = @main.send method_name, *args
+        result = receiver.send(method_name, *args)
         $is_capturing_stdout = false
         result
-      rescue NoMethodError => e
-        raise NameError.new "undefined local variable or method " +
-          "`#{method_name}' for main:Object"
       end
-    else
-      $is_capturing_stdout = true
-      result = receiver.send(method_name, *args)
-      $is_capturing_stdout = false
-      result
+    rescue Exception => e
+      text = "#{e.class}: #{e.message}\n"
+      $console_texts = $console_texts.clone + [[:stderr, text]]
+      raise ProgramTerminated.new
     end
   end
 

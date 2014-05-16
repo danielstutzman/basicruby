@@ -11,8 +11,12 @@ class BytecodeInterpreter
     try
       @interpreter.$interpret bytecode
     catch e
-      console.error e.stack
-      throw e
+      if e.name == 'ProgramTerminated'
+        # don't print out its stack trace
+        throw e
+      else
+        console.error e.stack
+        throw e
 
   visibleState: ->
     try

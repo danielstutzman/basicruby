@@ -290,6 +290,10 @@ body.machine {
             color: #ff0;
             background-color: #440;
           }
+          span.stderr {
+            color: #f00;
+            background-color: #400;
+          }
         }
         input.stdin {
           background-color: black;
