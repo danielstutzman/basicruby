@@ -1,7 +1,7 @@
 - content_for :title, "#{@exercise.path} #{@exercise.title}"
 
 %script
-  casesFromYaml = #{@exercise.yaml_loaded['cases'].to_json.html_safe};
+  exerciseYaml = #{@exercise.yaml_loaded.to_json.html_safe};
 
 .breadcrumbs
   %a(href='/')

@@ -17,6 +17,7 @@ cases:
   expected_output: 25
 - input: "5\\n1"
   expected_output: 16
+features: step instructions console
 END
 
   Exercise.create! path: '1.1.2',
@@ -31,6 +32,7 @@ code: |
   puts 1
   pust 2
   puts 3
+features: step instructions console
 END
 
   Exercise.all.each do |exercise|

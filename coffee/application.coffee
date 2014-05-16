@@ -14,16 +14,8 @@ document.addEventListener 'DOMContentLoaded', ->
     retrieveNewCode = -> codeMirror.getValue()
     $debuggerDiv = $one 'div.debugger'
     $casesDiv = $one 'div.cases'
-    # the casesFromYaml global variable needs to be defined by the view
-    features =
-      showStepButton: true
-      showRunButton: true
-      showPartialCalls: false
-      showVariables: false
-      showInstructions: true
-      showConsole: true
-      highlightTokens: false
-    new DebuggerController(retrieveNewCode, $debuggerDiv, $casesDiv,
-      casesFromYaml, features).setup()
+    # the exerciseYaml global variable needs to be defined by the view
+    new DebuggerController(
+      retrieveNewCode, $debuggerDiv, $casesDiv, exerciseYaml).setup()
 
     setupResizeHandler codeMirror
