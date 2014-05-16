@@ -3,14 +3,7 @@ $all = (selector) -> document.querySelectorAll(selector)
 
 resizeDivs = (w, h) ->
   assignment_y2 = $one('div.assignment-above').getBoundingClientRect().bottom
-  actions_div = $one('.actions')
-  if actions_div
-    actions_h = actions_div.getBoundingClientRect().bottom -
-                actions_div.getBoundingClientRect().top
-  else
-    actions_h = 0
-
-  height_total = Math.floor(h - assignment_y2 - actions_h)
+  height_total = Math.floor(h - assignment_y2)
 
   $console = $one('.section.stretch-section div.debugger .console')
   if $console

@@ -48,6 +48,19 @@ body.machine {
       }
     }
 
+    .actions {
+      float: right;
+      background-color: #777;
+      padding: 10px;
+
+      button {
+        padding: 10px 30px;
+        margin-left: 10px;
+        margin-bottom: 10px;
+        font-size: 20pt;
+      }
+    }
+
     .col-1-of-2 {
       float: left;
       width: 50%;
@@ -569,20 +582,5 @@ body.machine {
     } // end .red
 
   } // end .section
-
-  .actions {
-    position: fixed;
-    background-color: #777;
-    right: 0px;
-    bottom: 0px;
-    padding: 10px;
-
-    button {
-      padding: 10px 30px;
-      margin-left: 10px;
-      margin-bottom: 10px;
-      font-size: 20pt;
-    }
-  }
 
 } // end body.machine
