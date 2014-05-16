@@ -123,7 +123,7 @@ class BytecodeInterpreter
   def set_input text
     @accepted_input = text
     @accepting_input = false
-    $console_texts.push [:stdin, text]
+    $console_texts = $console_texts.clone + [[:stdin, text]]
   end
 
   def get_stdout
