@@ -49,6 +49,7 @@ ConsoleComponent = React.createClass
       window.setTimeout outputOneMoreChar, MILLIS_FOR_OUTPUT_CHAR
       @_scrollConsole()
     else
+      @_scrollConsole()
       @props.animationFinished()
 
   _scrollConsole: ->
