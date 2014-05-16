@@ -1,4 +1,4 @@
-- content_for :title, "#{@exercise.path} #{@exercise.title}"
+- content_for :title, document_title(@exercise)
 
 %script
   exerciseYaml = #{@exercise.yaml_loaded.to_json.html_safe};
@@ -11,7 +11,8 @@
   &mdash;
   %a(href='/1.1') 1.1. Output numbers
   &mdash;
-  %a{href: "/#{@exercise.path}"} #{@exercise.path} #{@exercise.title}
+  %a{href: "/#{@exercise.path}"}
+    #{@exercise.path} #{convert_title_backticks @exercise.title}
 
 .section.stretch-section{class: @exercise.color}
   /.actions
