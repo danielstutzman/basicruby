@@ -147,8 +147,12 @@ class BytecodeInterpreter
           $is_capturing_stdout = false
           result
         rescue NoMethodError => e
-          raise NameError.new "undefined local variable or method " +
-            "`#{method_name}' for main:Object"
+          if args.size == 0
+            raise NameError.new "undefined local variable or method " +
+              "`#{method_name}' for main:Object"
+          else
+            raise e
+          end
         end
       else
         $is_capturing_stdout = true
