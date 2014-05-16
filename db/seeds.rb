@@ -13,9 +13,9 @@ code: |
   puts 2
   puts 3
 cases:
-- input: "5\n1\n"
+- input: "5\\n1"
   expected_output: 25
-- input: "4\n1\n"
+- input: "5\\n1"
   expected_output: 16
 END
 
