@@ -4,17 +4,18 @@ if RUBY_PLATFORM == 'opal'
   end
 end
 
-$captured_stdout = []
+$console_texts = []
 $is_capturing_stdout = false
 class <<$stdout
   alias :old_write :write
   def write *args
     if $is_capturing_stdout
       if RUBY_PLATFORM == 'opal'
-        $captured_stdout = $captured_stdout.clone +
-          args.map { |arg| "#{arg}\n" }
+        $console_texts = $console_texts.clone +
+          args.map { |arg| [:stdout, "#{arg}\n"] }
       else
-        $captured_stdout = $captured_stdout.clone + args.map { |arg| "#{arg}" }
+        $console_texts = $console_texts.clone +
+          args.map { |arg| [:stdout, "#{arg}"] }
       end
     else
       old_write *args
@@ -40,7 +41,7 @@ class BytecodeInterpreter
     @accepting_input = false
     @accepted_input = nil
 
-    $captured_stdout = []
+    $console_texts = []
   end
 
   def visible_state
@@ -48,7 +49,7 @@ class BytecodeInterpreter
       partial_calls: @partial_calls.map { |call| call.clone },
       started_var_names: @started_var_names,
       vars: @vars,
-      output: $captured_stdout,
+      output: $console_texts,
       num_partial_call_executing: @num_partial_call_executing,
       accepting_input: @accepting_input,
     }
@@ -83,7 +84,6 @@ class BytecodeInterpreter
       when :call
         @num_partial_call_executing = nil
         call = @partial_calls.pop
-        outputs = $captured_stdout.size
         if @accepted_input != nil
           result_is @accepted_input
           @accepted_input = nil
@@ -115,10 +115,12 @@ class BytecodeInterpreter
   def set_input text
     @accepted_input = text
     @accepting_input = false
+    $console_texts.push [:stdin, text]
   end
 
-  def get_output
-    $captured_stdout.join
+  def get_stdout
+    stdout_pairs = $console_texts.select { |pair| pair[0] == :stdout }
+    stdout_pairs.map { |pair| pair[1] }.join
   end
 
   private

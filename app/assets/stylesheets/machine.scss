@@ -285,6 +285,10 @@ body.machine {
           margin: 0;
           white-space: pre;
           background-color: #040;
+          span.stdin {
+            color: #ff0;
+            background-color: #440;
+          }
         }
         input.stdin {
           background-color: black;

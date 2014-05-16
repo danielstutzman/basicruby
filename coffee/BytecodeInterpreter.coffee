@@ -51,9 +51,9 @@ class BytecodeInterpreter
       console.error e.stack
       throw e
 
-  getOutput: ->
+  getStdout: ->
     try
-      @interpreter['$get_output']()
+      @interpreter['$get_stdout']()
     catch e
       console.error e.stack
       throw e

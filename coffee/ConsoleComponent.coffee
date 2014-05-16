@@ -32,8 +32,8 @@ ConsoleComponent = React.createClass
   componentWillReceiveProps: (nextProps) ->
     if nextProps.output
       numChars = 0
-      for text in nextProps.output
-        numChars += text.length
+      for pair in nextProps.output
+        numChars += pair[1].length
       @setState numReceivedOutputChars: numChars
     else
       @setState numEmittedOutputChars: 0, numReceivedOutputChars: 0
@@ -68,11 +68,13 @@ ConsoleComponent = React.createClass
         ref: 'console'
         span
           className: 'before-cursor'
-          _.map (@props.output || []), (text) ->
+          _.map (@props.output || []), (pair, i) ->
             if numCharsToEmit > 0
+              [source, text] = pair
               substring = text.substring 0, numCharsToEmit
               numCharsToEmit -= substring.length
-              substring
+              span { className: source, key: "output#{i}" },
+                substring
         if @props.pendingStdin != null
           input
             ref: 'stdin'

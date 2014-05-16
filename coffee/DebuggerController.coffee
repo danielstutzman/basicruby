@@ -188,7 +188,7 @@ class DebuggerController
 
       when 'SHOW_INPUT'
         lines = @cases.cases[@cases.currentCaseNum].input.split("\n")
-        @pendingStdin = lines[@cases.nextInputLineNum]
+        @pendingStdin = lines[@cases.nextInputLineNum] + "\n"
         @cases.nextInputLineNum += 1
 
         @cases.currentCaseStage = 'SUBMIT_INPUT'
@@ -218,7 +218,7 @@ class DebuggerController
         millis = 800
 
       when 'FAKE_PASTE_OUTPUT'
-        output = @interpreter.getOutput().replace /\n$/, ''
+        output = @interpreter.getStdout().replace /\n$/, ''
         @cases.cases[@cases.currentCaseNum].actualOutput = output
 
         @cases.currentCaseStage = 'WAIT_AFTER_FAKE_PASTE'
