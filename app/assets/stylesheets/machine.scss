@@ -51,14 +51,15 @@ body.machine {
     }
 
     .actions {
-      float: right;
-      background-color: #777;
-      padding: 10px;
+      position: absolute;
+      top: 0;
+      right: 0;
 
       button {
-        padding: 10px 30px;
+        width: 200px;
+        height: 40px;
         margin-left: 10px;
-        margin-bottom: 10px;
+        margin-top: 5px;
         font-size: 20pt;
       }
     }

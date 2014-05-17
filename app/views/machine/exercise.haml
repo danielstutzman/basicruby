@@ -13,8 +13,13 @@
   = convert_title_backticks @exercise.title
 
 .section.stretch-section{class: @exercise.color}
-  /.actions
-  /  %button Help
+  .actions
+    %button Demo
+    %br
+    %button Solution
+    %br
+    %button Next
+
   .assignment-above
     = image_tag_for_exercise @exercise
     %p= assignment_split_with_br @exercise
