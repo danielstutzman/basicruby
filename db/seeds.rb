@@ -12,13 +12,10 @@ code: |
   puts 1
   puts 2
   puts 3
-features: step instructions console
+cases:
+- expected_output: "1\\n2\\n3"
+features: run instructions console
 END
-#cases:
-#- input: "5\\n1"
-#  expected_output: 25
-#- input: "5\\n1"
-#  expected_output: 16
 
   Exercise.create! path: '1.1.2',
     title: 'Fix the `NoMethodError`',
@@ -32,7 +29,20 @@ code: |
   puts 1
   pust 2
   puts 3
-features: step instructions console
+features: run instructions console
+END
+
+  Exercise.create! path: '1.1.6',
+    title: 'Output what the test case expects',
+    color: 'blue',
+    yaml: <<END
+assignment: |
+  Note the expected output under Run Test Case.
+  Write a program to output what's expected.
+  Click Run Test Case to grade it.
+cases:
+- expected_output: "5\\n5\\n9\\n"
+features: run instructions console
 END
 
   Exercise.all.each do |exercise|
