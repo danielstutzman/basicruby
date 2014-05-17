@@ -520,19 +520,6 @@ body.machine {
     &.gold {
       background-color: #960;
 
-      .hider {
-        position: absolute;
-        top: 95%;
-        right: 10px;
-        button {
-          background: transparent;
-          border: 1px #aaa solid;
-          border-top: 1px #ccc solid;
-          border-bottom: 1px #999 solid;
-          color: #aaa;
-        }
-      }
-
       textarea.code, .CodeMirror {
         background-color: #ddd;
         .CodeMirror-linenumbers {
@@ -602,7 +589,7 @@ body.machine {
         margin: 0;
         margin-left: 5px;
         font-size: 20pt;
-        background-color: #777; // tone it down a bit
+        background-color: #777;
         border-top: 2px #aaa solid;
         border-left: 2px #aaa solid;
         border-right: 2px #444 solid;
