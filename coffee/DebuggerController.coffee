@@ -136,7 +136,9 @@ class DebuggerController
           if @interpreter.isAcceptingInput()
             @pendingStdin = ''
           @render()
-          if @spool.isDone() && @cases.currentCaseNum != null
+
+          if @spool.isDone() && @cases.currentCaseNum != null &&
+             @cases.currentCaseStage == 'RUNNING'
             @cases.currentCaseStage = 'PROGRAM_IS_DONE'
             @handleRunTestCases()
 
@@ -177,11 +179,15 @@ class DebuggerController
 
         # run step until the first position
         @spool.queueRunUntil 'NEXT_POSITION'
-        bytecode = @spool.getNextBytecode
+        bytecode = @spool.getNextBytecode()
         @highlighter.interpret bytecode
 
-        @cases.currentCaseStage = 'SHOWING_STARTED_MACHINE'
-        millis = 700
+        if bytecode[0] == 'result' # could happen if you run a blank program
+          @cases.currentCaseStage = 'PROGRAM_IS_DONE'
+          millis = 1
+        else
+          @cases.currentCaseStage = 'SHOWING_STARTED_MACHINE'
+          millis = 700
 
       when 'SHOWING_STARTED_MACHINE'
         @isRunButtonDepressed = true
