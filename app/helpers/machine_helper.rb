@@ -5,6 +5,8 @@ module MachineHelper
       image_tag 'exercise_icons/light_bulb30.png', width: 30, height: 30
     when 'red'
       image_tag 'exercise_icons/red_bug30.png', width: 30, height: 30
+    when 'blue'
+      image_tag 'exercise_icons/question_mark30.png', width: 30, height: 30
     end
   end
   def assignment_split_with_br exercise

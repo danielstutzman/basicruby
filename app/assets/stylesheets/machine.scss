@@ -572,6 +572,19 @@ body.machine {
       }
     } // end .red
 
+    &.blue {
+      background-color: #004;
+
+      textarea.code, .CodeMirror {
+        .CodeMirror-linenumbers {
+          background-color: #004;
+        }
+        .CodeMirror-linenumber {
+          color: white;
+        }
+      }
+    } // end .red
+
     .actions {
       position: fixed;
       bottom: 0;
