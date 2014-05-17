@@ -16,13 +16,15 @@ body.machine {
   font-family: sans-serif;
   margin: 0;
 
-  .breadcrumbs {
+  .title-bar {
     background-color: black;
-    color: #333;
+    color: #808080;
     font-size: 20pt;
-
-    a {
-      color: #888;
+    font-weight: bold;
+    .logo {
+      float: left;
+      margin-left: 15px;
+      margin-right: 10px;
     }
   }
 

@@ -3,16 +3,14 @@
 %script
   exerciseYaml = #{@exercise.yaml_loaded.to_json.html_safe};
 
-.breadcrumbs
-  %a(href='/')
-    = image_tag 'basic_ruby.png'
+.title-bar
+  .logo
+    %a(href='/')<
+      = image_tag 'basic_ruby_x2_gray.png', width: 148, height: 18
   &mdash;
-  %a(href='/1') 1. Output
+  Exercise #{@exercise.path}
   &mdash;
-  %a(href='/1.1') 1.1. Output numbers
-  &mdash;
-  %a{href: "/#{@exercise.path}"}
-    #{@exercise.path} #{convert_title_backticks @exercise.title}
+  = convert_title_backticks @exercise.title
 
 .section.stretch-section{class: @exercise.color}
   /.actions
