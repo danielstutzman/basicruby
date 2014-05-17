@@ -40,6 +40,10 @@ assignment: |
   Note the expected output under Run Test Case.
   Write a program to output what's expected.
   Click Run Test Case to grade it.
+solution: |
+  puts 5
+  puts 5
+  puts 9
 cases:
 - expected_output: "5\\n5\\n9\\n"
 features: run instructions console

@@ -29,11 +29,22 @@
         %textarea.code-editor= @exercise.yaml_loaded['code']
       .col-2-of-2
         .debugger
+    .clear
 
-  .actions.fake
-    / just to take up vertical space at the bottom of the page
-    %button Fake button
-  .actions.real
-    %button Demo
-    %button Solution
-    %button Next
+.section.gold#solution-section
+  .consistent-height
+    - if @exercise.yaml_loaded['cases']
+      .col-1-of-3
+        #solution-code-hider
+          %textarea.code-editor
+            = @exercise.yaml_loaded['solution']
+      .col-2-of-3
+        .debugger
+      .col-3-of-3
+        .cases
+    .clear
+
+- if @exercise.color == 'blue'
+  .actions.blue
+    %button.show-demo Demo
+    %button.show-solution Solution

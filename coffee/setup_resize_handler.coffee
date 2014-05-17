@@ -1,29 +1,38 @@
 $one = (selector) -> document.querySelector(selector)
 $all = (selector) -> document.querySelectorAll(selector)
 
+heightOfDiv = (div) ->
+  if div
+    div.getBoundingClientRect().bottom - div.getBoundingClientRect().top
+  else
+    0
+
 resizeDivs = (w, h) ->
-  assignment_y2 = $one('div.assignment-above').getBoundingClientRect().bottom
-  actions_div = $one('.actions.real')
-  if actions_div
-    actions_h = actions_div.getBoundingClientRect().bottom -
-                actions_div.getBoundingClientRect().top
-  else
-    actions_h = 0
+  title_h      = heightOfDiv $one 'div.title-bar'
+  assignment_h = heightOfDiv $one 'div.assignment-above'
+  solution_h   = heightOfDiv $one '#solution-section'
+  actions_h    = heightOfDiv $one '.actions'
+  fudge = 40
 
-  height_total = Math.floor(h - assignment_y2 - actions_h)
+  height_total = Math.floor(h -
+    title_h - assignment_h - solution_h - actions_h - fudge)
+  if height_total < 400
+    height_total = 400
 
-  $console = $one('.section.stretch-section div.debugger .console')
-  if $console
-    console_y = $console.getBoundingClientRect().top
-    height_above_console = Math.ceil(console_y - assignment_y2)
-    height_console = height_total - height_above_console - 5
-  else
-    height_console = null
+  stretch = $one('.section.stretch-section .consistent-height')
+  if stretch
+    stretch.style.height = "#{height_total}px"
+    resizeConsoleToFitHeight stretch
 
-  if $one('.consistent-height')
-    $one('.consistent-height').style.height = "#{height_total}px"
-  for div in $all('.section.stretch-section div.debugger .console')
-    div.style.height = "#{height_console}px"
+resizeConsoleToFitHeight = (div) ->
+  height_total = heightOfDiv div
+  buttons_h = heightOfDiv div.querySelector('.buttons')
+  instructions_h = heightOfDiv div.querySelector('.instructions')
+  _console = div.querySelector('.debugger .console')
+  fudge = 40
+  if _console
+    height_console = height_total - buttons_h - instructions_h - fudge
+    _console.style.height = "#{height_console}px"
 
 setupResizeHandler = (code_mirror) ->
   oldW = 0
@@ -41,12 +50,18 @@ setupResizeHandler = (code_mirror) ->
       oldW = w
       oldH = h
     else if isChanging
+      isChanging = false
       resizeDivs w, h
       code_mirror.refresh()
-      isChanging = false
   window.setInterval resizeIfChanged, 500
   resizeIfChanged()
   resizeIfChanged()
+  forceResize = ->
+    w = window.innerWidth
+    h = window.innerHeight
+    resizeDivs w, h
+    code_mirror.refresh()
 
 module.exports =
   setupResizeHandler: setupResizeHandler
+  resizeConsoleToFitHeight: resizeConsoleToFitHeight
