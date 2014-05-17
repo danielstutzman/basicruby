@@ -6,20 +6,13 @@
 .title-bar
   .logo
     %a(href='/')<
-      = image_tag 'basic_ruby_x2_gray.png', width: 148, height: 18
+      = image_tag 'basic_ruby_x2_black.png', width: 148, height: 18
   &mdash;
   Exercise #{@exercise.path}
   &mdash;
   = convert_title_backticks @exercise.title
 
 .section.stretch-section{class: @exercise.color}
-  .actions
-    %button Demo
-    %br
-    %button Solution
-    %br
-    %button Next
-
   .assignment-above
     = image_tag_for_exercise @exercise
     %p= assignment_split_with_br @exercise
@@ -36,3 +29,11 @@
         %textarea.code-editor= @exercise.yaml_loaded['code']
       .col-2-of-2
         .debugger
+
+  .actions.fake
+    / just to take up vertical space at the bottom of the page
+    %button Fake button
+  .actions.real
+    %button Demo
+    %button Solution
+    %button Next

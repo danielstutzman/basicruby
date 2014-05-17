@@ -17,10 +17,12 @@ body.machine {
   margin: 0;
 
   .title-bar {
-    background-color: black;
-    color: #808080;
+    background-color: #777;
+    color: black;
     font-size: 20pt;
     font-weight: bold;
+    border-bottom: 2px #555 solid;
+    padding: 5px 0;
     .logo {
       float: left;
       margin-left: 15px;
@@ -43,24 +45,11 @@ body.machine {
       }
       p {
         margin: 0;
-        padding: 20px 0;
+        padding-top: 20px;
+        padding-bottom: 35px;
         margin-left: 60px;
         font-size: 30pt;
         line-height: 45pt;
-      }
-    }
-
-    .actions {
-      position: absolute;
-      top: 0;
-      right: 0;
-
-      button {
-        width: 200px;
-        height: 40px;
-        margin-left: 10px;
-        margin-top: 5px;
-        font-size: 20pt;
       }
     }
 
@@ -529,7 +518,6 @@ body.machine {
     } // end .section1
 
     &.gold {
-      padding-top: 10px;
       background-color: #960;
 
       .hider {
@@ -583,6 +571,32 @@ body.machine {
         }
       }
     } // end .red
+
+    .actions {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      text-align: right;
+      padding-right: 10px;
+      padding-top: 40px;
+      padding-bottom: 10px;
+      &.fake {
+        position:relative;
+        visibility: hidden;
+      }
+      button {
+        width: 200px;
+        margin: 0;
+        margin-left: 5px;
+        font-size: 20pt;
+        background-color: #777; // tone it down a bit
+        border-top: 2px #aaa solid;
+        border-left: 2px #aaa solid;
+        border-right: 2px #444 solid;
+        border-bottom: 2px #444 solid;
+        padding: 10px 0;
+      }
+    }
 
   } // end .section
 
