@@ -151,6 +151,7 @@ class DebuggerController
     if @cases.currentCaseNum == null
       for case_ in @cases.cases
         case_.actualOutput = null
+        case_.matches = null
       @cases.currentCaseNum = 0
       @cases.currentCaseStage = 'HIGHLIGHTING'
       @cases.nextInputLineNum = 0
@@ -240,8 +241,10 @@ class DebuggerController
         millis = 800
 
       when 'FAKE_PASTE_OUTPUT'
+        currentCase = @cases.cases[@cases.currentCaseNum]
         output = @interpreter.getStdout().replace /\n$/, ''
-        @cases.cases[@cases.currentCaseNum].actualOutput = output
+        currentCase.actualOutput = output
+        currentCase.matches = (output == currentCase.expectedOutput)
 
         @cases.currentCaseStage = 'WAIT_AFTER_FAKE_PASTE'
         millis = 600

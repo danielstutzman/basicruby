@@ -405,14 +405,23 @@ body.machine {
             color: #fff;
           }
           &.actual-output {
-            .dot-dot-dot {
-              font-size: 10pt;
-            }
             span {
               color: #0f0;
               white-space: pre;
               background-color: $lightening-to-show-spaces;
             }
+          }
+          &.match {
+            .passed {
+              color: #0f0;
+            }
+            .failed {
+              color: #f00;
+            }
+          }
+
+          .dot-dot-dot {
+            font-size: 10pt;
           }
         }
       }

@@ -1,7 +1,9 @@
 type           = React.PropTypes
 RIGHT_ARROW    = '\u2192'
 RIGHT_TRIANGLE = '\u25b6'
-NBSP           = "\u00a0"
+NBSP           = '\u00a0'
+CHECK_MARK     = '\u2714'
+X_MARK         = '\u2718'
 
 CasesComponent = React.createClass
 
@@ -44,6 +46,7 @@ CasesComponent = React.createClass
             th {}, 'Input'
           th {}, 'Expected', br {}, 'Output'
           th {}, 'Actual', br {}, 'Output'
+          th {}, 'Match?'
         _.map @props.cases.cases, (_case, case_num) =>
           tr
             key: "case#{case_num}"
@@ -64,5 +67,13 @@ CasesComponent = React.createClass
               else
                 div { className: 'string' },
                   multiLineString _case.actualOutput
+            td { className: 'match' },
+              if _case.matches == true
+                div { className: 'passed' }, CHECK_MARK
+              else if _case.matches == false
+                div { className: 'failed' }, X_MARK
+              else if _case.matches == null &&
+                  @props.cases.currentCaseNum != null
+                div { className: 'dot-dot-dot' }, '...'
 
 module.exports = CasesComponent
