@@ -1,20 +1,78 @@
 - content_for :title, 'Basic Ruby'
 
 %h1.basic-ruby Basic Ruby
-
 .learn-programming
   learn programming with lots of examples and lots of practice
-
 %br(clear='all')
 
-%h2.choice
-  %a(href='#' onclick="document.getElementById('about-text').style.display = (document.getElementById('about-text').style.display === 'block') ? 'none' : 'block'; return false;")
-    Learn about the project
+%br
+%br
+%br
+%br
 
-#about-text(style='display:none')
-  = render 'about_text'
-
-%h2.choice
-  %a(href='/1') Unit 1 &mdash; Output
+%table(style='border-spacing: 0px; margin: 0 auto;')
+  %tr
+    %th
+    %th.gold
+      = image_tag_for_exercise_color 'gold'
+      %br
+      See a
+      %br
+      demo
+    %th.red
+      = image_tag_for_exercise_color 'red'
+      %br
+      Fix the
+      %br
+      bugs
+    %th.blue
+      = image_tag_for_exercise_color 'blue'
+      %br
+      Predict
+      %br
+      output
+    %th.green
+      = image_tag_for_exercise_color 'green'
+      %br
+      Implement
+      %br
+      the spec
+    %th.orange
+      = image_tag_for_exercise_color 'orange'
+      %br
+      Undo
+      %br
+      tricks
+  %tr
+    %th.title How to output numbers
+    %td.gold=   level_indicator 0
+    %td.red=    level_indicator 0
+    %td.blue=   level_indicator 0
+    %td.green=  level_indicator 0
+    %td.orange= level_indicator 0
+  %tr
+    %th.title Comments, blank lines
+    %td.gold=   level_indicator 0
+    %td.red=    level_indicator 0
+    %td.blue=   level_indicator 0
+    %td.green=  level_indicator 0
+    %td.orange= level_indicator 0
+  %tr
+    %th.title Multiple statements<br>sharing a line
+    %td.gold=   level_indicator 0
+    %td.red=    level_indicator 0
+    %td.blue=   level_indicator 0
+    %td.green=  level_indicator 0
+    %td.orange= level_indicator 0
+  %tr
+    %th.title Multiple outputs<br>sharing a line
+    %td.gold=   level_indicator 0
+    %td.red=    level_indicator 0
+    %td.blue=   level_indicator 0
+    %td.green=  level_indicator 0
+    %td.orange= level_indicator 0
+%br
+%br
+%br
 
 = render 'mailchimp'

@@ -63,4 +63,89 @@ body.static {
     font-weight: 100;
     padding: 0 15px;
   }
+
+  a.level-indicator {
+    display: block;
+    width:120px;
+    text-decoration: none;
+    font-size: 80pt;
+    height: 50px;
+    line-height: 30pt;
+    position: relative;
+    color: white;
+
+    &.level-0 {
+      top: 10px;
+    }
+    &.level-1 {
+      top: 17px;
+    }
+    &.level-2 {
+      font-size: 40pt;
+      top: 15px;
+    }
+    &.level-3 {
+      top: 17px;
+    }
+    &.level-4 {
+      top: 7px;
+    }
+  }
+  td {
+    text-align: center;
+    vertical-align: center;
+    width: 100px;
+    padding-bottom: 20px;
+  }
+  th {
+    color: #fff;
+    font-weight: bold;
+    width: 120px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    text-shadow: 0 1px #aaa, 1px 0 #aaa;
+
+    &.title {
+      color: black;
+      font-size: 20pt;
+      font-weight: bold;
+      width: 360px;
+      text-align: right;
+      padding-right: 30px;
+      text-shadow: none;
+    }
+  }
+  td.gold, th.gold {
+    background-color:#ee9;
+    a.level-indicator {
+      color: #cb0;
+    }
+  }
+  td.red, th.red {
+    background-color:#fcc;
+    a.level-indicator {
+      color: #f44;
+    }
+  }
+  td.blue, th.blue {
+    background-color:#acf;
+    a.level-indicator {
+      color: #44f;
+    }
+  }
+  td.green, th.green {
+    background-color:#afa;
+    a.level-indicator {
+      color: #0a0;
+    }
+  }
+  td.orange, th.orange {
+    background-color:#fd8;
+    a.level-indicator {
+      color: #e70;
+    }
+  }
+  td a.level-indicator:hover {
+    color: #fff;
+  }
 }
