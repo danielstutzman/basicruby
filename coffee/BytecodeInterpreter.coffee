@@ -62,4 +62,11 @@ class BytecodeInterpreter
       console.error e.stack
       throw e
 
+  getStderr: ->
+    try
+      @interpreter['$get_stderr']()
+    catch e
+      console.error e.stack
+      throw e
+
 module.exports = BytecodeInterpreter

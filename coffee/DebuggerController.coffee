@@ -151,6 +151,7 @@ class DebuggerController
     if @cases.currentCaseNum == null
       for case_ in @cases.cases
         case_.actualOutput = null
+        case_.error = null
         case_.matches = null
       @cases.currentCaseNum = 0
       @cases.currentCaseStage = 'HIGHLIGHTING'
@@ -242,9 +243,14 @@ class DebuggerController
 
       when 'FAKE_PASTE_OUTPUT'
         currentCase = @cases.cases[@cases.currentCaseNum]
-        output = @interpreter.getStdout().replace /\n$/, ''
-        currentCase.actualOutput = output
-        currentCase.matches = (output == currentCase.expectedOutput)
+        error = @interpreter.getStderr()
+        if error != ''
+          console.log 'setting error'
+          currentCase.error = error
+        else
+          output = @interpreter.getStdout().replace /\n$/, ''
+          currentCase.actualOutput = output
+          currentCase.matches = (output == currentCase.expectedOutput)
 
         @cases.currentCaseStage = 'WAIT_AFTER_FAKE_PASTE'
         millis = 600

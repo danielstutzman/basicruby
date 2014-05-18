@@ -410,6 +410,10 @@ body.machine {
               white-space: pre;
               background-color: $lightening-to-show-spaces;
             }
+            .error {
+              color: #f00;
+              font-size: 15pt;
+            }
           }
           &.match {
             .passed {

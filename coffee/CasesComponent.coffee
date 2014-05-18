@@ -60,20 +60,26 @@ CasesComponent = React.createClass
             td { className: 'expected-output' },
               div { className: 'string' },
                 multiLineString _case.expectedOutput
-            td { className: 'actual-output' },
-              if _case.actualOutput == null
-                if @props.cases.currentCaseNum != null
+            if _case.error != null
+              td { className: 'actual-output', colSpan: '2' },
+                div { className: 'error' },
+                  _case.error
+            if _case.error == null
+              td { className: 'actual-output' },
+                if _case.actualOutput != null
+                  div { className: 'string' },
+                    multiLineString _case.actualOutput
+                else
+                  if @props.cases.currentCaseNum != null
+                    div { className: 'dot-dot-dot' }, '...'
+            if _case.error == null # repeated because if only has 1 return
+              td { className: 'match' },
+                if _case.matches == true
+                  div { className: 'passed' }, CHECK_MARK
+                else if _case.matches == false
+                  div { className: 'failed' }, X_MARK
+                else if _case.matches == null &&
+                    @props.cases.currentCaseNum != null
                   div { className: 'dot-dot-dot' }, '...'
-              else
-                div { className: 'string' },
-                  multiLineString _case.actualOutput
-            td { className: 'match' },
-              if _case.matches == true
-                div { className: 'passed' }, CHECK_MARK
-              else if _case.matches == false
-                div { className: 'failed' }, X_MARK
-              else if _case.matches == null &&
-                  @props.cases.currentCaseNum != null
-                div { className: 'dot-dot-dot' }, '...'
 
 module.exports = CasesComponent
