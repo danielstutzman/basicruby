@@ -11,6 +11,7 @@
   Exercise #{@exercise.path}
   &mdash;
   = convert_title_backticks @exercise.title
+  = level_picker 3
 
 .section.stretch-section{class: @exercise.color}
   .assignment-above
@@ -46,5 +47,12 @@
 
 - if @exercise.color == 'blue'
   .actions.blue
-    %button.show-demo Demo
-    %button.show-solution Solution
+    .left
+      %button.show-demo Demo
+      %button.show-solution Solution
+    .right
+      %button Skip ahead
+- else
+  .actions{class: @exercise.color}
+    .right
+      %button Continue
