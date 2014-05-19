@@ -3,7 +3,7 @@ Exercise.transaction do
 
   Exercise.create! path: '1.1.1',
     title: 'How to output numbers',
-    color: 'gold',
+    color: 'yellow',
     yaml: <<END
 assignment: |
   Click Power to start the Ruby machine.

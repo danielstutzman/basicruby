@@ -4,7 +4,7 @@ module ApplicationHelper
   end
   def image_tag_for_exercise_color color
     case color
-    when 'gold'
+    when 'yellow'
       image_tag 'exercise_icons/light_bulb30.png', width: 60, height: 60
     when 'red'
       image_tag 'exercise_icons/red_bug30.png', width: 60, height: 60

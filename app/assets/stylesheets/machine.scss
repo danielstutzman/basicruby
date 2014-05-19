@@ -524,7 +524,7 @@ body.machine {
       }
     } // end .section1
 
-    &.gold {
+    &.yellow {
       background-color: #960;
 
       textarea.code, .CodeMirror {
@@ -550,7 +550,7 @@ body.machine {
           background-color: #b80;
         }
       }
-    } // end .gold
+    } // end .yellow
 
     &.red {
       background-color: #400;
@@ -603,7 +603,7 @@ body.machine {
     padding-bottom: 10px;
     text-align: right;
 
-    &.gold {
+    &.yellow {
       background-color: #960;
     }
     &.blue {
