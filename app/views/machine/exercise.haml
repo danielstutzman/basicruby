@@ -11,7 +11,11 @@
   Exercise #{@exercise.path}
   &mdash;
   = convert_title_backticks @exercise.title
-  = level_picker 3
+  .level-selector
+    %a.level-0-1.selected(href='#')
+    %a.level-1-2(href='#')
+    %a.level-2-3(href='#')
+    %a.level-3-4(href='#')
 
 .section.stretch-section{class: @exercise.color}
   .assignment-above
