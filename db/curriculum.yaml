@@ -18,6 +18,9 @@
     code: |
       puts 4
       ptus 2
+    solution: |
+      puts 4
+      puts 2
     cases:
     - expected_output: |
         4
