@@ -14,6 +14,7 @@ Exercise.transaction do
 
     [1, 2, 3, 4].each_with_index do |level_num|
       key = "level #{level_num}"
+      next if topic_yaml[key] == nil # just for unfinished topics
       topic_yaml[key].each do |color, exercise|
         Exercise.create! topic_id: topic.id, topic_num: topic.num,
           color: color, level_num: level_num,
