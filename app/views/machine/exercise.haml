@@ -12,13 +12,7 @@
   = "#{@exercise.topic.num}."
   = convert_title_backticks @exercise.title
   %span.dash &mdash;
-  = "Level #{@exercise.level_num}"
-  %span.dash &mdash;
   = @exercise.color_explanation
-  .level-selector
-    - [1, 2, 3, 4].each do |i|
-      %a{ class: "level-#{i-1}-#{i} #{@exercise.level_num == i && 'selected'}",
-          href: @exercise.path_for_level_num(i) }
 
 .section.stretch-section{class: @exercise.color}
 

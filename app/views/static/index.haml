@@ -43,27 +43,16 @@
       Undo
       %br
       tricks
-  %tr
-    %th.title How to output numbers
-    %td.yellow= level_indicator 1, 'Y', 0
-    %td.blue=   image_tag 'under_construction.png', title: 'Under construction'
-    %td.red=    level_indicator 1, 'R', 0
-    %td.green=  level_indicator 1, 'G', 0
-    %td.orange= image_tag 'under_construction.png', title: 'Under construction'
-  %tr
-    %th.title Continue a statement<br>over multiple lines
-    %td.yellow= image_tag 'under_construction.png', title: 'Under construction'
-    %td.blue=   image_tag 'under_construction.png', title: 'Under construction'
-    %td.red=    image_tag 'under_construction.png', title: 'Under construction'
-    %td.green=  image_tag 'under_construction.png', title: 'Under construction'
-    %td.orange= image_tag 'under_construction.png', title: 'Under construction'
-  %tr
-    %th.title Continue output<br>on the same line
-    %td.yellow= image_tag 'under_construction.png', title: 'Under construction'
-    %td.blue=   image_tag 'under_construction.png', title: 'Under construction'
-    %td.red=    image_tag 'under_construction.png', title: 'Under construction'
-    %td.green=  image_tag 'under_construction.png', title: 'Under construction'
-    %td.orange= image_tag 'under_construction.png', title: 'Under construction'
+  - @topics.each do |topic|
+    %tr
+      %th.title!= topic.title_html
+      %td.yellow= done_indicator topic.num, 'Y'
+      %td.blue=   image_tag 'under_construction.png',
+        title: 'Under construction'
+      %td.red=    done_indicator topic.num, 'R'
+      %td.green=  done_indicator topic.num, 'G'
+      %td.orange= image_tag 'under_construction.png',
+        title: 'Under construction'
 %br
 %br
 %br

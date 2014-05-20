@@ -10,16 +10,14 @@ Exercise.transaction do
   topics.each_with_index do |topic_yaml, num0|
     topic = Topic.create! num: num0 + 1,
       title: topic_yaml['title'],
+      title_html: topic_yaml['title_html'] || topic_yaml['title'],
       features: topic_yaml['features']
 
-    [1, 2, 3, 4].each_with_index do |level_num|
-      key = "level #{level_num}"
-      next if topic_yaml[key] == nil # just for unfinished topics
-      topic_yaml[key].each do |color, exercise|
-        Exercise.create! topic_id: topic.id, topic_num: topic.num,
-          color: color, level_num: level_num,
-          json: JSON.generate(exercise)
-      end
+    %w[yellow blue red green orange].each do |color|
+      exercise = topic_yaml[color]
+      next if exercise.nil? # just for unfinished topics
+      Exercise.create! topic_id: topic.id, topic_num: topic.num,
+        color: color, json: JSON.generate(exercise)
     end
   end
 end

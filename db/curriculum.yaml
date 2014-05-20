@@ -1,177 +1,149 @@
-- title: How to output numbers
+- title: Output numbers and blank lines
+  title_html: "Output numbers<br>and blank lines"
   features: run instructions console
-  level 1:
-    yellow:
-      assignment: |
-        Click Power.
-        Click Run, and watch the program run.
-        Then click Continue.
-      code: |
-        puts 8
-        puts 3
-    red:
-      assignment: |
-        Click Run Test Case.
-        Read the error message.
-        Fix the program, then click Run Test Case again.
-      code: |
-        puts 4
-        ptus 2
-      cases:
-      - expected_output: |
-          4
-          2
-    green:
-      assignment: |
-        Write a program to output just the number 10.
-        Click Run Test Case to check your answer.
-      solution: puts 10
-      cases:
-      - expected_output: 10
-  level 2:
-    yellow:
-      assignment: |
-        Blank lines of code will get skipped.
-        To output a blank line, call `puts` without an argument.
-      code: |
-        puts 1
+  yellow:
+    assignment: |
+      Click Power.
+      Click Run, and watch the program run.
+      Then click Continue.
+    code: |
+      puts 8
+      puts
+      puts 3
+  red:
+    assignment: |
+      Click Run Test Case.
+      Read the error message.
+      Fix the program, then click Run Test Case again.
+    code: |
+      puts 4
+      ptus 2
+    cases:
+    - expected_output: |
+        4
+        2
+  green:
+    assignment: |
+      Write a program to output a blank line and the number 10.
+      Click Run Test Case to check your answer.
+    solution: |
+      puts
+      puts 10
+    cases:
+    - expected_output: "\n10\n"
 
-        puts 2
-        puts
-        puts 3
-    red:
-      assignment: |
-        This program isn't outputting a blank line as expected.
-        Fix it so Run Test Case succeeds.
-      code: "puts -1\n\nputs 1"
-      solution: |
-        puts -1
-        puts
-        puts 1
-      cases:
-      - expected_output: |
-          -1
+- title: Comments
+  features: run instructions console
+  yellow:
+    assignment: |
+      Anything from `#` to the line's end is a comment.
+      You can "comment out" code by writing `#` before it.
+    code: |
+      # Approximations of
+      # important numbers
+      # in math
 
-          1
-    green:
-      assignment: |
-        Write a program to output just two blank lines.
-        Click Run Test Case to check your answer.
-      solution: |
-        puts
-        puts
-      cases:
-      - expected_output: "\n\n"
-  level 3:
-    yellow:
-      assignment: |
-        Anything from `#` to the line's end is a comment.
-        You can "comment out" code by writing `#` before it.
-      code: |
-        # Approximations of
-        # important numbers
-        # in math
+      puts 3.14 # pi
 
-        puts 3.14 # pi
+      puts 2.72 # e
 
-        puts 2.72 # e
+      #puts 1.41
+  red:
+    assignment: |
+      Add `#` symbols so Run Test Case succeeds.
+    code: |
+      Count to three
+      puts 1
+      puts 2
+      puts 2.5
+      puts 3
+    solution: |
+      # Count to three
+      puts 1
+      puts 2
+      #puts 2.5
+      puts 3
+    cases:
+    - expected_output: |
+        1
+        2
+        3
+  green:
+    assignment: |
+      Write a program to output the numbers 40.02 and -105.28.
+      Use comments to explain they mean latitude and longitude.
+    solution: |
+      # output latitude
+      puts 40.02
 
-        #puts 1.41
-    red:
-      assignment: |
-        Add `#` symbols so Run Test Case succeeds.
-      code: |
-        Count to three
-        puts 1
-        puts 2
-        puts 2.5
-        puts 3
-      solution: |
-        # Count to three
-        puts 1
-        puts 2
-        #puts 2.5
-        puts 3
-      cases:
-      - expected_output: |
-          1
-          2
-          3
-    green:
-      assignment: |
-        Write a program to output the numbers 40.02 and -105.28.
-        Use comments to explain they mean latitude and longitude.
-      solution: |
-        # output latitude
-        puts 40.02
+      # output longitude
+      puts -105.28
+    cases:
+    - expected_output: |
+        40.02
+        -105.28
 
-        # output longitude
-        puts -105.28
-      cases:
-      - expected_output: |
-          40.02
-          -105.28
-  level 4:
-    yellow:
-      assignment: |
-        You can `puts` multiple numbers at once.
-        Use commas to separate the arguments.
-        Any extra spacing or decimal places won't affect the output.
-      code: |
-        puts 0.25, 0.50,  1.00
-        puts 2.50, 5.00, 10.00
-    red:
-      assignment: Fix the commas so Run Test Case succeeds.
-      code: |
-        puts 1,
-        puts 2, 3,
-        puts, 4
-        puts 5 6
-        puts 7, , 8
-      solution: |
-        puts 1
-        puts 2, 3
-        puts 4
-        puts 5, 6
-        puts 7
-        puts
-        puts 8
-      cases:
-      - expected_output: |
-          1
-          2
-          3
-          4
-          5
-          6
-          7
-
-          8
-    green:
-      assignment: |
-        Write a one-line program to output 1 2 3.
-        Each number should be a separate line of output.
-      solution: |
-        puts 1, 2, 3
-      cases:
-      - expected_output: |
-         1
-         2
-         3
+#- title: Multiple arguments
+#  features: run instructions console
+#  yellow:
+#    assignment: |
+#      You can `puts` multiple numbers at once.
+#      Use commas to separate the arguments.
+#      Any extra spacing or decimal places won't affect the output.
+#    code: |
+#      puts 0.25, 0.50,  1.00
+#      puts 2.50, 5.00, 10.00
+#  red:
+#    assignment: Fix the commas so Run Test Case succeeds.
+#    code: |
+#      puts 1,
+#      puts 2, 3,
+#      puts, 4
+#      puts 5 6
+#      puts 7, , 8
+#    solution: |
+#      puts 1
+#      puts 2, 3
+#      puts 4
+#      puts 5, 6
+#      puts 7
+#      puts
+#      puts 8
+#    cases:
+#    - expected_output: |
+#        1
+#        2
+#        3
+#        4
+#        5
+#        6
+#        7
+#
+#        8
+#  green:
+#    assignment: |
+#      Write a one-line program to output 1 2 3.
+#      Each number should be a separate line of output.
+#    solution: |
+#      puts 1, 2, 3
+#    cases:
+#    - expected_output: |
+#       1
+#       2
+#       3
 
 - title: Demo of advanced debugger features
   features: run step partial_calls vars instructions console tokens
-  level 1:
-    yellow:
-      assignment: Demo of advanced debugger features
-      code: |
-        puts 3 + 4 +
-          gets.to_i
-      cases:
-      - input: 5
-        expected_output: "12\n"
-      - input: 10
-        expected_output: "17\n"
+  yellow:
+    assignment: Demo of advanced debugger features
+    code: |
+      puts 3 + 4 +
+        gets.to_i
+    cases:
+    - input: 5
+      expected_output: "12\n"
+    - input: 10
+      expected_output: "17\n"
 
   #  - code: puts 7
   #  - code: |

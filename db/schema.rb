@@ -20,16 +20,18 @@ ActiveRecord::Schema.define(version: 20140519220801) do
     t.integer "topic_id"
     t.integer "topic_num"
     t.string  "color"
-    t.integer "level_num"
     t.text    "json"
   end
 
-  add_index "exercises", ["topic_num", "color", "level_num"], name: "index_exercises_on_topic_num_and_color_and_level_num", using: :btree
+  add_index "exercises", ["topic_num", "color"], name: "index_exercises_on_topic_num_and_color", using: :btree
 
   create_table "topics", force: true do |t|
     t.integer "num"
     t.string  "features"
     t.string  "title"
+    t.string  "title_html"
   end
+
+  add_index "topics", ["num"], name: "index_topics_on_num", using: :btree
 
 end
