@@ -47,7 +47,7 @@ toggleSolutionState = (newState) ->
   forceResize()
 
 document.addEventListener 'DOMContentLoaded', ->
-  if $one('body.machine') # have to wait until dom is loaded to check
+  if $one('body.exercise') # have to wait until dom is loaded to check
     for section in $all('.section')
       isInSolutionSection = (section.getAttribute('id') == 'solution-section')
       isInStretchSection = section.classList.contains('stretch-section')

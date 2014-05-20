@@ -1,5 +1,5 @@
 BasicRuby::Application.routes.draw do
-  root 'static#index'
+  root 'main#menu'
 
-  get '/:path' => 'machine#exercise'
+  get '/:path' => 'main#exercise'
 end
