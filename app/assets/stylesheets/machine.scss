@@ -28,6 +28,10 @@ body.machine {
       margin-left: 15px;
       margin-right: 10px;
     }
+    span.dash {
+      font-weight: normal;
+      color: #444;
+    }
     .level-selector {
       padding-top: 2px;
       padding-right: 10px;
@@ -99,6 +103,14 @@ body.machine {
         font-size: 30pt;
         line-height: 45pt;
       }
+    }
+
+    p.demo-explanation {
+      color: white;
+      margin-left: 60px;
+      font-size: 30pt;
+      line-height: 45pt;
+      margin-top: 0;
     }
 
     .consistent-height {
@@ -618,6 +630,19 @@ body.machine {
       }
     } // end .red
 
+    &.green {
+      background-color: #040;
+
+      textarea.code, .CodeMirror {
+        .CodeMirror-linenumbers {
+          background-color: #040;
+        }
+        .CodeMirror-linenumber {
+          color: white;
+        }
+      }
+    } // end .red
+
     &#solution-section {
       display: none;
       height: 100%;
@@ -647,6 +672,12 @@ body.machine {
     }
     &.blue {
       background-color: #004;
+    }
+    &.red {
+      background-color: #400;
+    }
+    &.green {
+      background-color: #040;
     }
     button {
       width: 200px;

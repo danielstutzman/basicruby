@@ -6,11 +6,12 @@ DebuggerComponent     = require './DebuggerComponent.coffee'
 RubyCodeHighlighter   = require './RubyCodeHighlighter.coffee'
 
 class DebuggerController
-  constructor: (retrieveNewCode, $debuggerDiv, $casesDiv, exerciseYaml) ->
+  constructor: (retrieveNewCode, $debuggerDiv, $casesDiv, featuresJson,
+      exerciseJson) ->
     @retrieveNewCode = retrieveNewCode
     @$debuggerDiv = $debuggerDiv
     @$casesDiv = $casesDiv
-    exists = (feature) -> feature in exerciseYaml['features'].split(' ')
+    exists = (feature) -> feature in featuresJson
     @features =
       showStepButton:   exists 'step'
       showRunButton:    exists 'run'
@@ -30,7 +31,7 @@ class DebuggerController
     @cases =
       currentCaseNum: null
       currentCaseStage: null
-      cases: _.map exerciseYaml['cases'], (_case) ->
+      cases: _.map exerciseJson['cases'], (_case) ->
         input: if _case.input != undefined then _case.input.toString()
         expectedOutput: _case.expected_output.toString()
 

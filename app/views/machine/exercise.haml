@@ -1,62 +1,78 @@
 - content_for :title, document_title(@exercise)
 
 %script
-  exerciseYaml = #{@exercise.yaml_loaded.to_json.html_safe};
+  featuresJson = #{@exercise.topic.features.split(' ').to_json.html_safe};
+  exerciseJson = #{@exercise.json.html_safe};
 
 .title-bar
   .logo
     %a(href='/')<
       = image_tag 'basic_ruby_x2_black.png', width: 148, height: 18
-  &mdash;
-  Exercise #{@exercise.path}
-  &mdash;
+  %span.dash &mdash;
+  = "#{@exercise.topic.num}."
   = convert_title_backticks @exercise.title
+  %span.dash &mdash;
+  = "Level #{@exercise.level_num}"
+  %span.dash &mdash;
+  = @exercise.color_explanation
   .level-selector
-    %a.level-0-1.selected(href='#')
-    %a.level-1-2(href='#')
-    %a.level-2-3(href='#')
-    %a.level-3-4(href='#')
+    - [1, 2, 3, 4].each do |i|
+      %a{ class: "level-#{i-1}-#{i} #{@exercise.level_num == i && 'selected'}",
+          href: @exercise.path_for_level_num(i) }
 
 .section.stretch-section{class: @exercise.color}
+
   .assignment-above
-    = image_tag_for_exercise @exercise
+    = image_tag_for_exercise @exercise, 30
     %p= assignment_split_with_br @exercise
   .consistent-height
-    - if @exercise.yaml_loaded['cases']
+    - if @exercise.json_loaded['cases']
       .col-1-of-3
-        %textarea.code-editor= @exercise.yaml_loaded['code']
+        %textarea.code-editor!= @exercise.json_loaded['code']
       .col-2-of-3
         .debugger
       .col-3-of-3
         .cases
     - else
       .col-1-of-2
-        %textarea.code-editor= @exercise.yaml_loaded['code']
+        %textarea.code-editor= @exercise.json_loaded['code']
       .col-2-of-2
         .debugger
     .clear
 
-.section.yellow#solution-section
-  .consistent-height
-    - if @exercise.yaml_loaded['cases']
-      .col-1-of-3
-        #solution-code-hider
-          %textarea.code-editor
-            = @exercise.yaml_loaded['solution']
-      .col-2-of-3
-        .debugger
-      .col-3-of-3
-        .cases
-    .clear
+- if %w[green red].include?(@exercise.color)
+  .section.yellow#solution-section
+    .consistent-height
+      - if @exercise.json_loaded['cases']
+        .col-1-of-3
+          #solution-code-hider
+            %textarea.code-editor
+              = @exercise.json_loaded['solution']
+          %p.demo-explanation
+            This section demonstrates what your finished program should do.
+        .col-2-of-3
+          .debugger
+        .col-3-of-3
+          .cases
+      - else
+        .col-1-of-2
+          #solution-code-hider
+            %textarea.code-editor= @exercise.json_loaded['solution']
+          %p.demo-explanation
+            This section demonstrates what your finished program should do.
+        .col-2-of-2
+          .debugger
+      .clear
 
-- if @exercise.color == 'blue'
-  .actions.blue
+.actions{class: @exercise.color}
+  - if %w[red green orange].include?(@exercise.color)
     .left
-      %button.show-demo Demo
+      /%button.show-demo Demo
       %button.show-solution Solution
-    .right
-      %button Skip ahead
-- else
-  .actions{class: @exercise.color}
-    .right
-      %button Continue
+  .right
+    %button.continue{'data-href' => @exercise.path_for_next_exercise,
+      'disabled' => @exercise.path_for_next_exercise.nil? ? true : nil}
+      - if @exercise.color == 'yellow'
+        Continue
+      - else
+        Skip ahead

@@ -11,16 +11,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140516205854) do
+ActiveRecord::Schema.define(version: 20140519220801) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "exercises", force: true do |t|
-    t.string "path"
-    t.string "title"
-    t.string "color"
-    t.text   "yaml"
+    t.integer "topic_id"
+    t.integer "topic_num"
+    t.string  "color"
+    t.integer "level_num"
+    t.text    "json"
+  end
+
+  add_index "exercises", ["topic_num", "color", "level_num"], name: "index_exercises_on_topic_num_and_color_and_level_num", using: :btree
+
+  create_table "topics", force: true do |t|
+    t.integer "num"
+    t.string  "features"
+    t.string  "title"
   end
 
 end
