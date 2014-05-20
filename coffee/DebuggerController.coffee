@@ -249,7 +249,7 @@ class DebuggerController
           console.log 'setting error'
           currentCase.error = error
         else
-          output = @interpreter.getStdout().replace /\n$/, ''
+          output = @interpreter.getStdout()
           currentCase.actualOutput = output
           currentCase.matches = (output == currentCase.expectedOutput)
 
