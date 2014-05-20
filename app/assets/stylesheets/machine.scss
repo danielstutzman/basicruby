@@ -45,30 +45,30 @@ body.machine {
         opacity: 0.1;
 
         &.level-0-1 {
-          background-image: url('level_indicators/black/0-1.png');
+          background-image: image-url('level_indicators/black/0-1.png');
           &:hover {
-            background-image: url('level_indicators/white/0-1.png');
+            background-image: image-url('level_indicators/white/0-1.png');
             opacity: 1.0;
           }
         }
         &.level-1-2 {
-          background-image: url('level_indicators/black/1-2.png');
+          background-image: image-url('level_indicators/black/1-2.png');
           &:hover {
-            background-image: url('level_indicators/white/1-2.png');
+            background-image: image-url('level_indicators/white/1-2.png');
             opacity: 1.0;
           }
         }
         &.level-2-3 {
-          background-image: url('level_indicators/black/2-3.png');
+          background-image: image-url('level_indicators/black/2-3.png');
           &:hover {
-            background-image: url('level_indicators/white/2-3.png');
+            background-image: image-url('level_indicators/white/2-3.png');
             opacity: 1.0;
           }
         }
         &.level-3-4 {
-          background-image: url('level_indicators/black/3-4.png');
+          background-image: image-url('level_indicators/black/3-4.png');
           &:hover {
-            background-image: url('level_indicators/white/3-4.png');
+            background-image: image-url('level_indicators/white/3-4.png');
             opacity: 1.0;
           }
         }
