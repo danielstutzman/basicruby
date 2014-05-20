@@ -70,9 +70,14 @@
       /%button.show-demo Demo
       %button.show-solution Solution
   .right
-    %button.continue{'data-href' => @exercise.path_for_next_exercise,
-      'disabled' => @exercise.path_for_next_exercise.nil? ? true : nil}
-      - if @exercise.color == 'yellow'
-        Continue
-      - else
-        Skip ahead
+    - if @exercise.path_for_next_exercise
+      %button.continue{'data-href' => @exercise.path_for_next_exercise,
+        'disabled' => @exercise.path_for_next_exercise.nil? ? true : nil}
+        - if @exercise.color == 'yellow'
+          Continue
+        - else
+          Skip ahead
+    - else
+      %button(disabled='true' style='width:500px')
+        = image_tag 'under_construction.png', width: 25, height: 25
+        More exercises coming soon.
