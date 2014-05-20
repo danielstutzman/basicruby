@@ -246,7 +246,6 @@ class DebuggerController
         currentCase = @cases.cases[@cases.currentCaseNum]
         error = @interpreter.getStderr()
         if error != ''
-          console.log 'setting error'
           currentCase.error = error
         else
           output = @interpreter.getStdout()
