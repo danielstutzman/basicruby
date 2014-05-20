@@ -82,10 +82,10 @@ class DebuggerController
     catch e
       if e.name == 'SyntaxError'
         @interpreter = visibleState: ->
-          output: ["SyntaxError: #{e.message}\n"]
+          output: [['stderr', "SyntaxError: #{e.message}\n"]]
       else if e.name == 'DebuggerDoesntYetSupport'
         @interpreter = visibleState: ->
-          output: ["DebuggerDoesntYetSupport: #{e.message}\n"]
+          output: [['stderr', "DebuggerDoesntYetSupport: #{e.message}\n"]]
       else
         throw e
     if bytecodes
