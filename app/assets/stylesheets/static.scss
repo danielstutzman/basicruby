@@ -72,19 +72,19 @@ body.static {
     background-position: (120px - 48px)/2 0;
 
     &.level-0:hover {
-        background-image: url('level_indicators/white/0-1.png') !important;
+        background-image:image-url('level_indicators/white/0-1.png') !important;
     }
     &.level-1:hover {
-        background-image: url('level_indicators/white/1-2.png') !important;
+        background-image:image-url('level_indicators/white/1-2.png') !important;
     }
     &.level-2:hover {
-        background-image: url('level_indicators/white/2-3.png') !important;
+        background-image:image-url('level_indicators/white/2-3.png') !important;
     }
     &.level-3:hover {
-        background-image: url('level_indicators/white/3-4.png') !important;
+        background-image:image-url('level_indicators/white/3-4.png') !important;
     }
     &.level-4:hover {
-        background-image: url('level_indicators/white/3-4.png') !important;
+        background-image:image-url('level_indicators/white/3-4.png') !important;
     }
   }
   td {
@@ -115,55 +115,55 @@ body.static {
     background-color:#ee9;
     a.level-indicator {
       color: #cb0;
-      &.level-0 { background-image: url('level_indicators/yellow/0.png'); }
-      &.level-1 { background-image: url('level_indicators/yellow/1.png'); }
-      &.level-2 { background-image: url('level_indicators/yellow/2.png'); }
-      &.level-3 { background-image: url('level_indicators/yellow/3.png'); }
-      &.level-4 { background-image: url('level_indicators/yellow/4.png'); }
+      &.level-0 { background-image:image-url('level_indicators/yellow/0.png'); }
+      &.level-1 { background-image:image-url('level_indicators/yellow/1.png'); }
+      &.level-2 { background-image:image-url('level_indicators/yellow/2.png'); }
+      &.level-3 { background-image:image-url('level_indicators/yellow/3.png'); }
+      &.level-4 { background-image:image-url('level_indicators/yellow/4.png'); }
     }
   }
   td.blue, th.blue {
     background-color:#acf;
     a.level-indicator {
       color: #44f;
-      &.level-0 { background-image: url('level_indicators/blue/0.png'); }
-      &.level-1 { background-image: url('level_indicators/blue/1.png'); }
-      &.level-2 { background-image: url('level_indicators/blue/2.png'); }
-      &.level-3 { background-image: url('level_indicators/blue/3.png'); }
-      &.level-4 { background-image: url('level_indicators/blue/4.png'); }
+      &.level-0 { background-image:image-url('level_indicators/blue/0.png'); }
+      &.level-1 { background-image:image-url('level_indicators/blue/1.png'); }
+      &.level-2 { background-image:image-url('level_indicators/blue/2.png'); }
+      &.level-3 { background-image:image-url('level_indicators/blue/3.png'); }
+      &.level-4 { background-image:image-url('level_indicators/blue/4.png'); }
     }
   }
   td.red, th.red {
     background-color:#fcc;
     a.level-indicator {
       color: #f44;
-      &.level-0 { background-image: url('level_indicators/red/0.png'); }
-      &.level-1 { background-image: url('level_indicators/red/1.png'); }
-      &.level-2 { background-image: url('level_indicators/red/2.png'); }
-      &.level-3 { background-image: url('level_indicators/red/3.png'); }
-      &.level-4 { background-image: url('level_indicators/red/4.png'); }
+      &.level-0 { background-image:image-url('level_indicators/red/0.png'); }
+      &.level-1 { background-image:image-url('level_indicators/red/1.png'); }
+      &.level-2 { background-image:image-url('level_indicators/red/2.png'); }
+      &.level-3 { background-image:image-url('level_indicators/red/3.png'); }
+      &.level-4 { background-image:image-url('level_indicators/red/4.png'); }
     }
   }
   td.green, th.green {
     background-color:#afa;
     a.level-indicator {
       color: #0a0;
-      &.level-0 { background-image: url('level_indicators/green/0.png'); }
-      &.level-1 { background-image: url('level_indicators/green/1.png'); }
-      &.level-2 { background-image: url('level_indicators/green/2.png'); }
-      &.level-3 { background-image: url('level_indicators/green/3.png'); }
-      &.level-4 { background-image: url('level_indicators/green/4.png'); }
+      &.level-0 { background-image:image-url('level_indicators/green/0.png'); }
+      &.level-1 { background-image:image-url('level_indicators/green/1.png'); }
+      &.level-2 { background-image:image-url('level_indicators/green/2.png'); }
+      &.level-3 { background-image:image-url('level_indicators/green/3.png'); }
+      &.level-4 { background-image:image-url('level_indicators/green/4.png'); }
     }
   }
   td.orange, th.orange {
     background-color:#fd8;
     a.level-indicator {
       color: #e70;
-      &.level-0 { background-image: url('level_indicators/orange/0.png'); }
-      &.level-1 { background-image: url('level_indicators/orange/1.png'); }
-      &.level-2 { background-image: url('level_indicators/orange/2.png'); }
-      &.level-3 { background-image: url('level_indicators/orange/3.png'); }
-      &.level-4 { background-image: url('level_indicators/orange/4.png'); }
+      &.level-0 { background-image:image-url('level_indicators/orange/0.png'); }
+      &.level-1 { background-image:image-url('level_indicators/orange/1.png'); }
+      &.level-2 { background-image:image-url('level_indicators/orange/2.png'); }
+      &.level-3 { background-image:image-url('level_indicators/orange/3.png'); }
+      &.level-4 { background-image:image-url('level_indicators/orange/4.png'); }
     }
   }
   td a.level-indicator:hover {
