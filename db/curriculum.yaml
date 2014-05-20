@@ -153,6 +153,11 @@
         Each number should be a separate line of output.
       solution: |
         puts 1, 2, 3
+      cases:
+      - expected_output: |
+         1
+         2
+         3
 
   #  - code: puts 7
   #  - code: |
