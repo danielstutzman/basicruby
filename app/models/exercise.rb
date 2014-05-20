@@ -37,6 +37,7 @@ class Exercise < ActiveRecord::Base
       when 'green'  then 'yellow' # temporary for upcoming demo
       end
     next_topic_num = self.topic_num + ((self.color == 'green') ? 1 : 0)
+    return nil if next_topic_num == 3
     "#{next_topic_num}#{next_color[0].upcase}"
   end
 
