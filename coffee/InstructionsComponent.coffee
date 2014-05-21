@@ -19,8 +19,7 @@ InstructionsComponent = React.createClass
   shouldComponentUpdate: (nextProps, nextState) ->
     if nextProps.code == @props.code &&
        nextProps.currentLine == @props.currentLine &&
-       nextProps.highlightedRange == @props.highlightedRange &&
-       nextProps.highlightedLineNum == @props.highlightedLineNum
+       nextProps.highlightedRange == @props.highlightedRange
       nextProps.animationFinished()
       false
     else
@@ -29,8 +28,7 @@ InstructionsComponent = React.createClass
   componentDidUpdate: (prevProps, prevState) ->
     millis = 0
 
-    if @props.highlightedRange != prevProps.highlightedRange ||
-       @props.highlightedLineNum != prevProps.highlightedLineNum
+    if @props.highlightedRange != prevProps.highlightedRange
       millis = MILLIS_FOR_HIGHLIGHT
     else if @props.currentLine != prevProps.currentLine && @props.currentLine
       millis = @_scrollInstructions()
@@ -62,7 +60,6 @@ InstructionsComponent = React.createClass
 
     if @props.highlightedRange
       [startLine, startCol, endLine, endCol] = @props.highlightedRange
-    highlightedLineNum = @props.highlightedLineNum
 
     div {},
       label {}, 'Instructions'
@@ -97,9 +94,22 @@ InstructionsComponent = React.createClass
                         line.substring startCol, endCol
                       span { key: 'after-highlight' },
                         line.substring endCol
-                  else if num == highlightedLineNum
-                    span { className: 'highlight' },
-                      line
+                  else if num == startLine && num < endLine
+                    div {},
+                      span { key: 'before-highlight' },
+                        line.substring 0, startCol
+                      span { key: 'highlight', className: 'highlight' },
+                        line.substring startCol
+                  else if num > startLine && num == endLine
+                    div {},
+                      span { key: 'highlight', className: 'highlight' },
+                        line.substring 0, endCol
+                      span { key: 'after-highlight' },
+                        line.substring endCol
+                  else if num > startLine && num < endLine
+                    div {},
+                      span { key: 'highlight', className: 'highlight' },
+                        line
                   else
                     line
             br { key: 2, style: { clear: 'both' } }

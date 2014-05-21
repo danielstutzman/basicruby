@@ -90,7 +90,7 @@ class DebuggerController
         throw e
     if bytecodes
       @spool = new BytecodeSpool bytecodes
-      @highlighter = new RubyCodeHighlighter code
+      @highlighter = new RubyCodeHighlighter code, @features.highlightTokens
       @interpreter = new BytecodeInterpreter()
 
     if @spool

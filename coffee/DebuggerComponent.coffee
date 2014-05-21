@@ -67,12 +67,7 @@ DebuggerComponent = React.createClass
           code:             @props.instructions?.code
           currentLine:      @props.instructions?.currentLine
           currentCol:       @props.instructions?.currentCol
-          highlightedRange:
-            @props.features.highlightTokens &&
-              @props.instructions?.highlightedRange || null
-          highlightedLineNum:
-            !@props.features.highlightTokens &&
-              @props.instructions?.highlightedLineNum || null
+          highlightedRange: @props.instructions?.highlightedRange
           animationFinished: -> animationFinished 'InstructionsComponent'
       else
         animationFinished 'InstructionsComponent'
