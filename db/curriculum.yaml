@@ -86,6 +86,55 @@
         40.02
         -105.28
 
+- title: "Multiple outputs sharing a line"
+  title_html: "Multiple outputs<br>sharing a line"
+  features: run instructions console
+  yellow:
+    assignment: "`print` outputs without going to the next line."
+    code: |
+      print 4
+      puts 5
+      print 9
+      puts 10
+  red:
+    assignment: Fix the program so the output matches what's expected.
+    code: |
+      puts 8
+      print 9
+      puts 10
+      puts 0
+      print 11
+    solution: |
+      print 8
+      puts 9
+      puts 10
+      print 0
+      print 11
+    cases:
+    - expected_output: |
+        89
+        10
+        011
+  green:
+    assignment: Write a program to produce the expected output.
+    solution: |
+      puts 1
+      puts -1
+      print 1
+      puts -1
+      print -1
+      puts -1
+      print 1
+      print -1
+      puts -1
+    cases:
+    - expected_output: |
+        1
+        -1
+        1-1
+        -1-1
+        1-1-1
+
 #- title: Multiple arguments
 #  features: run instructions console
 #  yellow:

@@ -2,6 +2,14 @@ if RUBY_PLATFORM == 'opal'
   def gets
     `window.$stdin_is_waiting = true;`
   end
+
+  def puts *args
+    if args.size > 0
+      $stdout.write args.map { |arg| "#{arg}\n" }.join
+    else
+      $stdout.write "\n"
+    end
+  end
 end
 
 $console_texts = []
@@ -10,13 +18,7 @@ class <<$stdout
   alias :old_write :write
   def write *args
     if $is_capturing_stdout
-      if RUBY_PLATFORM == 'opal'
-        $console_texts = $console_texts.clone +
-          args.map { |arg| [:stdout, "#{arg}\n"] }
-      else
-        $console_texts = $console_texts.clone +
-          args.map { |arg| [:stdout, "#{arg}"] }
-      end
+      $console_texts = $console_texts.clone + args.map { |arg| [:stdout, "#{arg}"] }
     else
       old_write *args
     end
