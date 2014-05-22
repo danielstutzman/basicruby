@@ -29,9 +29,10 @@ resizeConsoleToFitHeight = (div) ->
   buttons_h = heightOfDiv div.querySelector('.buttons')
   instructions_h = heightOfDiv div.querySelector('.instructions')
   _console = div.querySelector('.debugger .console')
+  vars_h = heightOfDiv div.querySelector('.variables')
   fudge = 40
   if _console
-    height_console = height_total - buttons_h - instructions_h - fudge
+    height_console = height_total - buttons_h - instructions_h - vars_h - fudge
     _console.style.height = "#{height_console}px"
 
 setupResizeHandler = (code_mirror) ->

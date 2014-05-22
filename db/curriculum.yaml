@@ -135,6 +135,47 @@
         -1-1
         1-1-1
 
+- title: "Variables"
+  features: run step instructions console vars
+  yellow:
+    assignment: You can save numbers into variables and access them later.
+    code: |
+      x = 3
+      y = 2
+      puts x
+      x = 4
+      puts x
+  red:
+    assignment: Fix the bug so the output matches what's expected.
+    code: |
+      x = 6
+      puts x
+      puts y
+      y = 10
+    solution: |
+      x = 6
+      puts x
+      y = 10
+      puts y
+    cases:
+    - expected_output: |
+        6
+        10
+  green:
+    assignment: |
+      Write a program to match the expected output
+      Use a variable instead of copying and pasting.
+    solution: |
+      x = 123456789
+      puts x
+      puts x
+      puts x
+    cases:
+    - expected_output: |
+        123456789
+        123456789
+        123456789
+
 #- title: Multiple arguments
 #  features: run instructions console
 #  yellow:
