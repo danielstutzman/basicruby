@@ -1,4 +1,5 @@
 DebuggerController = require './DebuggerController.coffee'
+ExerciseComponent  = require './ExerciseComponent.coffee'
 SetupResizeHandler = require('./setup_resize_handler.coffee')
 
 $one = (selector) -> document.querySelector(selector)
@@ -48,6 +49,14 @@ toggleSolutionState = (newState) ->
 
 document.addEventListener 'DOMContentLoaded', ->
   if $one('body.exercise') # have to wait until dom is loaded to check
+
+    props =
+      title: 'Basic Ruby - 1. Output numbers'
+      code:  "puts 1\nputs 2\nputs 3"
+    React.renderComponent ExerciseComponent(props), $one('div.exercise')
+
+    ###############
+
     for section in $all('.section')
       isInSolutionSection = (section.getAttribute('id') == 'solution-section')
       isInStretchSection = section.classList.contains('stretch-section')
