@@ -86,7 +86,7 @@
         40.02
         -105.28
 
-- title: "Multiple outputs sharing a line"
+- title: Multiple outputs sharing a line
   title_html: "Multiple outputs<br>sharing a line"
   features: run instructions console
   yellow:
@@ -135,8 +135,8 @@
         -1-1
         1-1-1
 
-- title: "Variables"
-  features: run step instructions console vars
+- title: Variables
+  features: step instructions console vars
   yellow:
     assignment: You can save numbers into variables and access them later.
     code: |
@@ -175,6 +175,51 @@
         123456789
         123456789
         123456789
+
+- title: Accepting input
+  features: step instructions console vars
+  yellow:
+    assignment: |
+      You can write `gets.to_i` anywhere you'd write a number.
+      `gets` will pause the program and ask you to type something in.
+    code: |
+      x = gets.to_i
+      puts x
+  red:
+    assignment: This program should ask for a number, then output it twice.
+    code: |
+      gets.to_i = x
+      puts x
+      puts x
+    solution: |
+      x = gets.to_i
+      puts x
+      puts x
+    cases:
+    - input: 5
+      expected_output: |
+        5
+        5
+    - input: 6
+      expected_output: |
+        6
+        6
+  green:
+     assignment: Write a program that inputs two numbers,
+       then outputs the first number.
+     solution: |
+       x = gets.to_i
+       y = gets.to_i
+       puts x
+     cases:
+     - input: |
+         2
+         3
+       expected_output: "2\n"
+     - input: |
+         8
+         1
+       expected_output: "8\n"
 
 #- title: Multiple arguments
 #  features: run instructions console
