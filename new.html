@@ -1,0 +1,194 @@
+<html>
+  <body>
+    <style>
+      /* apply a natural box layout model to all elements */
+      *, *:before, *:after {
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+/*
+        background-color: #a90;
+        background-color: #44f;
+        background-color: #f44;
+*/
+        background-color: #484;
+/*
+        background-color: #f90;
+*/
+        font-family: sans-serif;
+      }
+      .title {
+        text-align: center;
+        background-color: #666;
+      }
+      h1 {
+        font-size: 45pt;
+        margin: 0;
+        margin-top: 10px;
+        color: white;
+      }
+      img {
+        margin-top: 10px;
+      }
+      .col-1-of-2 {
+        width:550px;
+        height:400px;
+        float: left;
+        margin-left: 10px;
+      }
+      label {
+        display: block;
+        width: 100%;
+        background-color: gray;
+        font-size: 16pt;
+        text-transform: uppercase;
+        color: black;
+        padding: 5px;
+      }
+      textarea {
+        width: 100%;
+        height: 100%;
+        font-family: monospace;
+        font-size: 30pt;
+        margin-right: 20px;
+      }
+      textarea.guess-output {
+        height: 200px;
+        padding-left: 0;
+      }
+      button.guess-output {
+        font-size: 10pt;
+        width: 120px;
+        padding: 15px 0;
+        margin-right: 0;
+        position: relative;
+        top: -70px;
+      }
+      .output {
+        width: 250px;
+        height: 450px;
+        margin-left: 570px;
+      }
+      .expected {
+        height: 180px;
+        border: 1px black solid;
+        background-color: white;
+        font-size: 20pt;
+        font-family: monospace;
+      }
+      .actual {
+        height: 140px;
+        border: 1px black solid;
+        background-color: white;
+        font-size: 20pt;
+        font-family: monospace;
+        background-image: url('app/assets/images/black-curtains.jpg');
+        background-size: cover;
+
+/*
+        padding-top: 125px;
+        font-size: 15pt;
+        padding-left: 35px;
+        font-family: sans-serif;
+        color: white;
+*/
+      }
+      button {
+        font-size: 20pt;
+        padding: 20px 0;
+        width: 140px;
+        margin-right: 20px;
+      }
+      button.debug {
+        position: relative;
+        top: -100px;
+        margin-left: 220px;
+
+        top: -180px;
+        left: 170px;
+      }
+      button.run {
+        position: relative;
+        top: -100px;
+        height: 80px;
+      }
+      .buttons {
+        float: right;
+        margin-right: 20px;
+      }
+      .buttons button {
+        font-size: 12pt;
+        padding: 5px 0;
+        width: 120px;
+        margin-top: 40px;
+        margin-right: 0;
+      }
+      .under button {
+        font-size: 20pt;
+        width: 120px;
+        height: 50px;
+        padding: 10px 0;
+        margin: 0;
+        margin-top: 10px;
+      }
+    </style>
+    <div class='title'>Basic Ruby - 1. Output numbers</div>
+    <div class='buttons'>
+      <button disabled>&#x27F3; Do another</button>
+      <button disabled>&#x279c; Go on</button>
+    </div>
+<!--
+    <img src='app/assets/images/exercise_icons/light_bulb30.png' width=60 height=60 style='float:left'>
+    <h1>Demonstration</h1>
+-->
+<!--
+    <img src='app/assets/images/exercise_icons/question_mark30.png' width=60 height=60 style='float:left'>
+    <h1>Prediction</h1>
+-->
+<!--
+    <img src='app/assets/images/exercise_icons/red_bug30.png' width=60 height=60 style='float:left'>
+    <h1>Troubleshooting</h1>
+-->
+    <img src='app/assets/images/exercise_icons/pen-and-paper-60.png' width=60 height=60 style='float:left'>
+    <h1>Implementation</h1>
+<!--
+-->
+<!--
+    <img src='app/assets/images/exercise_icons/jack-o-lantern-60.png' width=60 height=60 style='float:left'>
+    <h1>Simplification</h1>
+-->
+
+    <div class='col-1-of-2'>
+      <label>Code</label>
+      <textarea>
+puts 1
+puts 2
+      </textarea>
+    </div>
+    <div class='output'>
+      <label>Expected output</label>
+      <div class='expected'>
+        <p>1<br>2<br>3</p>
+      </div>
+<!--
+      <label>Guess the output</label>
+      <textarea class='guess-output'></textarea>
+      <button class='guess-output'>Debug and<br>Compare</button>
+      <button class='guess-output'>Run and<br>Compare</button>
+-->
+
+      <label>Actual output</label>
+      <div class='actual'>
+        <p>1<br>2<br>3</p>
+      </div>
+      <div class='under'>
+        <button>Debug</button>
+        <button>Run</button>
+      </div>
+    </div>
+  </body>
+</html>
