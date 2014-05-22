@@ -79,7 +79,7 @@ document.addEventListener 'DOMContentLoaded', ->
     if $one('button.show-solution')
       $one('button.show-solution').addEventListener 'click', ->
         toggleSolutionState 'CODE-AND-DEBUGGER'
-    if $one('button.continue')
-      $one('button.continue').addEventListener 'click', (e) ->
+    for button in $all('button.link')
+      button.addEventListener 'click', (e) ->
         href = e.target.getAttribute('data-href')
         document.location.href = href

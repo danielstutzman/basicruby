@@ -2,7 +2,7 @@
   title_html: "Output numbers<br>and blank lines"
   features: run instructions console
   yellow:
-    assignment: |
+  - assignment: |
       Click Power.
       Click Run, and watch the program run.
       Then click Continue.
@@ -10,8 +10,16 @@
       puts 8
       puts
       puts 3
+  - code: |
+      puts 11
+      puts 1
+      puts
+  - code: |
+      puts
+      puts
+      puts 1
   red:
-    assignment: |
+  - assignment: |
       Click Run Test Case.
       Read the error message.
       Fix the program, then click Run Test Case again.
@@ -26,7 +34,7 @@
         4
         2
   green:
-    assignment: |
+  - assignment: |
       Write a program to output a blank line and the number 10.
       Click Run Test Case to check your answer.
     solution: |
@@ -38,7 +46,7 @@
 - title: Comments
   features: run instructions console
   yellow:
-    assignment: |
+  - assignment: |
       Anything from `#` to the line's end is a comment.
       You can "comment out" code by writing `#` before it.
     code: |
@@ -52,7 +60,7 @@
 
       #puts 1.41
   red:
-    assignment: |
+  - assignment: |
       Add `#` symbols so Run Test Case succeeds.
     code: |
       Count to three
@@ -72,7 +80,7 @@
         2
         3
   green:
-    assignment: |
+  - assignment: |
       Write a program to output the numbers 40.02 and -105.28.
       Use comments to explain they mean latitude and longitude.
     solution: |
@@ -90,14 +98,14 @@
   title_html: "Multiple outputs<br>sharing a line"
   features: run instructions console
   yellow:
-    assignment: "`print` outputs without going to the next line."
+  - assignment: "`print` outputs without going to the next line."
     code: |
       print 4
       puts 5
       print 9
       puts 10
   red:
-    assignment: Fix the program so the output matches what's expected.
+  - assignment: Fix the program so the output matches what's expected.
     code: |
       puts 8
       print 9
@@ -116,7 +124,7 @@
         10
         011
   green:
-    assignment: Write a program to produce the expected output.
+  - assignment: Write a program to produce the expected output.
     solution: |
       puts 1
       puts -1
@@ -138,7 +146,7 @@
 - title: Variables
   features: step instructions console vars
   yellow:
-    assignment: You can save numbers into variables and access them later.
+  - assignment: You can save numbers into variables and access them later.
     code: |
       x = 3
       y = 2
@@ -146,7 +154,7 @@
       x = 4
       puts x
   red:
-    assignment: Fix the bug so the output matches what's expected.
+  - assignment: Fix the bug so the output matches what's expected.
     code: |
       x = 6
       puts x
@@ -162,7 +170,7 @@
         6
         10
   green:
-    assignment: |
+  - assignment: |
       Write a program to match the expected output
       Use a variable instead of copying and pasting.
     solution: |
@@ -179,14 +187,14 @@
 - title: Accepting input
   features: step instructions console vars
   yellow:
-    assignment: |
+  - assignment: |
       You can write `gets.to_i` anywhere you'd write a number.
       `gets` will pause the program and ask you to type something in.
     code: |
       x = gets.to_i
       puts x
   red:
-    assignment: This program should ask for a number, then output it twice.
+  - assignment: This program should ask for a number, then output it twice.
     code: |
       gets.to_i = x
       puts x
@@ -205,7 +213,7 @@
         6
         6
   green:
-     assignment: Write a program that inputs two numbers,
+  -  assignment: Write a program that inputs two numbers,
        then outputs the first number.
      solution: |
        x = gets.to_i

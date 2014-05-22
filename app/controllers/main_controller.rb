@@ -6,6 +6,6 @@ class MainController < ApplicationController
     end
   end
   def exercise
-    @exercise = Exercise.find_by_path params[:path]
+    @exercise = Exercise.find_by_path params[:path], params[:rep_num]
   end
 end

@@ -14,10 +14,13 @@ Exercise.transaction do
       features: topic_yaml['features']
 
     %w[yellow blue red green orange].each do |color|
-      exercise = topic_yaml[color]
-      next if exercise.nil? # just for unfinished topics
-      Exercise.create! topic_id: topic.id, topic_num: topic.num,
-        color: color, json: JSON.generate(exercise)
+      exercises = topic_yaml[color]
+      next if exercises.nil? # just for unfinished topics
+      exercises.each_with_index do |exercise, rep_num0|
+        Exercise.create! topic_id: topic.id, topic_num: topic.num,
+          color: color, rep_num: rep_num0 + 1,
+          json: JSON.generate(exercise)
+      end
     end
   end
 end
