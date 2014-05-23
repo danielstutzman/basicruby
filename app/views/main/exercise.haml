@@ -66,7 +66,10 @@
   .right
     %button.link{'data-href' => @exercise.path_for_next_rep,
       'disabled' => @exercise.path_for_next_rep.nil? ? true : nil}
-      &#x27f3; Do another
+      - if @exercise.color == 'yellow'
+        &#x27f3; See another
+      - else
+        &#x27f3; Do another
     - if @exercise.path_for_next_exercise
       %button.link{'data-href' => @exercise.path_for_next_exercise,
         'disabled' => @exercise.path_for_next_exercise.nil? ? true : nil}
