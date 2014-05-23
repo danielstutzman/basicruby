@@ -49,11 +49,23 @@ toggleSolutionState = (newState) ->
 
 document.addEventListener 'DOMContentLoaded', ->
   if $one('body.exercise') # have to wait until dom is loaded to check
-
+    doCommand =
+      run: ->
+        props.actualOutput = "1\n2\n3\n"
+        _render()
+      next: if pathForNextExercise == null then null else (e) ->
+        e.target.disabled = true
+        window.location.href = pathForNextExercise
     props =
-      title: 'Basic Ruby - 1. Output numbers'
-      code:  "puts 1\nputs 2\nputs 3"
-    React.renderComponent ExerciseComponent(props), $one('div.exercise')
+      code: exerciseJson.code || ''
+      color: exerciseColor
+      actualOutput: null
+      expectedOutput:
+        if exerciseJson.cases then exerciseJson.cases[0].expected_output else null
+      doCommand: doCommand
+    _render = ->
+      React.renderComponent ExerciseComponent(props), $one('div.exercise')
+    _render()
 
     ###############
 
