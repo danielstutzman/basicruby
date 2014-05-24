@@ -2,11 +2,7 @@
   title_html: "Output numbers<br>and blank lines"
   features: run instructions console
   yellow:
-  - assignment: |
-      Click Power.
-      Click Run, and watch the program run.
-      Then click Continue.
-    code: |
+  - code: |
       puts 8
       puts
       puts 3
@@ -26,11 +22,7 @@
       puts
       puts 1
   red:
-  - assignment: |
-      Click Run Test Case.
-      Read the error message.
-      Fix the program, then click Run Test Case again.
-    code: |
+  - code: |
       puts 4
       ptus 2
     solution: |
@@ -70,120 +62,28 @@
         1
         -1
   green:
-  - assignment: |
-      Write a program to output a blank line and the number 10.
-      Click Run Test Case to check your answer.
-    solution: |
+  - solution: |
       puts
       puts 10
     cases:
     - expected_output: "\n10\n"
-  - assignment: Write a program to output the number 3, then two blank lines.
-    solution: |
+  - solution: |
       puts 3
       puts
       puts
     cases:
     - expected_output: "3\n\n\n"
-  - assignment: Write a program to output 7, then 77 on a separate line.
-    solution: |
+  - solution: |
       puts 7
       puts 77
     cases:
     - expected_output: "7\n77\n"
 
-- title: Comments
-  features: run instructions console
-  yellow:
-  - assignment: |
-      Anything from `#` to the line's end is a comment.
-      You can "comment out" code by writing `#` before it.
-    code: |
-      # Approximations of
-      # important numbers
-      # in math
-
-      puts 3.14 # pi
-
-      puts 2.72 # e
-
-      #puts 1.41
-  - code: |
-      puts 8
-      puts #3
-      puts 5 # Another comment
-  - code: |
-      # Comment over top
-      puts 91 # Comment to the side
-      puts 19
-  red:
-  - assignment: |
-      Add `#` symbols so Run Test Case succeeds.
-    code: |
-      Count to three
-      puts 1
-      puts 2
-      puts 2.5
-      puts 3
-    solution: |
-      # Count to three
-      puts 1
-      puts 2
-      #puts 2.5
-      puts 3
-    cases:
-    - expected_output: |
-        1
-        2
-        3
-  - assignment: |
-      Add `#` symbols so Run Test Case succeeds.
-    code: |
-      puts 88
-      puts 11
-      puts 99
-    solution: |
-      puts 88
-      puts #11
-      puts 99
-    cases:
-    - expected_output: |
-        88
-
-        99
-  - assignment: |
-      Add `#` symbols so Run Test Case succeeds.
-    code: |
-      puts 1
-      puts 2
-      puts 3
-    solution: |
-      #puts 1
-      #puts 2
-      puts 3
-    cases:
-    - expected_output: "3\n"
-  green:
-  - assignment: |
-      Write a program to output the numbers 40.02 and -105.28.
-      Use comments to explain they mean latitude and longitude.
-    solution: |
-      # output latitude
-      puts 40.02
-
-      # output longitude
-      puts -105.28
-    cases:
-    - expected_output: |
-        40.02
-        -105.28
-
 - title: Multiple outputs sharing a line
   title_html: "Multiple outputs<br>sharing a line"
   features: run instructions console
   yellow:
-  - assignment: "`print` outputs without going to the next line."
-    code: |
+  - code: |
       print 4
       puts 5
       print 9
@@ -203,8 +103,7 @@
       print 1
       puts
   red:
-  - assignment: Fix the program so the output matches what's expected.
-    code: |
+  - code: |
       puts 8
       print 9
       puts 10
@@ -251,8 +150,7 @@
         1.11.11
         11.1
   green:
-  - assignment: Write a program to produce the expected output.
-    solution: |
+  - solution: |
       puts 1
       puts -1
       print 1
@@ -300,8 +198,7 @@
 - title: Variables
   features: step instructions console vars
   yellow:
-  - assignment: You can save numbers into variables and access them later.
-    code: |
+  - code: |
       x = 3
       y = 2
       puts x
@@ -323,8 +220,7 @@
       print x
       puts x
   red:
-  - assignment: Fix the bug so the output matches what's expected.
-    code: |
+  - code: |
       x = 6
       puts x
       puts y
@@ -367,9 +263,8 @@
         1
         0
   green:
-  - assignment: |
-      Write a program to match the expected output
-      Use a variable instead of copying and pasting.
+  - code: |
+      x = 123456789
     solution: |
       x = 123456789
       puts x
@@ -380,9 +275,8 @@
         123456789
         123456789
         123456789
-  - assignment: |
-      Write a program to match the expected output
-      Use a variable instead of copying and pasting.
+  - code: |
+      x = -9999
     solution: |
       print 99
       x = -9999
@@ -392,9 +286,8 @@
     cases:
     - expected_output: |
         99-9999-9999-9999
-  - assignment: |
-      Write a program to match the expected output
-      Use a variable instead of copying and pasting.
+  - code: |
+      x = -11
     solution: |
       x = -11
       y = -33
@@ -416,10 +309,7 @@
 - title: Accepting input
   features: step instructions console vars
   yellow:
-  - assignment: |
-      You can write `gets.to_i` anywhere you'd write a number.
-      `gets` will pause the program and ask you to type something in.
-    code: |
+  - code: |
       x = gets.to_i
       puts x
   - code: |
@@ -431,8 +321,7 @@
       print z
       puts 1111
   red:
-  - assignment: This program should input a number, then output it twice.
-    code: |
+  - code: |
       gets.to_i = x
       puts x
       puts x
@@ -449,9 +338,7 @@
       expected_output: |
         6
         6
-  - assignment: This program should input a number, then output 3 and the
-      entered number on different lines.
-    code: |
+  - code: |
       x = gets.to_i
       puts 3
       puts gets.to_i
@@ -468,9 +355,7 @@
       expected_output: |
         3
         6
-  - assignment: This program should output 8, input a number but ignore it, then
-      output 9 -- all on separate lines.
-    code: |
+  - code: |
       puts 8
       puts gets.to_i
       puts 9
@@ -488,47 +373,42 @@
         8
         9
   green:
-  -  assignment: Write a program that inputs two numbers,
-       then outputs the first number.
-     solution: |
-       x = gets.to_i
-       y = gets.to_i
-       puts x
-     cases:
-     - input: |
-         2
-         3
-       expected_output: "2\n"
-     - input: |
-         8
-         1
-       expected_output: "8\n"
-  -  assignment: Write a program that inputs two numbers but ignores them,
-       then outputs 5, on a line by itself.
-     solution: |
-       gets.to_i
-       gets.to_i
-       puts 5
-     cases:
-     - input: |
-         7
-         9
-       expected_output: "5\n"
-     - input: |
-         2
-         1
-       expected_output: "5\n"
-  -  assignment: Write a program that inputs one number, then outputs it three times.
-     solution: |
-       y = gets.to_i
-       puts y
-       puts y
-       puts y
-     cases:
-     - input: "9\n"
-       expected_output: "9\n9\n9\n"
-     - input: "4\n"
-       expected_output: "4\n4\n4\n"
+  - solution: |
+      x = gets.to_i
+      y = gets.to_i
+      puts x
+    cases:
+    - input: |
+        2
+        3
+      expected_output: "2\n"
+    - input: |
+        8
+        1
+      expected_output: "8\n"
+  - solution: |
+      gets.to_i
+      gets.to_i
+      puts 5
+    cases:
+    - input: |
+        7
+        9
+      expected_output: "5\n"
+    - input: |
+        2
+        1
+      expected_output: "5\n"
+  - solution: |
+      y = gets.to_i
+      puts y
+      puts y
+      puts y
+    cases:
+    - input: "9\n"
+      expected_output: "9\n9\n9\n"
+    - input: "4\n"
+      expected_output: "4\n4\n4\n"
 
 #- title: Multiple arguments
 #  features: run instructions console
