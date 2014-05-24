@@ -43,6 +43,7 @@ class BytecodeInterpreter
       `Opal.top` : TOPLEVEL_BINDING.eval('self')
     @accepting_input = false
     @accepted_input = nil
+    @last_token_pos = nil
 
     $console_texts = []
   end
@@ -68,6 +69,8 @@ class BytecodeInterpreter
 
   def interpret bytecode #, speed, stdin
     case bytecode[0]
+      when :token
+        @last_token_pos = [bytecode[1], bytecode[2]]
       when :result
         result_is bytecode[1]
       when :discard
@@ -166,10 +169,16 @@ class BytecodeInterpreter
         result
       end
     rescue Exception => e
-      text = "#{e.class}: #{e.message}\n"
+      text = "#{e.class}: #{e.message}#{error_position}\n"
       $console_texts = $console_texts.clone + [[:stderr, text]]
       raise ProgramTerminated.new
     end
+  end
+
+  def error_position
+    return '' if @last_token_pos.nil?
+    " at line #{@last_token_pos[0]}"
+    # " at line #{@last_token_pos[0]} column #{@last_token_pos[1]}"
   end
 
   def pop_result
