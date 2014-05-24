@@ -35,7 +35,7 @@ class ExerciseController
       codeMirror = CodeMirror.fromTextArea textarea, options
       makeRetriever = (codeMirror) -> (-> codeMirror.getValue())
       @retrieveNewCode = makeRetriever codeMirror
-      if @color == 'red'
+      if @color == 'red' || @color == 'green'
         @handleRun()
     @render callback
 
