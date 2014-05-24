@@ -63,6 +63,8 @@ div.exercise {
     &.red    { background-image: image-url('exercise_icons/red_bug30.png'); }
     &.green  { background-image: image-url('exercise_icons/pen-and-paper-60.png'); }
     &.orange { background-image: image-url('exercise_icons/jack-o-lantern-60.png'); }
+    &.red    { font-size: 32pt; padding-top: 20px; }
+    &.green  { font-size: 31pt; padding-top: 20px; }
   }
 
   .buttons-above {

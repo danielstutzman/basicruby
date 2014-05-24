@@ -51,19 +51,23 @@ ExerciseComponent = React.createClass
             className: 'banner blue'
             "Predict the output#{SOUTH_EAST}"
         when 'red'
-          div { className: 'banner red' }, 'Troubleshooting'
+          div
+            className: 'banner red'
+            "Fix the program to output#{SOUTH_EAST}"
         when 'green'
-          div { className: 'banner green' }, 'Implementation'
+          div
+            className: 'banner green'
+            "Write a program to output#{SOUTH_EAST}"
         when 'orange'
           div { className: 'banner green' }, 'Simplification'
 
       div { className: 'col-1-of-2' },
         label { className: 'code' },
           switch @props.color
-            when 'yellow' then 'Example Code'
+            when 'yellow' then 'Code to look over'
             when 'blue'   then 'Code to look over'
-            when 'red'    then 'Code to fix'
-            when 'green'  then 'Write code to match expected output'
+            when 'red'    then 'Code to edit'
+            when 'green'  then 'Write code here'
             when 'orange' then 'Code to simplify'
         textarea
           className: 'code'
