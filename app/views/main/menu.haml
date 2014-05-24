@@ -47,8 +47,7 @@
     %tr
       %th.title!= topic.title_html
       %td.yellow= done_indicator topic.num, 'Y'
-      %td.blue=   image_tag 'under_construction.png',
-        title: 'Under construction'
+      %td.blue=   done_indicator topic.num, 'B'
       %td.red=    done_indicator topic.num, 'R'
       %td.green=  done_indicator topic.num, 'G'
       %td.orange= image_tag 'under_construction.png',
