@@ -10,9 +10,10 @@
   - code: |
       puts 6
       puts 4
-    solution: |
-      6
-      4
+    cases:
+    - expected_output: |
+        6
+        4
   - code: |
       puts 11
       puts 1
@@ -102,6 +103,28 @@
       print 1
       print 1
       puts
+  blue:
+  - code: |
+      puts 1
+      print 2
+      puts 3
+    cases:
+    - expected_output: |
+        12
+        3
+  - code: |
+      print 11
+      print -11
+      print -11
+    solution: |
+      11-11-11
+  - code: |
+      print 1
+      puts
+      print 0
+    solution: |
+      1
+      0
   red:
   - code: |
       puts 8
@@ -219,6 +242,35 @@
       print x
       print x
       puts x
+  blue:
+  - code: |
+      puts 9
+      x = 8
+      print x
+      puts x
+    solution: |
+      9
+      88
+  - code: |
+      x = 2
+      x = 22
+      puts x
+      puts 2
+    cases:
+    - expected_output: |
+        22
+        2
+  - code: |
+      x = 1
+      y = 2
+      z = 3
+      puts x
+      puts y
+      puts y
+    solution: |
+      1
+      2
+      2
   red:
   - code: |
       x = 6
@@ -320,6 +372,26 @@
       print 1111
       print z
       puts 1111
+  blue:
+  - code: puts gets.to_i
+    cases:
+    - input: 2
+      expected_output: 2
+  - code: |
+      y = gets.to_i
+      puts 3
+    cases:
+    - input: 1
+      expected_output: 3
+  - code: |
+      z = gets.to_i
+      puts 9
+      puts z
+    cases:
+    - input: 10
+      expected_output: |
+        9
+        10
   red:
   - code: |
       gets.to_i = x

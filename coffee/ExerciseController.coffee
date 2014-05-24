@@ -44,7 +44,7 @@ class ExerciseController
       color: @color
       actualOutput: @actualOutput
       expectedOutput:
-        if @json.cases then @json.cases[0].expected_output else null
+        if @json.cases then @json.cases[0].expected_output.toString() else null
       doCommand:
         run: => @handleRun()
         next: if @pathForNextExercise == '' then null else (e) =>
