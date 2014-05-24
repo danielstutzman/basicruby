@@ -20,6 +20,7 @@ class ExerciseController
     @color = exerciseColor
     @pathForNextExercise = pathForNextExercise
     @pathForNextRep = pathForNextRep
+    @cases = @json.cases || [{}]
     @actualOutput = if @color == 'green' then [] else null
     @retrieveNewCode = null
 
@@ -42,9 +43,7 @@ class ExerciseController
     props =
       code: @json.code || ''
       color: @color
-      actualOutput: @actualOutput
-      expectedOutput:
-        if @json.cases then @json.cases[0].expected_output.toString() else null
+      cases: @cases
       doCommand:
         run: => @handleRun()
         next: if @pathForNextExercise == '' then null else (e) =>
@@ -57,30 +56,37 @@ class ExerciseController
 
   handleRun: ->
     code = @retrieveNewCode()
-    try
-      bytecodes = AstToBytecodeCompiler.compile code
-    catch e
-      if e.name == 'SyntaxError'
-        @actualOutput = [['stderr', "SyntaxError: #{e.message}\n"]]
-      else if e.name == 'DebuggerDoesntYetSupport'
-        @actualOutput = [['stderr', "DebuggerDoesntYetSupport: #{e.message}\n"]]
-      else
-        throw e
-    if bytecodes
-      @spool = new BytecodeSpool bytecodes
-      @interpreter = new BytecodeInterpreter()
-    if @spool
-      @spool.queueRunUntil 'DONE'
-      while !@spool.isDone()
-        bytecode = @spool.getNextBytecode @interpreter.isResultTruthy
-        try
-          @interpreter.interpret bytecode
-        catch e
-          if e.name == 'ProgramTerminated'
-            @spool.terminateEarly()
-          else
-            throw e
-      @actualOutput = @interpreter.visibleState().output
+    for case_ in @cases
+      case_.inputLineNum = 0
+      try
+        bytecodes = AstToBytecodeCompiler.compile code
+      catch e
+        if e.name == 'SyntaxError'
+          case_.actual_output = [['stderr', "SyntaxError: #{e.message}\n"]]
+        else if e.name == 'DebuggerDoesntYetSupport'
+          case_.actual_output =
+            [['stderr', "DebuggerDoesntYetSupport: #{e.message}\n"]]
+        else
+          throw e
+
+      if bytecodes
+        @spool = new BytecodeSpool bytecodes
+        @interpreter = new BytecodeInterpreter()
+        @spool.queueRunUntil 'DONE'
+        until @spool.isDone()
+          bytecode = @spool.getNextBytecode @interpreter.isResultTruthy
+          try
+            @interpreter.interpret bytecode
+          catch e
+            if e.name == 'ProgramTerminated'
+              @spool.terminateEarly()
+            else
+              throw e
+          if @interpreter.isAcceptingInput()
+            line = case_.input.toString().split("\n")[case_.inputLineNum] + "\n"
+            @interpreter.setInput line
+            case_.inputLineNum += 1
+        case_.actual_output = @interpreter.getStdoutAndStderr()
     @render()
 
 module.exports = ExerciseController

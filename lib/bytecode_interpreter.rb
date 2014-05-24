@@ -141,6 +141,10 @@ class BytecodeInterpreter
     stderr_pairs.map { |pair| pair[1] }.join
   end
 
+  def get_stdout_and_stderr
+    $console_texts.select { |pair| pair[0] == :stdout || pair[0] == :stderr }
+  end
+
   private
 
   def result_is new_result

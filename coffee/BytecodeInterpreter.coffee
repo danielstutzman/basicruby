@@ -69,4 +69,11 @@ class BytecodeInterpreter
       console.error e.stack
       throw e
 
+  getStdoutAndStderr: ->
+    try
+      @interpreter['$get_stdout_and_stderr']()
+    catch e
+      console.error e.stack
+      throw e
+
 module.exports = BytecodeInterpreter

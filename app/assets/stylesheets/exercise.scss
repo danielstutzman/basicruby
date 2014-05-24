@@ -115,39 +115,65 @@ div.exercise {
     height: 450px;
     margin-left: 570px;
 
-    textarea.expected {
-      margin: 0;
-      margin-bottom: 10px;
-      width: 250px;
+    .actual {
+      overflow: scroll;
+      height: 160px;
     }
     .expected {
-      height: 140px;
-      border: 1px black solid;
-      background-color: white;
-      font-size: 15pt;
-      font-family: monospace;
+      overflow: scroll;
+      height: 160px;
       margin-bottom: 10px;
-      white-space: pre-wrap;
-      overflow: scroll;
     }
-    p.whats-expected {
-      color: white;
-      margin: 0;
-      font-family: serif;
-      font-size: 20pt;
-      font-style: italic;
-    }
-    .actual {
-      height: 135px;
-      border: 1px black solid;
-      background-color: white;
-      font-size: 15pt;
-      white-space: pre;
-      overflow: scroll;
-      word-wrap: break-word;
+    table {
+      border-collapse: collapse;
+      width: 250px;
+      height: 135px + 25px; // label height
 
-      &.shown {
+      &.expected {
+        margin-bottom: 10px;
+      }
+
+      tr {
+        vertical-align: top;
+      }
+      th {
+        background-color: gray;
+        text-transform: uppercase;
+        font-size: 12pt;
+        color: white;
+        padding: 5px 0 0 2px;
+        font-weight: bold;
+        text-align: left;
+        height: 25px;
+        padding-right: 5px;
+        .passed { color: #0f0; }
+        .failed { color: #f00; }
+      }
+      td {
+        background-color: white;
         font-family: monospace;
+        font-size: 15pt;
+        white-space: pre;
+        word-wrap: break-word;
+        border-bottom: 1px black solid;
+        &.hidden {
+          background-image: image-url('black-curtains.jpg');
+          background-size: cover;
+          .click-run {
+            padding-top: 50px;
+            font-size: 15pt;
+            padding-left: 140px;
+            padding-right: 10px;
+            font-family: serif;
+            font-style: italic;
+            color: white;
+            text-align: center;
+            line-height: 1;
+          }
+        }
+        span.stdin {
+          background-color: yellow;
+        }
         span.stderr {
           display: inline-block; // so text-indent is supported
           color: red;
@@ -156,22 +182,21 @@ div.exercise {
           text-indent: -10px;
           margin-left: 10px;
         }
-      }
-      &.hidden {
-        padding-top: 50px;
-        font-size: 15pt;
-        padding-left: 140px;
-        padding-right: 10px;
-        font-family: serif;
-        font-style: italic;
-        color: white;
-        text-align: center;
-        line-height: 1;
-
-        background-image: image-url('black-curtains.jpg');
-        background-size: cover;
-      }
-    }
+        textarea.expected {
+          height: 60px;
+          margin: 0;
+          padding: 0;
+          width: 100%;
+          font-size: 15pt;
+          font-family: monospace;
+          &.length1 { // if there's only one test case
+            height: 100%;
+          }
+        }
+        .passed { color: #070; }
+        .failed { color: #f00; }
+      } // end td
+    } // end table
   }
 
   label {
@@ -198,13 +223,16 @@ div.exercise {
     }
   }
 
+  .buttons-under {
+    margin-top: 10px;
+    display: inline-block;
+  }
   .buttons-under button {
     font-size: 20pt;
     width: 120px;
     height: 80px;
-    padding: 10px 0;
     margin: 0;
-    margin-top: 10px;
+    float: left;
     &.run {
       margin-left: 10px;
     }
