@@ -37,12 +37,12 @@
       Implement
       %br
       the spec
-    %th.orange
-      = image_tag_for_exercise_color 'orange', 60
-      %br
-      Undo
-      %br
-      tricks
+    /%th.orange
+    /  = image_tag_for_exercise_color 'orange', 60
+    /  %br
+    /  Undo
+    /  %br
+    /  tricks
   - @topics.each do |topic|
     %tr
       %th.title!= topic.title_html
@@ -50,8 +50,8 @@
       %td.blue=   done_indicator topic.num, 'B'
       %td.red=    done_indicator topic.num, 'R'
       %td.green=  done_indicator topic.num, 'G'
-      %td.orange= image_tag 'under_construction.png',
-        title: 'Under construction'
+      /%td.orange= image_tag 'under_construction.png',
+      /  title: 'Under construction'
 %br
 %br
 %br
