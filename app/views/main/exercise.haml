@@ -5,6 +5,7 @@
   var exerciseJson = #{@exercise.json.html_safe};
   var exerciseColor = "#{@exercise.color}";
   var pathForNextExercise = "#{@exercise.path_for_next_exercise}";
+  var pathForNextRep = "#{@exercise.path_for_next_rep}";
 
 .title{ class: @exercise.color }
   %a(href='/')

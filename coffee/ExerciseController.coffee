@@ -5,7 +5,7 @@ ExerciseComponent     = require './ExerciseComponent.coffee'
 
 class ExerciseController
   constructor: ($div, featuresJson, exerciseJson, exerciseColor,
-      pathForNextExercise) ->
+      pathForNextExercise, pathForNextRep) ->
     @$div = $div
     exists = (feature) -> feature in featuresJson
     @features =
@@ -19,6 +19,7 @@ class ExerciseController
     @json = exerciseJson
     @color = exerciseColor
     @pathForNextExercise = pathForNextExercise
+    @pathForNextRep = pathForNextRep
     @actualOutput = if @color == 'green' then [] else null
     @retrieveNewCode = null
 
@@ -46,9 +47,12 @@ class ExerciseController
         if @json.cases then @json.cases[0].expected_output else null
       doCommand:
         run: => @handleRun()
-        next: if @pathForNextExercise == null then null else (e) =>
+        next: if @pathForNextExercise == '' then null else (e) =>
           e.target.disabled = true
           window.location.href = @pathForNextExercise
+        nextRep: if @pathForNextRep == '' then null else (e) =>
+          e.target.disabled = true
+          window.location.href = @pathForNextRep
     React.renderComponent ExerciseComponent(props), @$div, callback
 
   handleRun: ->

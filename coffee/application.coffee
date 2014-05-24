@@ -50,8 +50,8 @@ toggleSolutionState = (newState) ->
 
 document.addEventListener 'DOMContentLoaded', ->
   if $one('body.exercise') # have to wait until dom is loaded to check
-    new ExerciseController($one('div.exercise'),
-      featuresJson, exerciseJson, exerciseColor, pathForNextExercise).setup()
+    new ExerciseController($one('div.exercise'), featuresJson, exerciseJson,
+      exerciseColor, pathForNextExercise, pathForNextRep).setup()
     ###############
 
     for section in $all('.section')
@@ -85,7 +85,3 @@ document.addEventListener 'DOMContentLoaded', ->
     if $one('button.show-solution')
       $one('button.show-solution').addEventListener 'click', ->
         toggleSolutionState 'CODE-AND-DEBUGGER'
-    if $one('button.continue')
-      $one('button.continue').addEventListener 'click', (e) ->
-        href = e.target.getAttribute('data-href')
-        document.location.href = href

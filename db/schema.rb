@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140519220801) do
+ActiveRecord::Schema.define(version: 20140522200630) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 20140519220801) do
     t.integer "topic_num"
     t.string  "color"
     t.text    "json"
+    t.integer "rep_num",   default: 1, null: false
   end
 
   add_index "exercises", ["topic_num", "color"], name: "index_exercises_on_topic_num_and_color", using: :btree

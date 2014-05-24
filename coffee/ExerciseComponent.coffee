@@ -29,14 +29,17 @@ ExerciseComponent = React.createClass
     div { className: @props.color },
 
       div { className: 'buttons-above' },
-        button { className: 'do-another' },
+        button
+          className: 'do-another'
+          disabled: (@props.doCommand.nextRep == null)
+          onClick: (e) => @props.doCommand.nextRep e
           if @props.color == 'yellow'
             "#{RELOAD_ICON} See another"
           else
             "#{RELOAD_ICON} Do another"
         button
           className: 'next'
-          disabled: (@props.doCommand.next == undefined)
+          disabled: (@props.doCommand.next == null)
           onClick: (e) => @props.doCommand.next e
           "#{RIGHT_ARROW} Go on"
 
