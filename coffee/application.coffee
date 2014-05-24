@@ -1,4 +1,5 @@
 DebuggerController = require './DebuggerController.coffee'
+ExerciseController = require './ExerciseController.coffee'
 ExerciseComponent  = require './ExerciseComponent.coffee'
 SetupResizeHandler = require('./setup_resize_handler.coffee')
 
@@ -49,24 +50,8 @@ toggleSolutionState = (newState) ->
 
 document.addEventListener 'DOMContentLoaded', ->
   if $one('body.exercise') # have to wait until dom is loaded to check
-    doCommand =
-      run: ->
-        props.actualOutput = "1\n2\n3\n"
-        _render()
-      next: if pathForNextExercise == null then null else (e) ->
-        e.target.disabled = true
-        window.location.href = pathForNextExercise
-    props =
-      code: exerciseJson.code || ''
-      color: exerciseColor
-      actualOutput: null
-      expectedOutput:
-        if exerciseJson.cases then exerciseJson.cases[0].expected_output else null
-      doCommand: doCommand
-    _render = ->
-      React.renderComponent ExerciseComponent(props), $one('div.exercise')
-    _render()
-
+    new ExerciseController($one('div.exercise'),
+      featuresJson, exerciseJson, exerciseColor, pathForNextExercise).setup()
     ###############
 
     for section in $all('.section')

@@ -10,6 +10,13 @@
       puts 8
       puts
       puts 3
+  blue:
+    code: |
+      puts 6
+      puts 4
+    solution: |
+      6
+      4
   red:
     assignment: |
       Click Run Test Case.

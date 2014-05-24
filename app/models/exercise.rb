@@ -32,9 +32,10 @@ class Exercise < ActiveRecord::Base
   def path_for_next_exercise
     next_color =
       case self.color
-      when 'yellow' then 'red' # temporary for upcoming demo
-      when 'red'    then 'green' # temporary for upcoming demo
-      when 'green'  then 'yellow' # temporary for upcoming demo
+      when 'yellow' then 'blue'
+      when 'blue'   then 'red'
+      when 'red'    then 'green'
+      when 'green'  then 'yellow'
       end
     next_topic_num = self.topic_num + ((self.color == 'green') ? 1 : 0)
     return nil if next_topic_num == 3
