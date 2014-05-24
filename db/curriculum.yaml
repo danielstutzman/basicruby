@@ -362,26 +362,39 @@
   features: step instructions console vars
   yellow:
   - code: |
-      x = gets.to_i
-      puts x
+      puts 3
+      puts gets.to_i
+    cases:
+    - input: 5
+    - input: 6
   - code: |
       y = gets.to_i
       puts gets.to_i
+    cases:
+    - input: "7\n2\n"
+    - input: "3\n1\n"
   - code: |
       z = gets.to_i
       print 1111
       print z
       puts 1111
+    cases:
+    - input: 5
+    - input: 2
   blue:
   - code: puts gets.to_i
     cases:
     - input: 2
       expected_output: 2
+    - input: 5
+      expected_output: 5
   - code: |
       y = gets.to_i
       puts 3
     cases:
     - input: 1
+      expected_output: 3
+    - input: 2
       expected_output: 3
   - code: |
       z = gets.to_i
@@ -392,6 +405,10 @@
       expected_output: |
         9
         10
+    - input: 4
+      expected_output: |
+        9
+        4
   red:
   - code: |
       gets.to_i = x
