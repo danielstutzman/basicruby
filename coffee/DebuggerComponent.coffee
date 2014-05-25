@@ -20,18 +20,12 @@ DebuggerComponent = React.createClass
     instructions:        type.object
     interpreter:         type.object
     pendingStdin:        type.string
+    numCharsToOutput:    type.number.isRequired
+    currentScrollTop:    type.number.isRequired
     doCommand:           type.object.isRequired
-    animationFinished:   type.func.isRequired
 
   render: ->
     { a, button, div, label, span } = React.DOM
-
-    finishedComponents = {}
-    animationFinished = (name) =>
-      finishedComponents[name] = true
-      if _.keys(finishedComponents).length == 3
-        animationFinished = -> console.log 'BLOCKED'
-        window.setTimeout @props.animationFinished, 0
 
     div {},
       a
@@ -65,17 +59,12 @@ DebuggerComponent = React.createClass
           currentLine:      @props.instructions?.currentLine
           currentCol:       @props.instructions?.currentCol
           highlightedRange: @props.instructions?.highlightedRange
-          animationFinished: -> animationFinished 'InstructionsComponent'
-      else
-        animationFinished 'InstructionsComponent'
+          currentScrollTop: @props.currentScrollTop
 
       if @props.features.showPartialCalls
         PartialCallsComponent
           partialCalls: @props.interpreter?.partialCalls || []
           numPartialCallExecuting: @props.interpreter?.numPartialCallExecuting
-          animationFinished: -> animationFinished 'PartialCallsComponent'
-      else
-        animationFinished 'PartialCallsComponent'
 
       if @props.features.showVariables
         VariablesComponent @props.interpreter
@@ -83,12 +72,10 @@ DebuggerComponent = React.createClass
       if @props.features.showConsole
         ConsoleComponent
           output: @props.interpreter?.output
+          numCharsToOutput: @props.numCharsToOutput
           pendingStdin: @props.pendingStdin
           doChangeInput: (text) => @props.doCommand.doChangeInput text
           doSubmitInput: (text) => @props.doCommand.doSubmitInput text
-          animationFinished: -> animationFinished 'ConsoleComponent'
-      else
-        animationFinished 'ConsoleComponent'
 
       div { className: 'exercise-buttons' },
         if @props.features.showNextRep

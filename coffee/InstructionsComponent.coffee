@@ -2,10 +2,6 @@ type           = React.PropTypes
 
 RIGHT_ARROW    = '\u2192'
 
-MILLIS_FOR_HIGHLIGHT                   = 300
-MILLIS_FOR_SCROLLED_INSTRUCTIONS       = 500
-MILLIS_FOR_SCROLLED_INSTRUCTIONS_TENTH = 5
-
 InstructionsComponent = React.createClass
 
   displayName: 'InstructionsComponent'
@@ -15,45 +11,27 @@ InstructionsComponent = React.createClass
     currentLine:      type.number
     currentCol:       type.number
     highlightedRange: type.array
+    currentScrollTop: type.number.isRequired
 
   shouldComponentUpdate: (nextProps, nextState) ->
-    if nextProps.code == @props.code &&
-       nextProps.currentLine == @props.currentLine &&
-       nextProps.highlightedRange == @props.highlightedRange
-      nextProps.animationFinished()
-      false
-    else
-      true
+    nextProps.code != @props.code ||
+    nextProps.currentLine != @props.currentLine ||
+    nextProps.highlightedRange != @props.highlightedRange ||
+    nextProps.currentScrollTop != @props.currentScrollTop
 
   componentDidUpdate: (prevProps, prevState) ->
-    millis = 0
-
-    if @props.highlightedRange != prevProps.highlightedRange
-      millis = MILLIS_FOR_HIGHLIGHT
-    else if @props.currentLine != prevProps.currentLine && @props.currentLine
-      millis = @_scrollInstructions()
-
-    window.setTimeout @props.animationFinished, millis
-
-  _scrollInstructions: ->
+    return unless @refs.pointer && @refs.content && @props.currentScrollTop > 0
     $pointer = @refs.pointer.getDOMNode()
     $content = @refs.content.getDOMNode()
     $pointer.style.display = 'block'
     $content.style.display = 'block'
     $element_1 = @refs["num1"].getDOMNode()
-    $element_n = @refs["num#{@props.currentLine}"].getDOMNode()
-    old_scroll_top = $content.scrollTop
-    new_scroll_top = $element_n.getBoundingClientRect().top -
-                     $element_1.getBoundingClientRect().top
-    animateScrollTop = (progress) ->
-      progress = 1.0 if progress > 1.0
-      $content.scrollTop = (1.0 - progress) * old_scroll_top +
-        progress * new_scroll_top
-      if progress < 1.0
-        window.setTimeout (=> animateScrollTop (progress + 0.1)),
-          MILLIS_FOR_SCROLLED_INSTRUCTIONS_TENTH
-    animateScrollTop 1.0
-    MILLIS_FOR_SCROLLED_INSTRUCTIONS
+    $element_m = @refs["num#{Math.floor(@props.currentScrollTop)}"].getDOMNode()
+    $element_n = @refs["num#{Math.ceil(@props.currentScrollTop)}"].getDOMNode()
+    progress = @props.currentScrollTop - Math.floor(@props.currentScrollTop)
+    y = $element_n.getBoundingClientRect().top * progress +
+        $element_m.getBoundingClientRect().top * (1 - progress)
+    $content.scrollTop = y - $element_1.getBoundingClientRect().top
 
   render: ->
     { br, div, label, span } = React.DOM

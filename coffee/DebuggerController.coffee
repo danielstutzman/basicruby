@@ -4,6 +4,12 @@ BytecodeSpool         = require './BytecodeSpool.coffee'
 DebuggerComponent     = require './DebuggerComponent.coffee'
 RubyCodeHighlighter   = require './RubyCodeHighlighter.coffee'
 
+MILLIS_FOR_OUTPUT_CHAR         = 10
+MILLIS_FOR_SCROLL_INSTRUCTIONS = 10
+MILLIS_FOR_HIGHLIGHT           = 300
+MILLIS_TO_HIGHLIGHT_CALL       = 500
+MILLIS_TO_HIGHLIGHT_ADDED_ARG  = 500
+
 class DebuggerController
   constructor: (code, $div, features, exerciseJson, exerciseDoCommand) ->
     @code = code
@@ -12,23 +18,31 @@ class DebuggerController
     @exerciseDoCommand = exerciseDoCommand
     @spool = null
     @highlighter = null
-    @mostRecentNumRenderCall = 0
     @pendingStdin = null
+    @numCharsToOutput = 0
+    @currentScrollTop = 1
+    @prevProps = {}
 
   setup: ->
     @handleTurnPowerOn()
     @render()
 
+  countOutputChars: (output) ->
+    numChars = 0
+    if output
+      for pair in output
+        numChars += pair[1].length
+    numChars
+
   render: ->
-    numRenderCall = @mostRecentNumRenderCall += 1
     props =
-      isRunButtonDepressed:   @isRunButtonDepressed
-      isConsoleFakeSelected:  @isConsoleFakeSelected
       features:     @features
       buttons:      @spool?.visibleState()
       instructions: @highlighter?.visibleState()
       interpreter:  @interpreter?.visibleState()
       pendingStdin: @pendingStdin
+      numCharsToOutput: @numCharsToOutput
+      currentScrollTop: @currentScrollTop
       doCommand:
         close:         => @$div.parentNode.removeChild @$div
         nextExercise:  @exerciseDoCommand.nextExercise
@@ -37,10 +51,34 @@ class DebuggerController
         run:           => @handleClickRun.apply          this, []
         doChangeInput: (newText) => @pendingStdin = newText; @render()
         doSubmitInput: (newText) => @pendingStdin = null; @handleInput newText
-      animationFinished: =>
-        if numRenderCall == @mostRecentNumRenderCall
-          @handleNextBytecode.apply this, []
     React.renderComponent DebuggerComponent(props), @$div
+    @handleNextAnimationOrBytecode props
+
+  handleNextAnimationOrBytecode: (props) ->
+    currentLine = props.instructions?.currentLine
+    calls1 =      props.interpreter?.partialCalls
+    calls0 = @prevProps.interpreter?.partialCalls
+
+    if props.instructions.highlightedRange
+      window.setTimeout (=> @handleNextBytecode()), MILLIS_FOR_HIGHLIGHT
+    else if @countOutputChars(props.interpreter?.output) > props.numCharsToOutput
+      @numCharsToOutput += 1
+      window.setTimeout (=> @render()), MILLIS_FOR_OUTPUT_CHAR
+    else if currentLine && currentLine != props.currentScrollTop
+      delta = (if currentLine > @currentScrollTop then 0.125 else -0.125)
+      @currentScrollTop += delta
+      window.setTimeout (=> @render()), MILLIS_FOR_SCROLL_INSTRUCTIONS
+    else if props.numPartialCallExecuting != null &&
+       props.numPartialCallExecuting != @prevProps.numPartialCallExecuting
+      @prevProps = props
+      window.setTimeout (=> @render()), MILLIS_TO_HIGHLIGHT_CALL
+    else if calls1 && calls0 && calls1.length == calls0.length &&
+         calls1[calls1.length - 1]?.length > calls0[calls0.length - 1]?.length
+      @prevProps = props
+      window.setTimeout (=> @render()), MILLIS_TO_HIGHLIGHT_ADDED_ARG
+    else
+      @prevProps = props
+      @handleNextBytecode()
 
   handleTurnPowerOn: ->
     code = @code
