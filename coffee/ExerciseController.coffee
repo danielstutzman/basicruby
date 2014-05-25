@@ -97,6 +97,6 @@ class ExerciseController
     newDiv = document.createElement('div')
     newDiv.className = 'debugger'
     document.body.appendChild newDiv
-    new DebuggerController(@retrieveNewCode, newDiv, null, @features, @json).setup()
+    new DebuggerController(@retrieveNewCode(), newDiv, @features, @json).setup()
 
 module.exports = ExerciseController

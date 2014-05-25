@@ -213,29 +213,7 @@ $lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
       display: inline-block;
       line-height: 0;
     }
-    &.fake-selected {
-      background-color: #4c6f9a;
-      .before-cursor {
-        background-color: #4c6f9a;
-      }
-    }
   } // end .console
-
-  .off {
-    .instructions {
-      .pointer {
-        display: none;
-      }
-    }
-    .console {
-      .before-cursor {
-        display: none;
-      }
-      .cursor {
-        display: none;
-      }
-    }
-  }
 
   .string {
     font-family: monospace;
