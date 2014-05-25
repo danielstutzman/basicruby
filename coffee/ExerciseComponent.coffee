@@ -57,7 +57,7 @@ ExerciseComponent = React.createClass
           button
             className: 'show-solution'
             onClick: => @props.doCommand.showSolution()
-            'Show a solution'
+            'Show solution'
 
       switch @props.color
         when 'yellow'

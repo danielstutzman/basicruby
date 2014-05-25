@@ -5,6 +5,9 @@ PartialCallsComponent = require './PartialCallsComponent.coffee'
 
 POWER_SYMBOL   = '\u233d'
 RIGHT_TRIANGLE = '\u25b6'
+RELOAD_ICON    = "\u27f3"
+RIGHT_ARROW    = "\u279c"
+X_FOR_CLOSE    = "\u00d7"
 type           = React.PropTypes
 
 DebuggerComponent = React.createClass
@@ -12,16 +15,16 @@ DebuggerComponent = React.createClass
   displayName: 'DebuggerComponent'
 
   propTypes:
-    features:          type.object.isRequired
-    buttons:           type.object
-    instructions:      type.object
-    interpreter:       type.object
-    pendingStdin:      type.string
-    doCommand:         type.object.isRequired
-    animationFinished: type.func.isRequired
+    features:            type.object.isRequired
+    buttons:             type.object
+    instructions:        type.object
+    interpreter:         type.object
+    pendingStdin:        type.string
+    doCommand:           type.object.isRequired
+    animationFinished:   type.func.isRequired
 
   render: ->
-    { button, div, label, span } = React.DOM
+    { a, button, div, label, span } = React.DOM
 
     finishedComponents = {}
     animationFinished = (name) =>
@@ -31,12 +34,14 @@ DebuggerComponent = React.createClass
         window.setTimeout @props.animationFinished, 0
 
     div {},
-      button
+      a
         className: 'close-button'
+        href: '#'
         onClick: => @props.doCommand.close()
-        'X'
+        X_FOR_CLOSE
+
       div
-        className: 'buttons'
+        className: 'instructions-buttons'
         if @props.features.showStepButton
           button
             className: 'step ' + (if @props.buttons?.breakpoint ==
@@ -84,5 +89,19 @@ DebuggerComponent = React.createClass
           animationFinished: -> animationFinished 'ConsoleComponent'
       else
         animationFinished 'ConsoleComponent'
+
+      div { className: 'exercise-buttons' },
+        if @props.features.showNextRep
+          button
+            className: 'do-another'
+            disabled: @props.doCommand.nextRep == null
+            onClick: (e) => @props.doCommand.nextRep e
+            "#{RELOAD_ICON} Try another one"
+        if @props.features.showNextExercise
+          button
+            className: 'next'
+            disabled: @props.doCommand.nextExercise == null
+            onClick: (e) => @props.doCommand.nextExercise e
+            "#{RIGHT_ARROW} Go on"
 
 module.exports = DebuggerComponent

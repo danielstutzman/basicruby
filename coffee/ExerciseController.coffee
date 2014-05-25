@@ -54,8 +54,7 @@ class ExerciseController
         nextRep: if @pathForNextRep == '' then null else (e) =>
           e.target.disabled = true
           window.location.href = @pathForNextRep
-        showSolution: =>
-          console.log 'show solution'
+        showSolution: => @handleShowSolution()
     React.renderComponent ExerciseComponent(props), @$div, callback
 
   handleRun: ->
@@ -94,9 +93,26 @@ class ExerciseController
     @render()
 
   handleDebug: ->
+    features = _.extend @features, showNextExercise: false, showNextRep: false
+    @_popupDebugger @retrieveNewCode(), features, {}
+
+  handleShowSolution: ->
+    features = _.extend @features,
+      showNextExercise: false
+      showNextRep: @pathForNextRep != ''
+    doCommand =
+      nextExercise: (e) =>
+        e.target.disabled = true
+        window.location.href = @pathForNextExercise
+      nextRep: (e) =>
+        e.target.disabled = true
+        window.location.href = @pathForNextRep
+    @_popupDebugger @json.solution, features, doCommand
+
+  _popupDebugger: (code, features, doCommand) ->
     newDiv = document.createElement('div')
     newDiv.className = 'debugger'
     document.body.appendChild newDiv
-    new DebuggerController(@retrieveNewCode(), newDiv, @features, @json).setup()
+    new DebuggerController(code, newDiv, features, @json, doCommand).setup()
 
 module.exports = ExerciseController

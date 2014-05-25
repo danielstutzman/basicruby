@@ -5,10 +5,11 @@ DebuggerComponent     = require './DebuggerComponent.coffee'
 RubyCodeHighlighter   = require './RubyCodeHighlighter.coffee'
 
 class DebuggerController
-  constructor: (code, $div, features, exerciseJson) ->
+  constructor: (code, $div, features, exerciseJson, exerciseDoCommand) ->
     @code = code
     @$div = $div
     @features = features
+    @exerciseDoCommand = exerciseDoCommand
     @spool = null
     @highlighter = null
     @mostRecentNumRenderCall = 0
@@ -36,6 +37,8 @@ class DebuggerController
       pendingStdin: @pendingStdin
       doCommand:
         close:         => @$div.parentNode.removeChild @$div
+        nextExercise:  @exerciseDoCommand.nextExercise
+        nextRep:       @exerciseDoCommand.nextRep
         nextPosition:  => @handleClickNextPosition.apply this, []
         run:           => @handleClickRun.apply          this, []
         doChangeInput: (newText) => @pendingStdin = newText; @render()
