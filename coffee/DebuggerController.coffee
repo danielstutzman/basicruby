@@ -14,12 +14,6 @@ class DebuggerController
     @highlighter = null
     @mostRecentNumRenderCall = 0
     @pendingStdin = null
-    @cases =
-      currentCaseNum: null
-      currentCaseStage: null
-      cases: _.map exerciseJson['cases'], (_case) ->
-        input: if _case.input != undefined then _case.input.toString()
-        expectedOutput: _case.expected_output.toString()
 
   setup: ->
     @handleTurnPowerOn()
@@ -82,33 +76,22 @@ class DebuggerController
     @render()
 
   handleNextBytecode: ->
-    if @spool && @highlighter && @interpreter
-      if @interpreter.isAcceptingInput()
-        if @cases.currentCaseNum != null &&
-           @cases.currentCaseStage == 'RUNNING'
-          @cases.currentCaseStage = 'READY_FOR_INPUT'
-          @handleRunTestCases()
-      else
-        bytecode = @spool.getNextBytecode @interpreter.isResultTruthy
-        if bytecode
-          @highlighter.interpret bytecode
+    if @spool && @highlighter && @interpreter && !@interpreter.isAcceptingInput()
+      bytecode = @spool.getNextBytecode @interpreter.isResultTruthy
+      if bytecode
+        @highlighter.interpret bytecode
 
-          try
-            @interpreter.interpret bytecode
-          catch e
-            if e.name == 'ProgramTerminated'
-              @spool.terminateEarly()
-            else
-              throw e
+        try
+          @interpreter.interpret bytecode
+        catch e
+          if e.name == 'ProgramTerminated'
+            @spool.terminateEarly()
+          else
+            throw e
 
-          if @interpreter.isAcceptingInput()
-            @pendingStdin = ''
-          @render()
-
-          if @spool.isDone() && @cases.currentCaseNum != null &&
-             @cases.currentCaseStage == 'RUNNING'
-            @cases.currentCaseStage = 'PROGRAM_IS_DONE'
-            @handleRunTestCases()
+        if @interpreter.isAcceptingInput()
+          @pendingStdin = ''
+        @render()
 
   handleInput: (text) ->
     @interpreter.setInput text
