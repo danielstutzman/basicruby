@@ -6,6 +6,13 @@
       puts 8
       puts
       puts 3
+  - code: |
+      puts 1
+      puts 9
+  - code: |
+      puts
+      puts 5
+      puts 4
   blue:
   - code: |
       puts 6
