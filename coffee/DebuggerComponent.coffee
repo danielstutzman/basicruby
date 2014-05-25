@@ -31,7 +31,7 @@ DebuggerComponent = React.createClass
       a
         className: 'close-button'
         href: '#'
-        onClick: => @props.doCommand.close()
+        onClick: (e) => e.preventDefault(); @props.doCommand.close()
         X_FOR_CLOSE
 
       div
