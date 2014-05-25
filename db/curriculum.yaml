@@ -1,6 +1,6 @@
 - title: Output numbers and blank lines
   title_html: "Output numbers<br>and blank lines"
-  features: run instructions console
+  features: run step instructions console
   yellow:
   - code: |
       puts 8
@@ -89,7 +89,7 @@
 
 - title: Multiple outputs sharing a line
   title_html: "Multiple outputs<br>sharing a line"
-  features: run instructions console
+  features: run step instructions console
   yellow:
   - code: |
       print 4
@@ -226,7 +226,7 @@
         0100010
 
 - title: Variables
-  features: step instructions console vars
+  features: run step instructions console vars
   yellow:
   - code: |
       x = 3
@@ -366,7 +366,7 @@
         -33-33
 
 - title: Accepting input
-  features: step instructions console vars
+  features: run step instructions console vars
   yellow:
   - code: |
       puts 3
@@ -507,7 +507,7 @@
       expected_output: "4\n4\n4\n"
 
 #- title: Multiple arguments
-#  features: run instructions console
+#  features: run step instructions console
 #  yellow:
 #    assignment: |
 #      You can `puts` multiple numbers at once.
