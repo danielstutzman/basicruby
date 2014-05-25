@@ -1,6 +1,7 @@
 AstToBytecodeCompiler = require './AstToBytecodeCompiler.coffee'
 BytecodeInterpreter   = require './BytecodeInterpreter.coffee'
 BytecodeSpool         = require './BytecodeSpool.coffee'
+DebuggerController    = require './DebuggerController.coffee'
 ExerciseComponent     = require './ExerciseComponent.coffee'
 
 class ExerciseController
@@ -46,6 +47,7 @@ class ExerciseController
       cases: @cases
       doCommand:
         run: => @handleRun()
+        debug: => @handleDebug()
         next: if @pathForNextExercise == '' then null else (e) =>
           e.target.disabled = true
           window.location.href = @pathForNextExercise
@@ -90,5 +92,11 @@ class ExerciseController
             case_.inputLineNum += 1
         case_.actual_output = @interpreter.getStdoutAndStderr()
     @render()
+
+  handleDebug: ->
+    newDiv = document.createElement('div')
+    newDiv.className = 'debugger'
+    document.body.appendChild newDiv
+    new DebuggerController(@retrieveNewCode, newDiv, null, @features, @json).setup()
 
 module.exports = ExerciseController

@@ -205,7 +205,7 @@ ExerciseComponent = React.createClass
         div { className: 'buttons-under' },
           button
             className: 'debug'
-            disabled: true
+            onClick: => @props.doCommand.debug()
             'Debug'
           button
             className: 'run'

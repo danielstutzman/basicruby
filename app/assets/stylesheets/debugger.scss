@@ -1,0 +1,264 @@
+/* apply a natural box layout model to all elements */
+*, *:before, *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+$border-width: 5px;
+$code-font-size: 30pt;
+$console-font-size: 30pt;
+$min-width-for-extra-padding: 1000px;
+$value-min-font-size: 16pt;
+$lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
+
+.debugger {
+  position: absolute;
+  top: 42px;
+  background-color: #777;
+  padding: 10px;
+  width: 800px;
+  left: 22px;
+  height: 485px;
+  z-index: 5;
+
+  .close-button {
+    float: right;
+    width: 40px;
+    height: 40px;
+    font-size: 25pt;
+    margin-left: 30px;
+  }
+
+  .buttons {
+    text-align: right;
+    padding: 5px;
+
+    button {
+      padding: 12px 20px;
+      font-size: 12pt;
+      margin: 0;
+    }
+  }
+
+  label {
+    color: #000;
+    font-weight: bold;
+    text-transform: uppercase;
+    background-color: #333;
+    display: block;
+    padding-left: 10px;
+    font-size: 10pt;
+  }
+
+  .partial-calls {
+    table {
+      border-collapse: collapse;
+    }
+    tr {
+      background-color: black;
+      &.executing {
+        background-color: #0f0;
+        td {
+          color: black;
+        }
+      }
+      &.no-calls {
+        height: 10px;
+      }
+    }
+    th {
+      text-align: left;
+      font-size: 10pt;
+      text-transform: uppercase;
+      color: #000;
+      background-color: #333;
+      padding: 0 10px;
+      &.extra-space {
+        width: 100%;
+        padding: 0;
+      }
+      white-space: nowrap;
+    }
+    td {
+      text-align: left;
+      padding: 0 10px;
+      color: #0f0;
+      font-size: 20pt;
+      &.unfilled {
+        height: 30px;
+      }
+      &.extra-space {
+        width: 100%;
+      }
+      .main {
+        color: #040;
+      }
+      .string-interpolation {
+        color: #040;
+        font-size: 10pt;
+      }
+    }
+  }
+
+  .variables {
+    width: 200px;
+    height: 120px;
+    background-color: black;
+    border: 2px #222 solid;
+    border-bottom: 2px #444 solid;
+    color: #0f0;
+    font-size: 20pt;
+    width: 100%;
+    padding-left: 15px;
+    overflow: scroll;
+
+    tr {
+      vertical-align: top;
+    }
+    th {
+      font-weight: normal;
+      padding-bottom: 2px;
+      padding-right: 15px;
+      text-align: left;
+      &.future {
+        color: #080;
+      }
+    }
+    td {
+      padding-right: 15px;
+      &.future {
+        color: #080;
+      }
+    }
+  }
+
+  .instructions {
+    position: relative;
+    width: 100%;
+    height: 140px;
+    color: #0f0;
+    font-size: $code-font-size;
+    font-family: monospace;
+    background-color: black;
+
+    .pointer {
+      position: absolute;
+      top: 40px;
+    }
+
+    .content {
+      width: 100%;
+      height: inherit;
+      overflow: scroll;
+
+      .num {
+        float: left;
+        width: 60px;
+        overflow: hidden;
+        color: #060;
+        padding-left: 20px;
+        text-align: right;
+        clear: left;
+      }
+      .code {
+        margin-left: 80px;
+        white-space: pre-wrap;
+
+        span.highlight {
+          background-color: #0f0;
+          color: black;
+        }
+      }
+    }
+  }
+
+  .console {
+    width: 100%;
+    height: 200px;
+    background-color: black;
+    border: 2px #222 solid;
+    border-bottom: 2px #444 solid;
+    color: #0f0;
+    font-size: $console-font-size;
+    overflow: scroll;
+    font-family: monospace;
+    word-wrap: break-word;
+
+    .before-cursor {
+      margin: 0;
+      white-space: pre;
+      background-color: #040;
+      span.stdin {
+        color: #ff0;
+        background-color: #440;
+      }
+      span.stderr {
+        color: #f00;
+        background-color: #400;
+      }
+    }
+    input.stdin {
+      background-color: black;
+      height: $console-font-size * 1.2;
+      color: #ff0;
+      font-size: $console-font-size;
+      font-family: monospace;
+    }
+    .cursor {
+      background-color: #0f0;
+      width: $console-font-size * 0.5;
+      height: $console-font-size * 0.9;
+      margin-left: 2px;
+      display: inline-block;
+      line-height: 0;
+    }
+    &.fake-selected {
+      background-color: #4c6f9a;
+      .before-cursor {
+        background-color: #4c6f9a;
+      }
+    }
+  } // end .console
+
+  .off {
+    .instructions {
+      .pointer {
+        display: none;
+      }
+    }
+    .console {
+      .before-cursor {
+        display: none;
+      }
+      .cursor {
+        display: none;
+      }
+    }
+  }
+
+  .string {
+    font-family: monospace;
+    white-space: pre-wrap;
+    background-color: #040;
+    display: inline; // so its width doesn't expand
+    white-space: pre;
+    .line {
+      line-height: 0.6;
+      span {
+        background-color: $lightening-to-show-spaces;
+        line-height: 1.0;
+      }
+      .empty-line { // a little sliver of background color
+        width: 4px;
+        height: 28px;
+        display: inline-block;
+        background-color: $lightening-to-show-spaces;
+      }
+    }
+  }
+  .type {
+    font-size: 12pt;
+    color: #040;
+  }
+} // end .debugger2

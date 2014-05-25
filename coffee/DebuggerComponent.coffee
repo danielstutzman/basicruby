@@ -35,6 +35,10 @@ DebuggerComponent = React.createClass
         window.setTimeout @props.animationFinished, 0
 
     div { className: (if @props.isOn then 'on ' else 'off ') },
+      button
+        className: 'close-button'
+        onClick: => @props.doCommand.close()
+        'X'
       div
         className: 'buttons'
         if @props.features.showStepButton

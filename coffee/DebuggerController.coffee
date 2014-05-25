@@ -6,20 +6,12 @@ DebuggerComponent     = require './DebuggerComponent.coffee'
 RubyCodeHighlighter   = require './RubyCodeHighlighter.coffee'
 
 class DebuggerController
-  constructor: (retrieveNewCode, $debuggerDiv, $casesDiv, featuresJson,
+  constructor: (retrieveNewCode, $debuggerDiv, $casesDiv, features,
       exerciseJson) ->
     @retrieveNewCode = retrieveNewCode
     @$debuggerDiv = $debuggerDiv
     @$casesDiv = $casesDiv
-    exists = (feature) -> feature in featuresJson
-    @features =
-      showStepButton:   exists 'step'
-      showRunButton:    exists 'run'
-      showPartialCalls: exists 'partial_calls'
-      showVariables:    exists 'vars'
-      showInstructions: exists 'instructions'
-      showConsole:      exists 'console'
-      highlightTokens:  exists 'tokens'
+    @features = features
     @isOn = false
     @isPowerButtonDepressed = false
     @isRunButtonDepressed = false
@@ -51,6 +43,7 @@ class DebuggerController
       interpreter:  @interpreter?.visibleState()
       pendingStdin: @pendingStdin
       doCommand:
+        close:         => @$debuggerDiv.parentNode.removeChild @$debuggerDiv
         togglePower:   => @handleTogglePower.apply       this, []
         nextPosition:  => @handleClickNextPosition.apply this, []
         run:           => @handleClickRun.apply          this, []
