@@ -52,36 +52,3 @@ document.addEventListener 'DOMContentLoaded', ->
   if $one('body.exercise') # have to wait until dom is loaded to check
     new ExerciseController($one('div.exercise'), featuresJson, exerciseJson,
       exerciseColor, pathForNextExercise, pathForNextRep).setup()
-    ###############
-
-    for section in $all('.section')
-      isInSolutionSection = (section.getAttribute('id') == 'solution-section')
-      isInStretchSection = section.classList.contains('stretch-section')
-
-      options =
-        mode: 'ruby'
-        lineNumbers: true
-        autofocus: true
-        readOnly: isInSolutionSection
-      textarea = section.querySelector('textarea.code-editor')
-      codeMirror = CodeMirror.fromTextArea textarea, options
-      if isInSolutionSection
-        solutionCodeMirror = codeMirror
-
-      makeRetriever = (codeMirror) -> (-> codeMirror.getValue())
-      retrieveNewCode = makeRetriever codeMirror
-      $debuggerDiv = section.querySelector('div.debugger')
-      $casesDiv = section.querySelector('div.cases')
-      # the exerciseYaml global variable needs to be defined by the view
-      new DebuggerController(retrieveNewCode, $debuggerDiv, $casesDiv,
-        featuresJson, exerciseJson).setup()
-
-      if isInStretchSection
-        forceResize = SetupResizeHandler.setupResizeHandler codeMirror
-
-    if $one('button.show-demo')
-      $one('button.show-demo').addEventListener 'click', ->
-        toggleSolutionState 'DEBUGGER'
-    if $one('button.show-solution')
-      $one('button.show-solution').addEventListener 'click', ->
-        toggleSolutionState 'CODE-AND-DEBUGGER'

@@ -37,19 +37,27 @@ ExerciseComponent = React.createClass
     div { className: @props.color },
 
       div { className: 'buttons-above' },
-        button
-          className: 'do-another'
-          disabled: (@props.doCommand.nextRep == null)
-          onClick: (e) => @props.doCommand.nextRep e
-          if @props.color == 'yellow'
+        if @props.color == 'yellow' || @props.color == 'blue'
+          button
+            className: 'do-another'
+            disabled: @props.doCommand.nextRep == null ||
+                      @props.cases[0].actual_output == undefined
+            onClick: (e) => @props.doCommand.nextRep e
             "#{RELOAD_ICON} See another"
-          else
-            "#{RELOAD_ICON} Do another"
-        button
-          className: 'next'
-          disabled: (@props.doCommand.next == null)
-          onClick: (e) => @props.doCommand.next e
-          "#{RIGHT_ARROW} Go on"
+
+        if @props.color == 'yellow' || @props.color == 'blue'
+          button
+            className: 'next'
+            disabled: @props.doCommand.next== null ||
+                      @props.cases[0].actual_output == undefined
+            onClick: (e) => @props.doCommand.next e
+            "#{RIGHT_ARROW} Go on"
+
+        if @props.color == 'red' || @props.color == 'green'
+          button
+            className: 'show-solution'
+            onClick: => @props.doCommand.showSolution()
+            'Show a solution'
 
       switch @props.color
         when 'yellow'

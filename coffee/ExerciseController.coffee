@@ -52,6 +52,8 @@ class ExerciseController
         nextRep: if @pathForNextRep == '' then null else (e) =>
           e.target.disabled = true
           window.location.href = @pathForNextRep
+        showSolution: =>
+          console.log 'show solution'
     React.renderComponent ExerciseComponent(props), @$div, callback
 
   handleRun: ->
