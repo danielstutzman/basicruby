@@ -1,4 +1,4 @@
-module MachineHelper
+module ExerciseHelper
   def assignment_split_with_br exercise
     assignment = @exercise.json_loaded['assignment']
     if assignment
@@ -15,5 +15,11 @@ module MachineHelper
   end
   def document_title exercise
     "Basic Ruby #{exercise.path}"
+  end
+  def video_url topic_num
+    image_url("topic#{topic_num}.mp4")
+  end
+  def video_poster_url topic_num
+    image_url("topic#{topic_num}_poster.png")
   end
 end
