@@ -1,6 +1,7 @@
 type           = React.PropTypes
 
 RIGHT_ARROW    = '\u2192'
+ARROW_CENTER_Y = 46
 
 InstructionsComponent = React.createClass
 
@@ -25,13 +26,13 @@ InstructionsComponent = React.createClass
     $content = @refs.content.getDOMNode()
     $pointer.style.display = 'block'
     $content.style.display = 'block'
-    $element_1 = @refs["num1"].getDOMNode()
+    $element_1 = @refs['blank1'].getDOMNode()
     $element_m = @refs["num#{Math.floor(@props.currentScrollTop)}"].getDOMNode()
     $element_n = @refs["num#{Math.ceil(@props.currentScrollTop)}"].getDOMNode()
     progress = @props.currentScrollTop - Math.floor(@props.currentScrollTop)
     y = $element_n.getBoundingClientRect().top * progress +
         $element_m.getBoundingClientRect().top * (1 - progress)
-    $content.scrollTop = y - $element_1.getBoundingClientRect().top
+    $content.scrollTop = y - $element_1.getBoundingClientRect().top - ARROW_CENTER_Y
 
   render: ->
     { br, div, label, span } = React.DOM
@@ -52,7 +53,10 @@ InstructionsComponent = React.createClass
           div
             className: 'content'
             ref: 'content'
-            br { key: 1 } # blank line at beginning
+
+            # blank space at the beginning so we have freedom when scrolling
+            div { className: 'blank', ref: 'blank1' }
+
             _.map @props.code.split("\n"), (line, i) ->
               num = i + 1
               div { key: num },
@@ -90,7 +94,9 @@ InstructionsComponent = React.createClass
                         line
                   else
                     line
-            br { key: 2, style: { clear: 'both' } }
-            br { key: 3 }
+            br { key: 4, style: { clear: 'both' } }
+
+            # blank space at the ending so we have freedom when scrolling
+            div { className: 'blank', ref: 'blank2' }
 
 module.exports = InstructionsComponent
