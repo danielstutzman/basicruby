@@ -122,6 +122,18 @@ div.exercise {
     height: 450px;
     margin-left: 570px;
 
+    .little-video-container {
+      position: relative;
+    }
+    .little-video-play-button {
+      background-image: image-url('play-button-overlay.png');
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 140px;
+    }
+
     .actual {
       overflow: scroll;
       height: 160px;
@@ -279,5 +291,25 @@ div.exercise {
     height: 50px;
     font-size: 20pt;
     margin-top: 20px;
+  }
+}
+
+.big-video-background {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 840px;
+  height: 550px;
+  background-color: black;
+  z-index: 5;
+  padding: 30px;
+
+  a.close-button {
+    float: right;
+    font-size: 25pt;
+    text-decoration: none;
+    color: white;
+    line-height: 0.5;
+    margin-right: -10px;
   }
 }

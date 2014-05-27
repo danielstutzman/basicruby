@@ -51,4 +51,5 @@ toggleSolutionState = (newState) ->
 document.addEventListener 'DOMContentLoaded', ->
   if $one('body.exercise') # have to wait until dom is loaded to check
     new ExerciseController($one('div.exercise'), featuresJson, exerciseJson,
-      exerciseColor, pathForNextExercise, pathForNextRep).setup()
+      exerciseColor, pathForNextExercise, pathForNextRep, pathForVideo,
+      pathForVideoPoster).setup()

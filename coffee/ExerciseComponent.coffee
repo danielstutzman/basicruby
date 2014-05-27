@@ -6,6 +6,7 @@ EM_DASH     = "\u2014"
 NOT_EQUALS  = "\u2260"
 SOUTH_EAST  = "\u2198"
 X_FOR_CLOSE = "\u00d7"
+HEIGHT_OF_VIDEO_CONTROLS = 35
 
 ExerciseComponent = React.createClass
 
@@ -15,6 +16,10 @@ ExerciseComponent = React.createClass
     color: type.string.isRequired
     code: type.string.isRequired
     cases: type.array.isRequired
+    pathForVideo: type.string
+    pathForVideoPath: type.string
+    showingSuccessPopup: type.bool.isRequired
+    showingYellowVideo: type.bool.isRequired
     doCommand: type.object.isRequired
 
   componentDidMount: ->
@@ -22,8 +27,8 @@ ExerciseComponent = React.createClass
       window.setTimeout (=> @refs.prediction0.getDOMNode().focus()), 100
 
   render: ->
-    { a, br, button, div, h1, img, input, label, p, small, span, table, td, th, tr,
-      textarea } = React.DOM
+    { a, br, button, div, h1, img, input, label, p, small, source,
+      span, table, td, th, tr, textarea, video } = React.DOM
 
     hasInputs             = _.some @props.cases, (case_) -> case_.input
     hasExpectedOutputs    = _.some @props.cases, (case_) -> case_.expected_output
@@ -87,7 +92,20 @@ ExerciseComponent = React.createClass
 
       div { className: 'col-2-of-2' },
         div { className: 'expected' },
-          if hasExpectedOutputs
+          if @props.color == 'yellow' && @props.pathForVideo
+            div { className: 'little-video-container' },
+              img
+                src: @props.pathForVideoPoster
+                width: 250
+                height: 140
+              a
+                href: '#'
+                onClick: (e) =>
+                  @props.doCommand.showYellowVideo e.target
+                  e.preventDefault()
+                div { className: 'little-video-play-button' }
+
+          else if hasExpectedOutputs
             table {},
               tr { key: 'header' },
                 if hasInputs
@@ -248,5 +266,34 @@ ExerciseComponent = React.createClass
             disabled: @props.doCommand.next == null
             onClick: (e) => @props.doCommand.next e
             "#{RIGHT_ARROW} Go on"
+
+      if @props.showingYellowVideo
+        div { className: 'big-video-background' },
+          a
+            className: 'close-button'
+            href: '#'
+            onClick: (e) =>
+              @props.doCommand.closeYellowVideo()
+              e.preventDefault()
+            X_FOR_CLOSE
+          video
+            width: 750
+            height: 420
+            poster: @props.pathForVideoPoster
+            autoPlay: 'autoPlay'
+            onClick: (e) ->
+              video = e.target
+              mouseY = e.clientY - video.getBoundingClientRect().top
+              if mouseY < video.height - HEIGHT_OF_VIDEO_CONTROLS
+                if video.paused
+                  video.play()
+                else
+                  video.pause()
+                e.preventDefault()
+            onMouseEnter: (e) -> e.target.setAttribute 'controls', 'controls'
+            onMouseLeave: (e) -> e.target.removeAttribute 'controls'
+            source
+              src: @props.pathForVideo
+              type: 'video/mp4'
 
 module.exports = ExerciseComponent
