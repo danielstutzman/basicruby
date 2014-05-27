@@ -5,7 +5,10 @@ if RUBY_PLATFORM == 'opal'
 
   def puts *args
     if args.size > 0
-      $stdout.write args.map { |arg| "#{arg}\n" }.join
+      $stdout.write args.map { |arg|
+        arg_to_s = "#{arg}"
+        arg_to_s + (arg_to_s.end_with?("\n") ? "" : "\n")
+      }.join
     else
       $stdout.write "\n"
     end

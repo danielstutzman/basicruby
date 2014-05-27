@@ -380,18 +380,18 @@
   yellow:
   - code: |
       puts 3
-      puts gets.to_i
+      puts gets
     cases:
     - input: 5
     - input: 6
   - code: |
-      y = gets.to_i
-      puts gets.to_i
+      y = gets
+      puts gets
     cases:
     - input: "7\n2\n"
     - input: "3\n1\n"
   - code: |
-      z = gets.to_i
+      z = gets
       print 1111
       print z
       puts 1111
@@ -399,14 +399,14 @@
     - input: 5
     - input: 2
   blue:
-  - code: puts gets.to_i
+  - code: puts gets
     cases:
     - input: 2
       expected_output: 2
     - input: 5
       expected_output: 5
   - code: |
-      y = gets.to_i
+      y = gets
       puts 3
     cases:
     - input: 1
@@ -414,7 +414,7 @@
     - input: 2
       expected_output: 3
   - code: |
-      z = gets.to_i
+      z = gets
       puts 9
       puts z
     cases:
@@ -428,11 +428,11 @@
         4
   red:
   - code: |
-      gets.to_i = x
+      gets = x
       puts x
       puts x
     solution: |
-      x = gets.to_i
+      x = gets
       puts x
       puts x
     cases:
@@ -445,11 +445,11 @@
         6
         6
   - code: |
-      x = gets.to_i
+      x = gets
       puts 3
-      puts gets.to_i
+      puts gets
     solution: |
-      x = gets.to_i
+      x = gets
       puts 3
       puts x
     cases:
@@ -463,11 +463,11 @@
         6
   - code: |
       puts 8
-      puts gets.to_i
+      puts gets
       puts 9
     solution: |
       puts 8
-      gets.to_i
+      gets
       puts 9
     cases:
     - input: 5
@@ -480,8 +480,8 @@
         9
   green:
   - solution: |
-      x = gets.to_i
-      y = gets.to_i
+      x = gets
+      y = gets
       puts x
     cases:
     - input: |
@@ -493,8 +493,8 @@
         1
       expected_output: "8\n"
   - solution: |
-      gets.to_i
-      gets.to_i
+      gets
+      gets
       puts 5
     cases:
     - input: |
@@ -506,7 +506,7 @@
         1
       expected_output: "5\n"
   - solution: |
-      y = gets.to_i
+      y = gets
       puts y
       puts y
       puts y
