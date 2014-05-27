@@ -48,7 +48,9 @@ class ExerciseController
       cases: @cases
       showingSuccessPopup: @showingSuccessPopup
       doCommand:
-        run: => @handleRun()
+        run: =>
+          @handleRun()
+          @checkForPassingTests()
         debug: => @handleDebug()
         allTestsPassed: => window.setTimeout (=> @handleAllTestsPassed()), 100
         next: if @pathForNextExercise == '' then null else (e) =>
@@ -59,6 +61,10 @@ class ExerciseController
           window.location.href = @pathForNextRep
         showSolution: => @handleShowSolution()
         closeSuccessPopup: => @showingSuccessPopup = false; @render()
+        setPredictedOutput: (caseNum, newText) =>
+          @cases[caseNum].predicted_output = newText
+          @render()
+          @checkForPassingTests()
     React.renderComponent ExerciseComponent(props), @$div, callback
 
   handleRun: ->
@@ -121,15 +127,24 @@ class ExerciseController
     document.body.appendChild newDiv
     new DebuggerController(code, newDiv, features, @json, doCommand).setup()
 
-  handleAllTestsPassed: ->
-    changeBackground = (i) =>
-      for span in document.querySelectorAll('.passed')
-        span.style.opacity = if (i % 2 == 1) then '1.0' else '0.0'
-      if i > 0
-        window.setTimeout (-> changeBackground(i - 1)), 300
-      else
-        @showingSuccessPopup = true
-        @render()
-    changeBackground 5
+  checkForPassingTests: ->
+    join = (outputs) ->
+      _.map(outputs, ((output) -> output[1])).join('')
+    for case_, case_num in @cases
+      case_.actual_matches_expected =
+        if @color == 'blue'
+          join(case_.actual_output) == case_.predicted_output
+        else if @color == 'red' || @color == 'green'
+          join(case_.actual_output) == case_.expected_output.toString()
+    if _.every(@cases, (case_) -> case_.actual_matches_expected)
+      changeBackground = (i) =>
+        for span in document.querySelectorAll('.passed')
+          span.style.opacity = if (i % 2 == 1) then '1.0' else '0.0'
+        if i > 0
+          window.setTimeout (-> changeBackground(i - 1)), 300
+        else
+          @showingSuccessPopup = true
+          @render()
+      changeBackground 5
 
 module.exports = ExerciseController

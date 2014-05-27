@@ -17,9 +17,6 @@ ExerciseComponent = React.createClass
     cases: type.array.isRequired
     doCommand: type.object.isRequired
 
-  getInitialState: ->
-    predictedOutput: {}
-
   componentDidMount: ->
     if @props.color == 'blue'
       window.setTimeout (=> @refs.prediction0.getDOMNode().focus()), 100
@@ -30,18 +27,8 @@ ExerciseComponent = React.createClass
 
     hasInputs             = _.some @props.cases, (case_) -> case_.input
     hasExpectedOutputs    = _.some @props.cases, (case_) -> case_.expected_output
-    hasUnpredictedOutputs = _.keys(@state.predictedOutput).length <
-                            _.keys(@props.cases).length
-    join = (outputs) ->
-      _.map(outputs, ((output) -> output[1])).join('')
-    checkForAllTestsPassed = =>
-      allTestsPassed = _.every @props.cases, (case_, case_num) =>
-        if @props.color == 'blue'
-          join(case_.actual_output) == @state.predictedOutput[case_num]
-        else
-          join(case_.actual_output) == case_.expected_output.toString()
-      if allTestsPassed
-        @props.doCommand.allTestsPassed()
+    hasUnpredictedOutputs = _.some @props.cases, (case_) ->
+                               case_.predicted_output == null
 
     div { className: @props.color },
 
@@ -126,12 +113,10 @@ ExerciseComponent = React.createClass
                             'Predicted output for this input'
                           else
                             'Enter prediction here and click Run to check your answer'
-                        value: @state.predictedOutput[case_num]
+                        value: _case.predicted_output
                         onChange: (e) =>
-                          change = {}
-                          change[case_num] = e.target.value
-                          @setState _.extend(@state.predictedOutput, change)
-                          checkForAllTestsPassed()
+                          newText = e.target.value
+                          @props.doCommand.setPredictedOutput case_num, newText
                     else
                       _case.expected_output
 
@@ -147,12 +132,12 @@ ExerciseComponent = React.createClass
                   if @props.color == 'blue'
                     if case0.actual_output == undefined
                       ''
-                    else if join(case0.actual_output) == @state.predictedOutput[0]
+                    else if case0.actual_matches_expected
                       span { className: 'passed' }, ' = Predicted'
                     else
                       span { className: 'failed' }, " #{NOT_EQUALS} Predicted"
                   else
-                    if join(case0.actual_output) == case0.expected_output.toString()
+                    if case0.actual_matches_expected
                       span { className: 'passed' }, ' = Expected'
                     else
                       span { className: 'failed' }, " #{NOT_EQUALS} Expected"
@@ -197,15 +182,14 @@ ExerciseComponent = React.createClass
                   if @props.color == 'blue'
                     if _case.actual_output == undefined
                       null
-                    else if join(_case.actual_output) ==
-                            @state.predictedOutput[case_num]
+                    else if _case.actual_matches_expected
                       td {},
                         span { className: 'passed' }, '='
                     else
                       td {},
                         span { className: 'failed' }, NOT_EQUALS
                   else
-                    if join(_case.actual_output) == _case.expected_output.toString()
+                    if _case.actual_matches_expected
                       td {},
                         span { className: 'passed' }, '='
                     else
@@ -227,7 +211,6 @@ ExerciseComponent = React.createClass
                   window.alert "You haven't predicted output for all the inputs yet."
               else
                 @props.doCommand.run()
-                checkForAllTestsPassed()
             if @props.cases == null || @props.cases.length == 1
               'Run'
             else
