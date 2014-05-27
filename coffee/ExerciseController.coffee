@@ -97,13 +97,15 @@ class ExerciseController
     @render()
 
   handleDebug: ->
-    features = _.extend @features, showNextExercise: false, showNextRep: false
+    features = _.extend @features, showNextExercise: false, showNextRep: false,
+      showingSolution: false
     @_popupDebugger @retrieveNewCode(), features, {}
 
   handleShowSolution: ->
     features = _.extend @features,
       showNextExercise: false
       showNextRep: @pathForNextRep != ''
+      showingSolution: true
     doCommand =
       nextExercise: (e) =>
         e.target.disabled = true

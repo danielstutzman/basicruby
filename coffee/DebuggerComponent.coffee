@@ -25,7 +25,7 @@ DebuggerComponent = React.createClass
     doCommand:           type.object.isRequired
 
   render: ->
-    { a, button, div, label, span } = React.DOM
+    { a, button, div, h1, label, span } = React.DOM
 
     div {},
       a
@@ -33,6 +33,9 @@ DebuggerComponent = React.createClass
         href: '#'
         onClick: (e) => e.preventDefault(); @props.doCommand.close()
         X_FOR_CLOSE
+
+      if @props.features.showingSolution
+        h1 { className: 'solution' }, 'Solution'
 
       div
         className: 'instructions-buttons'
