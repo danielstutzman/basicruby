@@ -68,11 +68,12 @@ class DebuggerController
       delta = (if currentLine > @currentScrollTop then 0.125 else -0.125)
       @currentScrollTop += delta
       window.setTimeout (=> @render()), MILLIS_FOR_SCROLL_INSTRUCTIONS
-    else if props.numPartialCallExecuting != null &&
+    else if @features.showPartialCalls && props.numPartialCallExecuting != null &&
        props.numPartialCallExecuting != @prevProps.numPartialCallExecuting
       @prevProps = props
       window.setTimeout (=> @render()), MILLIS_TO_HIGHLIGHT_CALL
-    else if calls1 && calls0 && calls1.length == calls0.length &&
+    else if @features.showPartialCalls &&
+         calls1 && calls0 && calls1.length == calls0.length &&
          calls1[calls1.length - 1]?.length > calls0[calls0.length - 1]?.length
       @prevProps = props
       window.setTimeout (=> @render()), MILLIS_TO_HIGHLIGHT_ADDED_ARG
