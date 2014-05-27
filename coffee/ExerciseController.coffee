@@ -128,14 +128,15 @@ class ExerciseController
     new DebuggerController(code, newDiv, features, @json, doCommand).setup()
 
   checkForPassingTests: ->
+    rtrim = (s) -> if s then s.replace(/\s+$/, '') else s
     join = (outputs) ->
       _.map(outputs, ((output) -> output[1])).join('')
     for case_, case_num in @cases
       case_.actual_matches_expected =
         if @color == 'blue'
-          join(case_.actual_output) == case_.predicted_output
+          rtrim(join(case_.actual_output)) == rtrim(case_.predicted_output)
         else if @color == 'red' || @color == 'green'
-          join(case_.actual_output) == case_.expected_output.toString()
+          rtrim(join(case_.actual_output)) == rtrim(case_.expected_output.toString())
     if _.every(@cases, (case_) -> case_.actual_matches_expected)
       changeBackground = (i) =>
         for span in document.querySelectorAll('.passed')
