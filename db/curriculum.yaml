@@ -25,10 +25,20 @@
       puts 11
       puts 1
       puts
+    cases:
+    - expected_output: |
+        11
+        1
+
   - code: |
       puts
       puts
       puts 1
+    cases:
+    - expected_output: |
+
+
+        1
   red:
   - code: |
       puts 4
