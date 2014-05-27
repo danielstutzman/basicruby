@@ -19,7 +19,7 @@ class DebuggerController
     @spool = null
     @highlighter = null
     @pendingStdin = null
-    @numCharsToOutput = 0
+    @numCharsToOutput = 1
     @currentScrollTop = 1
     @prevProps = {}
 
@@ -61,7 +61,7 @@ class DebuggerController
 
     if props.instructions.highlightedRange
       window.setTimeout (=> @handleNextBytecode()), MILLIS_FOR_HIGHLIGHT
-    else if @countOutputChars(props.interpreter?.output) > props.numCharsToOutput
+    else if @countOutputChars(props.interpreter?.output) >= props.numCharsToOutput
       @numCharsToOutput += 1
       window.setTimeout (=> @render()), MILLIS_FOR_OUTPUT_CHAR
     else if currentLine && currentLine != props.currentScrollTop
