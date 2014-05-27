@@ -27,8 +27,8 @@ ConsoleComponent = React.createClass
 
     numCharsToEmit = @props.numCharsToOutput
 
-    div {},
-      label {}, 'Input & Output'
+    div { className: 'console-with-label' },
+      label {}, 'Output'
       div
         className: 'console'
         ref: 'console'

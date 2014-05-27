@@ -27,7 +27,9 @@ DebuggerComponent = React.createClass
   render: ->
     { a, button, div, h1, label, span } = React.DOM
 
-    div {},
+    featuresList = _.keys(@props.features).filter((key) => @props.features[key])
+
+    div { className: featuresList.join(' ') },
       a
         className: 'close-button'
         href: '#'

@@ -1,7 +1,7 @@
 type           = React.PropTypes
 
 RIGHT_ARROW    = '\u2192'
-ARROW_CENTER_Y = 46
+ARROW_CENTER_Y = 49
 
 InstructionsComponent = React.createClass
 
@@ -40,7 +40,7 @@ InstructionsComponent = React.createClass
     if @props.highlightedRange
       [startLine, startCol, endLine, endCol] = @props.highlightedRange
 
-    div {},
+    div { className: 'instructions-with-label' },
       label {}, 'Instructions'
       div
         className: 'instructions'

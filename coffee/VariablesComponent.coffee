@@ -24,7 +24,7 @@ VariablesComponent = React.createClass
     else
       future_var_names = []
 
-    div {},
+    div { className: 'variables-with-label' },
       label {}, 'Variables'
       div { className: 'variables' },
         table {},

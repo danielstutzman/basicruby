@@ -6,8 +6,8 @@
 }
 
 $border-width: 5px;
-$instructions-font-size: 20pt;
-$console-font-size: 20pt;
+$instructions-font-size: 30pt;
+$console-font-size: 30pt;
 $min-width-for-extra-padding: 1000px;
 $value-min-font-size: 16pt;
 $lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
@@ -65,6 +65,20 @@ $lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
     }
   }
 
+  .instructions-with-label, .variables-with-label, .console-with-label {
+    float: left;
+    height: 350px;
+  }
+  .showInstructions.showConsole {
+    .instructions-with-label { width: 380px; margin-right: 10px; }
+    .console-with-label { width: 380px; }
+  }
+  .showInstructions.showConsole.showVariables {
+    .instructions-with-label { width: 350px; margin-right: 10px; }
+    .variables-with-label { width: 200px; margin-right: 10px; }
+    .console-with-label { width: 200px; }
+  }
+
   label {
     color: #000;
     font-weight: bold;
@@ -72,7 +86,7 @@ $lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
     background-color: #333;
     display: block;
     padding-left: 10px;
-    font-size: 10pt;
+    font-size: 20pt;
   }
 
   .partial-calls {
@@ -127,7 +141,7 @@ $lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
 
   .variables {
     width: 200px;
-    height: 120px;
+    height: inherit;
     background-color: black;
     border: 2px #222 solid;
     border-bottom: 2px #444 solid;
@@ -160,14 +174,14 @@ $lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
   .instructions {
     position: relative;
     width: 100%;
-    height: 140px;
     color: #0f0;
     font-size: $instructions-font-size;
     font-family: monospace;
     background-color: black;
+    height: inherit;
 
     .blank {
-      height: 100px;
+      height: 200px;
     }
 
     .pointer {
@@ -182,15 +196,15 @@ $lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
 
       .num {
         float: left;
-        width: 60px;
+        width: 80px;
         overflow: hidden;
         color: #060;
-        padding-left: 20px;
+        padding-left: 40px;
         text-align: right;
         clear: left;
       }
       .code {
-        margin-left: 80px;
+        margin-left: 100px;
         white-space: pre-wrap;
 
         span.highlight {
@@ -203,7 +217,6 @@ $lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
 
   .console {
     width: 100%;
-    height: 200px;
     background-color: black;
     border: 2px #222 solid;
     border-bottom: 2px #444 solid;
@@ -212,6 +225,7 @@ $lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
     overflow: scroll;
     font-family: monospace;
     word-wrap: break-word;
+    height: inherit;
 
     .before-cursor {
       margin: 0;
