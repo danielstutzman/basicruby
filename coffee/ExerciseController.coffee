@@ -24,6 +24,7 @@ class ExerciseController
     @cases = @json.cases || [{}]
     @actualOutput = if @color == 'green' then [] else null
     @retrieveNewCode = null
+    @showingSuccessPopup = false
 
   setup: ->
     callback = =>
@@ -45,9 +46,11 @@ class ExerciseController
       code: @json.code || ''
       color: @color
       cases: @cases
+      showingSuccessPopup: @showingSuccessPopup
       doCommand:
         run: => @handleRun()
         debug: => @handleDebug()
+        allTestsPassed: => window.setTimeout (=> @handleAllTestsPassed()), 100
         next: if @pathForNextExercise == '' then null else (e) =>
           e.target.disabled = true
           window.location.href = @pathForNextExercise
@@ -55,6 +58,7 @@ class ExerciseController
           e.target.disabled = true
           window.location.href = @pathForNextRep
         showSolution: => @handleShowSolution()
+        closeSuccessPopup: => @showingSuccessPopup = false; @render()
     React.renderComponent ExerciseComponent(props), @$div, callback
 
   handleRun: ->
@@ -114,5 +118,16 @@ class ExerciseController
     newDiv.className = 'debugger'
     document.body.appendChild newDiv
     new DebuggerController(code, newDiv, features, @json, doCommand).setup()
+
+  handleAllTestsPassed: ->
+    changeBackground = (i) =>
+      for span in document.querySelectorAll('.passed')
+        span.style.opacity = if (i % 2 == 1) then '1.0' else '0.0'
+      if i > 0
+        window.setTimeout (-> changeBackground(i - 1)), 300
+      else
+        @showingSuccessPopup = true
+        @render()
+    changeBackground 5
 
 module.exports = ExerciseController

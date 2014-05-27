@@ -244,3 +244,40 @@ div.exercise {
     }
   }
 }
+
+.success {
+  position: absolute;
+  top: 150px;
+  height: 250px;
+  left: 300px;
+  width: 350px;
+  background-color: #2a0;
+  border: 10px green solid;
+  padding: 10px 20px;
+  z-index: 5;
+
+  h1 {
+    margin: 0;
+    color: white;
+  }
+  p {
+    margin: 0;
+    margin-top: 10px;
+    color: white;
+    font-size: 14pt;
+  }
+  a.close-button {
+    float: right;
+    font-size: 25pt;
+    text-decoration: none;
+    color: black;
+    line-height: 0.5;
+    margin-right: -10px;
+  }
+  button {
+    width: 100%;
+    height: 50px;
+    font-size: 20pt;
+    margin-top: 20px;
+  }
+}

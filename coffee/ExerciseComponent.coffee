@@ -5,6 +5,7 @@ DOWN_ARROW  = "\u2193"
 EM_DASH     = "\u2014"
 NOT_EQUALS  = "\u2260"
 SOUTH_EAST  = "\u2198"
+X_FOR_CLOSE = "\u00d7"
 
 ExerciseComponent = React.createClass
 
@@ -24,7 +25,7 @@ ExerciseComponent = React.createClass
       window.setTimeout (=> @refs.prediction0.getDOMNode().focus()), 100
 
   render: ->
-    { br, button, div, h1, img, input, label, p, small, span, table, td, th, tr,
+    { a, br, button, div, h1, img, input, label, p, small, span, table, td, th, tr,
       textarea } = React.DOM
 
     hasInputs             = _.some @props.cases, (case_) -> case_.input
@@ -33,6 +34,14 @@ ExerciseComponent = React.createClass
                             _.keys(@props.cases).length
     join = (outputs) ->
       _.map(outputs, ((output) -> output[1])).join('')
+    checkForAllTestsPassed = =>
+      allTestsPassed = _.every @props.cases, (case_, case_num) =>
+        if @props.color == 'blue'
+          join(case_.actual_output) == @state.predictedOutput[case_num]
+        else
+          join(case_.actual_output) == case_.expected_output.toString()
+      if allTestsPassed
+        @props.doCommand.allTestsPassed()
 
     div { className: @props.color },
 
@@ -122,6 +131,7 @@ ExerciseComponent = React.createClass
                           change = {}
                           change[case_num] = e.target.value
                           @setState _.extend(@state.predictedOutput, change)
+                          checkForAllTestsPassed()
                     else
                       _case.expected_output
 
@@ -217,9 +227,37 @@ ExerciseComponent = React.createClass
                   window.alert "You haven't predicted output for all the inputs yet."
               else
                 @props.doCommand.run()
+                checkForAllTestsPassed()
             if @props.cases == null || @props.cases.length == 1
               'Run'
             else
               'Run Tests'
+
+      if @props.showingSuccessPopup
+        div
+          ref: 'success'
+          className: 'success'
+          a
+            className: 'close-button'
+            href: '#'
+            onClick: (e) =>
+              @props.doCommand.closeSuccessPopup()
+              e.preventDefault()
+            X_FOR_CLOSE
+          h1 {}, 'Congratulations!'
+          p {}, 'You predicted the output correctly!'
+          button
+            className: 'do-another'
+            disabled: @props.doCommand.nextRep == null
+            onClick: (e) =>
+              console.log 'do another'
+              @props.doCommand.nextRep e
+            "#{RELOAD_ICON} Do another"
+          br {}
+          button
+            className: 'go-on'
+            disabled: @props.doCommand.next == null
+            onClick: (e) => @props.doCommand.next e
+            "#{RIGHT_ARROW} Go on"
 
 module.exports = ExerciseComponent
