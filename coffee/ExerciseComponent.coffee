@@ -245,7 +245,13 @@ ExerciseComponent = React.createClass
               e.preventDefault()
             X_FOR_CLOSE
           h1 {}, 'Congratulations!'
-          p {}, 'You predicted the output correctly!'
+          p {},
+            if @props.color == 'blue'
+              'You predicted the output correctly!'
+            else if @props.color == 'red'
+              'You fixed the bug so all the tests pass!'
+            else if @props.color == 'green'
+              'You got all the tests passing!'
           button
             className: 'do-another'
             disabled: @props.doCommand.nextRep == null
