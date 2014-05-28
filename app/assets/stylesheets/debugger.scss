@@ -69,6 +69,10 @@ $lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
     float: left;
     height: 350px;
   }
+  .instructions, .variables, .console {
+    float: left;
+    height: 350px - 30px;
+  }
   .showInstructions.showConsole {
     .instructions-with-label { width: 380px; margin-right: 10px; }
     .console-with-label { width: 380px; }
@@ -141,7 +145,6 @@ $lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
 
   .variables {
     width: 200px;
-    height: inherit;
     background-color: black;
     border: 2px #222 solid;
     border-bottom: 2px #444 solid;
@@ -178,7 +181,6 @@ $lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
     font-size: $instructions-font-size;
     font-family: monospace;
     background-color: black;
-    height: inherit;
 
     .blank {
       height: 200px;
@@ -191,8 +193,8 @@ $lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
 
     .content {
       width: 100%;
-      height: inherit;
       overflow: scroll;
+      height: inherit;
 
       .num {
         float: left;
@@ -225,7 +227,6 @@ $lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
     overflow: scroll;
     font-family: monospace;
     word-wrap: break-word;
-    height: inherit;
 
     .before-cursor {
       margin: 0;
