@@ -33,7 +33,7 @@ ExerciseComponent = React.createClass
     hasInputs             = _.some @props.cases, (case_) -> case_.input
     hasExpectedOutputs    = _.some @props.cases, (case_) -> case_.expected_output
     hasUnpredictedOutputs = _.some @props.cases, (case_) ->
-                               case_.predicted_output == null
+                               case_.predicted_output == undefined
 
     div { className: @props.color },
 
