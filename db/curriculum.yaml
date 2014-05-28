@@ -133,15 +133,16 @@
       print 11
       print -11
       print -11
-    solution: |
-      11-11-11
+    cases:
+    - expected_output: 11-11-11
   - code: |
       print 1
       puts
       print 0
-    solution: |
-      1
-      0
+    cases:
+    - expected_output:
+        1
+        0
   red:
   - code: |
       puts 8
@@ -265,9 +266,10 @@
       x = 8
       print x
       puts x
-    solution: |
-      9
-      88
+    cases:
+    - expected_output: |
+        9
+        88
   - code: |
       x = 2
       x = 22
@@ -284,10 +286,11 @@
       puts x
       puts y
       puts y
-    solution: |
-      1
-      2
-      2
+    cases:
+    - expected_output: |
+        1
+        2
+        2
   red:
   - code: |
       x = 6
