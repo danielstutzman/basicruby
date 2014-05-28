@@ -49,54 +49,53 @@ InstructionsComponent = React.createClass
             className: 'pointer'
             ref: 'pointer'
             RIGHT_ARROW
-        if @props.currentLine
-          div
-            className: 'content'
-            ref: 'content'
+        div
+          className: 'content'
+          ref: 'content'
 
-            # blank space at the beginning so we have freedom when scrolling
-            div { className: 'blank', ref: 'blank1' }
+          # blank space at the beginning so we have freedom when scrolling
+          div { className: 'blank', ref: 'blank1' }
 
-            _.map @props.code.split("\n"), (line, i) ->
-              num = i + 1
-              div { key: num },
-                div
-                  ref: "num#{num}"
-                  className: "num _#{num}"
-                  num
-                div
-                  className: "code _#{num}"
-                  if line == ''
-                    br {}
-                  else if num == startLine && num == endLine
-                    div {},
-                      span { key: 'before-highlight' },
-                        line.substring 0, startCol
-                      span { key: 'highlight', className: 'highlight' },
-                        line.substring startCol, endCol
-                      span { key: 'after-highlight' },
-                        line.substring endCol
-                  else if num == startLine && num < endLine
-                    div {},
-                      span { key: 'before-highlight' },
-                        line.substring 0, startCol
-                      span { key: 'highlight', className: 'highlight' },
-                        line.substring startCol
-                  else if num > startLine && num == endLine
-                    div {},
-                      span { key: 'highlight', className: 'highlight' },
-                        line.substring 0, endCol
-                      span { key: 'after-highlight' },
-                        line.substring endCol
-                  else if num > startLine && num < endLine
-                    div {},
-                      span { key: 'highlight', className: 'highlight' },
-                        line
-                  else
-                    line
-            br { key: 4, style: { clear: 'both' } }
+          _.map @props.code.split("\n"), (line, i) ->
+            num = i + 1
+            div { key: num },
+              div
+                ref: "num#{num}"
+                className: "num _#{num}"
+                num
+              div
+                className: "code _#{num}"
+                if line == ''
+                  br {}
+                else if num == startLine && num == endLine
+                  div {},
+                    span { key: 'before-highlight' },
+                      line.substring 0, startCol
+                    span { key: 'highlight', className: 'highlight' },
+                      line.substring startCol, endCol
+                    span { key: 'after-highlight' },
+                      line.substring endCol
+                else if num == startLine && num < endLine
+                  div {},
+                    span { key: 'before-highlight' },
+                      line.substring 0, startCol
+                    span { key: 'highlight', className: 'highlight' },
+                      line.substring startCol
+                else if num > startLine && num == endLine
+                  div {},
+                    span { key: 'highlight', className: 'highlight' },
+                      line.substring 0, endCol
+                    span { key: 'after-highlight' },
+                      line.substring endCol
+                else if num > startLine && num < endLine
+                  div {},
+                    span { key: 'highlight', className: 'highlight' },
+                      line
+                else
+                  line
+          br { key: 4, style: { clear: 'both' } }
 
-            # blank space at the ending so we have freedom when scrolling
-            div { className: 'blank', ref: 'blank2' }
+          # blank space at the ending so we have freedom when scrolling
+          div { className: 'blank', ref: 'blank2' }
 
 module.exports = InstructionsComponent
