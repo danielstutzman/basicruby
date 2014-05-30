@@ -20,7 +20,10 @@ ConsoleComponent = React.createClass
   componentDidUpdate: (prevProps, prevState) ->
     if @props.pendingStdin != prevProps.pendingStdin &&
        @props.pendingStdin != null
+      @refs.console.getDOMNode().scrollTop = @refs.console.getDOMNode().scrollHeight
       @refs.stdin.getDOMNode().focus()
+    else if @props.numCharsToOutput != prevProps.numCharsToOutput
+      @refs.console.getDOMNode().scrollTop = @refs.console.getDOMNode().scrollHeight
 
   render: ->
     { div, input, label, span } = React.DOM
