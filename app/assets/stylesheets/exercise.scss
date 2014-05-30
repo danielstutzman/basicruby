@@ -15,7 +15,9 @@ body.exercise {
     color: white;
     letter-spacing: 3px;
     padding-left: 60px;
+    width: 840px;
 
+    &.purple { background-color: #305; }
     &.yellow { background-color: #873; }
     &.blue   { background-color: #004; }
     &.red    { background-color: #400; }
@@ -26,16 +28,28 @@ body.exercise {
       text-decoration: none;
     }
   }
+
+  .video-script {
+    font-family: serif;
+    float: right;
+    width: 900px;
+    font-size: 30pt;
+    line-height: 3;
+    padding-top: 50px;
+    padding-right: 200px;
+  }
 }
 div.exercise {
   width: 840px;
 
+  .purple { background-color: #709; }
   .yellow { background-color: #a94; }
   .blue   { background-color: #55a; }
   .red    { background-color: #600; }
   .green  { background-color: #484; }
   .orange { background-color: #a60; }
 
+  .purple { .CodeMirror-linenumbers { background-color: #709; } }
   .yellow { .CodeMirror-linenumbers { background-color: #a94; } }
   .blue   { .CodeMirror-linenumbers { background-color: #55a; } }
   .red    { .CodeMirror-linenumbers { background-color: #600; } }
@@ -58,6 +72,9 @@ div.exercise {
     background-repeat: no-repeat;
     background-position: 0px 10px;
 
+    /* Hide because it looks too much a clickable play button:
+      &.purple { background-image:
+      image-url('exercise_icons/play-button-purple-60.png'); } */
     &.yellow { background-image: image-url('exercise_icons/light_bulb_60.png'); }
     &.blue   { background-image: image-url('exercise_icons/question_mark_60.png'); }
     &.red    { background-image: image-url('exercise_icons/red_bug_60.png'); }

@@ -6,7 +6,7 @@ ExerciseComponent     = require './ExerciseComponent.coffee'
 
 class ExerciseController
   constructor: ($div, featuresJson, exerciseJson, exerciseColor,
-      pathForNextExercise, pathForNextRep, pathForVideo, pathForVideoPoster) ->
+      pathForNextExercise, pathForNextRep) ->
     @$div = $div
     exists = (feature) -> feature in featuresJson
     @features =
@@ -21,13 +21,10 @@ class ExerciseController
     @color = exerciseColor
     @pathForNextExercise = pathForNextExercise
     @pathForNextRep = pathForNextRep
-    @pathForVideo = pathForVideo
-    @pathForVideoPoster = pathForVideoPoster
     @cases = @json.cases || [{}]
     @actualOutput = if @color == 'green' then [] else null
     @retrieveNewCode = null
     @showingSuccessPopup = false
-    @showingYellowVideo = false
 
   setup: ->
     callback = =>
@@ -49,10 +46,7 @@ class ExerciseController
       code: @json.code || ''
       color: @color
       cases: @cases
-      pathForVideo: @pathForVideo
-      pathForVideoPoster: @pathForVideoPoster
       showingSuccessPopup: @showingSuccessPopup
-      showingYellowVideo: @showingYellowVideo
       doCommand:
         run: =>
           @handleRun()
@@ -71,8 +65,6 @@ class ExerciseController
           @cases[caseNum].predicted_output = newText
           @render()
           @checkForPassingTests()
-        showYellowVideo: (smallBox) => @showingYellowVideo = true; @render()
-        closeYellowVideo: => @showingYellowVideo = false; @render()
     React.renderComponent ExerciseComponent(props), @$div, callback
 
   handleRun: ->

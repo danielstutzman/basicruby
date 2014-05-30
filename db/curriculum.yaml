@@ -1,6 +1,25 @@
 - title: Output numbers and blank lines
   title_html: "Output numbers<br>and blank lines"
   features: run step instructions console
+  purple:
+  - youtube_id: s_wpThTIC9k
+    video_script:
+      Hi everyone :-)
+      In this lesson, we'll call the "put-s" method.
+      "Put-s" outputs a number or a blank line.
+
+      So the Ruby code is here at the left.
+      And you'll run it by clicking Run...
+
+      Or... by clicking Debug,
+      so you can step through the program, line by line.
+
+      Okay, your turn.
+    code: |
+      puts 5
+      puts 4
+      puts
+      puts 3
   yellow:
   - code: |
       puts 8

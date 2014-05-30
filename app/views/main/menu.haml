@@ -13,12 +13,18 @@
 %table(style='border-spacing: 0px; margin: 0 auto;')
   %tr
     %th
+    %th.purple
+      = image_tag_for_exercise_color 'purple', 60
+      %br
+      Watch
+      %br
+      intro
     %th.yellow
       = image_tag_for_exercise_color 'yellow', 60
       %br
-      See a
+      See an
       %br
-      demo
+      example
     %th.blue
       = image_tag_for_exercise_color 'blue', 60
       %br
@@ -46,6 +52,7 @@
   - @topics.each do |topic|
     %tr
       %th.title!= topic.title_html
+      %td.purple= done_indicator topic.num, 'P'
       %td.yellow= done_indicator topic.num, 'Y'
       %td.blue=   done_indicator topic.num, 'B'
       %td.red=    done_indicator topic.num, 'R'

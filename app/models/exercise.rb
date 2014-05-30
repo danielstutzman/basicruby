@@ -5,6 +5,7 @@ class Exercise < ActiveRecord::Base
 
   def self.color_initial_to_color
     {
+      'p' => 'purple',
       'y' => 'yellow',
       'b' => 'blue',
       'r' => 'red',
@@ -13,7 +14,7 @@ class Exercise < ActiveRecord::Base
     }
   end
   def self.find_by_path path, rep_num
-    if match = path.match(/^([0-9]+)([YBRGO])$/i)
+    if match = path.match(/^([0-9]+)([PYBRGO])$/i)
       topic_num = match[1]
       if self.color_initial_to_color.has_key? match[2].downcase
         color = self.color_initial_to_color[match[2].downcase]
@@ -33,10 +34,11 @@ class Exercise < ActiveRecord::Base
   def path_for_next_exercise
     next_color =
       case self.color
+      when 'purple' then 'yellow'
       when 'yellow' then 'blue'
       when 'blue'   then 'red'
       when 'red'    then 'green'
-      when 'green'  then 'yellow'
+      when 'green'  then 'purple'
       end
     next_topic_num = self.topic_num + ((self.color == 'green') ? 1 : 0)
     "/#{next_topic_num}#{next_color[0].upcase}"
@@ -60,7 +62,8 @@ class Exercise < ActiveRecord::Base
 
   def color_explanation
     case self.color
-    when 'yellow' then 'Demonstration'
+    when 'purple' then 'Introduction'
+    when 'yellow' then 'Example'
     when 'blue'   then 'Prediction'
     when 'red'    then 'Bug-fixing'
     when 'green'  then 'Specification'

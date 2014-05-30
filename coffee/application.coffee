@@ -49,7 +49,6 @@ toggleSolutionState = (newState) ->
   forceResize()
 
 document.addEventListener 'DOMContentLoaded', ->
-  if $one('body.exercise') # have to wait until dom is loaded to check
+  if $one('body.exercise') && !$one('div.exercise.purple')
     new ExerciseController($one('div.exercise'), featuresJson, exerciseJson,
-      exerciseColor, pathForNextExercise, pathForNextRep, pathForVideo,
-      pathForVideoPoster).setup()
+      exerciseColor, pathForNextExercise, pathForNextRep).setup()

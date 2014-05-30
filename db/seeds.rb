@@ -13,7 +13,7 @@ Exercise.transaction do
       title_html: topic_yaml['title_html'] || topic_yaml['title'],
       features: topic_yaml['features']
 
-    %w[yellow blue red green orange].each do |color|
+    %w[purple yellow blue red green orange].each do |color|
       exercises = topic_yaml[color]
       next if exercises.nil? # just for unfinished topics
       exercises.each_with_index do |exercise, rep_num0|

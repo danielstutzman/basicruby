@@ -6,12 +6,30 @@
   var exerciseColor = "#{@exercise.color}";
   var pathForNextExercise = "#{@exercise.path_for_next_exercise}";
   var pathForNextRep = "#{@exercise.path_for_next_rep}";
-  var pathForVideo = "#{video_url(@exercise.topic.num)}";
-  var pathForVideoPoster = "#{video_poster_url(@exercise.topic.num)}";
 
-.title{ class: @exercise.color }
-  %a(href='/')
-    = image_tag 'basic_ruby_x1_white.png', width: 111, height: 13
-  &mdash;
-  = "#{@exercise.topic.num}. #{@exercise.topic.title}"
-.exercise
+- if @exercise.color == 'purple' && @exercise.json_loaded['youtube_id'].nil?
+  .video-script
+    = @exercise.json_loaded['video_script']
+
+  :css
+    .banner { display: none; }
+    .purple { padding-top: 30px; }
+  .exercise(style='width: 854px; height: 480px')
+
+- else
+  .title{ class: @exercise.color }
+    %a(href='/')
+      = image_tag 'basic_ruby_x1_white.png', width: 111, height: 13
+    &mdash;
+    = "#{@exercise.topic.num}. #{@exercise.topic.title}"
+
+  - if @exercise.color == 'purple' && @exercise.json_loaded['youtube_id']
+    .exercise.purple
+      .buttons-above
+        %button.next(onClick="window.location = pathForNextExercise")
+          &#x279c; Go on
+      .banner.purple Watch the introduction
+    %iframe(width='840' height='480' frameborder='0' allowfullscreen){src: "//www.youtube.com/embed/#{@exercise.json_loaded['youtube_id']}?rel=0&autoplay=0"}
+
+  - else
+    .exercise

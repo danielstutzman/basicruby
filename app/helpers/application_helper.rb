@@ -4,6 +4,9 @@ module ApplicationHelper
   end
   def image_tag_for_exercise_color color, size
     case color
+    when 'purple'
+      image_tag 'exercise_icons/play-button-purple-60.png',
+        width: size, height: size
     when 'yellow'
       image_tag 'exercise_icons/light_bulb_60.png',
         width: size, height: size

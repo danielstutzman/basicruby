@@ -102,6 +102,12 @@ body.menu {
       text-shadow: none;
     }
   }
+  td.purple, th.purple {
+    background-color:#cae;
+    a.done-indicator {
+      color: #508;
+    }
+  }
   td.yellow, th.yellow {
     background-color:#ee9;
     a.done-indicator {
