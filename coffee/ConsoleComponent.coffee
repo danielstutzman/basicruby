@@ -1,5 +1,6 @@
 type           = React.PropTypes
 ENTER_KEY      = 13
+UP_ARROW       = "\u2191"
 
 ConsoleComponent = React.createClass
 
@@ -55,6 +56,10 @@ ConsoleComponent = React.createClass
             onKeyPress: (e) =>
               if e.keyCode == 13
                 @props.doSubmitInput "#{e.target.value}\n"
+        if @props.pendingStdin != null
+          div
+            className: 'stdin-reminder'
+            "#{UP_ARROW} Type something on the keyboard, then press Enter."
         else
           div
             className: 'cursor'
