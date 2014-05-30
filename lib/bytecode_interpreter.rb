@@ -131,7 +131,9 @@ class BytecodeInterpreter
   def set_input text
     @accepted_input = text
     @accepting_input = false
-    $console_texts = $console_texts.clone + [[:stdin, text]]
+    if false # don't automatically show inputted text; can be confused with output
+      $console_texts = $console_texts.clone + [[:stdin, text]]
+    end
   end
 
   def get_stdout
