@@ -61,7 +61,7 @@ ExerciseComponent = React.createClass
         when 'purple'
           div { className: 'banner purple' }, 'Watch the introduction'
         when 'yellow'
-          div { className: 'banner yellow' }, 'Study the example'
+          div { className: 'banner yellow' }, 'Run this example'
         when 'blue'
           div
             className: 'banner blue'
