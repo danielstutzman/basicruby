@@ -18,8 +18,7 @@
 
 - else
   .title{ class: @exercise.color }
-    %a(href='/')
-      = image_tag 'basic_ruby_x1_white.png', width: 111, height: 13
+    %a(href='/' class='logo-link')
     &mdash;
     = "#{@exercise.topic.num}. #{@exercise.topic.title}"
 

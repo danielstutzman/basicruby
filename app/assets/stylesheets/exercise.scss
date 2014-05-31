@@ -24,8 +24,15 @@ body.exercise {
     &.green  { background-color: #050; }
     &.orange { background-color: #640; }
 
-    a {
+    a.logo-link {
+      display: block;
       text-decoration: none;
+      width: 142px;
+      height: 18px;
+      background-image: image-url('basic_ruby_white_x2.png');
+      background-repeat: no-repeat;
+      margin-right: 10px;
+      float: left;
     }
   }
 
