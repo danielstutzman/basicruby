@@ -119,6 +119,24 @@
 - title: Multiple outputs sharing a line
   title_html: "Multiple outputs<br>sharing a line"
   features: run step instructions console
+  purple:
+  - youtube_id: 6gG3v6lNwt4
+    video_script:
+      Hi everyone :-)
+      In this lesson, we'll call the print method.
+      Unlike "put-s", "print" doesn't move the cursor to the next line,
+       after it outputs the number.
+      So you can put multiple things on one line.
+      Let's see that in the debugger.
+      Line 1 prints 4, and the cursor stays on the same line.
+      Line 2 is similar.
+      With Line 3, the cursor does go to the next line.
+      So line 4 starts at the beginning.
+    code: |
+      print 0
+      print 3
+      puts -1
+      print 7
   yellow:
   - code: |
       print 4
@@ -257,13 +275,34 @@
 
 - title: Variables
   features: run step instructions console vars
+  purple:
+  - youtube_id: GPvK2ECIpOA
+    video_script:
+      Hi everyone :-)
+      In this lesson,
+        we'll assign numbers to variables, then read them back.
+      You notice the debugger now has a new section, for variables!
+      So line 1 just creates a variable named x, with a value of 4.
+      Line 2 changes the value of x, to 3.
+      So line 3 will output the new value of x, which is 3.
+      In line 4, we set the variable y to 5,
+        but we never output y, so you won't see 5 in the output.
+      Instead we output x again.
+      Why?  So you can practice *really* looking at *details*,
+        instead of guessing what a program will do.
+    code: |
+      x = 4
+      x = 3
+      puts x
+      y = 5
+      puts x
   yellow:
   - code: |
-      x = 3
+      z = 3
       y = 2
-      puts x
-      x = 4
-      puts x
+      puts z
+      z = 4
+      puts z
   - code: |
       x = 3
       x = 0
@@ -399,107 +438,287 @@
 
 - title: Accepting input
   features: run step instructions console vars
+  purple:
+  - youtube_id: H7IPWOMPrr4
+    video_script:
+      Hi everyone :-)
+      In this lesson, we'll call the "get-s" method,
+        and whatever it returns, we'll assign to a variable.
+      As the opposite of "put-s", which outputs to the screen,
+        "get-s" waits for input from the keyboard.
+      Let's step over line 1 and see what happens.
+      Since we hit the "get-s" call, we see a blinking cursor,
+        waiting for us to type something and press Enter.
+      I typed in 2, so x now is 2.
+      This particular program always outputs 5,
+      then the value of x, which is whatever we typed in earlier.
+      ...
+      Now with complicated programs, it can be tedious to keep typing
+        in the same input while you're getting the program to work.
+      So outside the debugger, we now have test cases, with input already supplied.
+      When I click Run Tests, it will run the program twice.
+        First with the input 3, then with the input 4.
+      (Click Run Tests).
+      So we'll see one program acts two different ways,
+      because the inputs are different.
+    code: |
+      x = gets
+      puts 5
+      puts x
+    cases:
+    - input: 3
+    - input: 4
   yellow:
   - code: |
-      puts 3
-      puts gets
+      y = 1
+      z = gets
+      puts z
+      puts y
+    cases:
+    - input: 3
+    - input: 9
+  - code: |
+      x = gets
+      print x
+      print 0
+      print x
+    cases:
+    - input: 9
+    - input: 7
+  - code: |
+      print -1
+      x = gets
+      puts -2
+      puts x
+    cases:
+    - input: 0
+    - input: -3
+  blue:
+  - code: |
+      z = gets
+      print 0
+      puts z
+    cases:
+    - input: 1
+      expected_output: "01"
+    - input: 3
+      expected_output: "03"
+  - code: |
+      print 1
+      x = gets
+      print 2
+      puts x
     cases:
     - input: 5
+      expected_output: 125
     - input: 6
+      expected_output: 126
   - code: |
+      z = gets
+      puts z
+      puts z
+    cases:
+    - input: 7
+      expected_output: "7\n7\n"
+    - input: 12
+      expected_output: "12\n12\n"
+  red:
+  - code: |
+      gets x
+      puts x
+    solution:
+      x = gets
+      puts x
+    cases:
+    - input: 1
+      expected_output: 1
+    - input: 8
+      expected_output: 8
+  - code: |
+      puts 5
+      gets
+      puts 7
+    solution:
+      puts 5
+      x = gets
+      puts x
+      puts 7
+    cases:
+    - input: 2
+      expected_output: "5\n2\n7\n"
+    - input: 5
+      expected_output: "5\n5\n7\n"
+  - code: |
+      x = gets
+      x = 1
+      puts x
+      puts x
+    solution:
+      x = gets
+      puts x
+      x = 1
+      puts x
+    cases:
+    - input: 3
+      expected_output: "3\n1\n"
+    - input: 10
+      expected_output: "10\n1\n"
+  green:
+  - solution: |
+      x = gets
+      puts x
+      print 0
+      puts x
+    cases:
+    - input: 6
+      expected_output: "6\n06\n"
+    - input: 2
+      expected_output: "2\n02\n"
+  - solution: |
+      puts 0
+      z = gets
+      puts 1
+    cases:
+    - input: 6
+      expected_output: "0\n1\n"
+    - input: 3
+      expected_output: "0\n1\n"
+  - solution: |
       y = gets
-      puts gets
+      puts y
+      puts 2
+    cases:
+    - input: 2
+      expected_output: "2\n2\n"
+    - input: 5
+      expected_output: "5\n2\n"
+
+- title: Multiple inputs
+  features: run step instructions console vars
+  purple:
+  - youtube_id: omK25lAm7gM
+    video_script:
+      Hi everyone :-)
+      This lesson is like the previous one;
+      we're gonna call "get-s" to read from either the keyboard,
+        or the test cases.
+      But this time we can call "get-s" more than once.
+      So you'll have to either type in multiple inputs,
+        or the test cases will have to have multiple lines.
+      Let's see an example.
+      We'll read one line of input into x... one line into y.
+      And then output them, in reverse order.
+      Keep in mind, there's no rule saying we have to do anything with the input.
+    code: |
+      x = gets
+      y = gets
+      puts y
+      puts x
+    cases:
+    - input: "3\n2\n"
+    - input: "8\n9\n"
+  yellow:
+  - code: |
+      x = gets
+      x = gets
+      puts x
+      puts x
     cases:
     - input: "7\n2\n"
     - input: "3\n1\n"
   - code: |
       z = gets
-      print 1111
-      print z
-      puts 1111
+      x = gets
+      puts x
     cases:
-    - input: 5
-    - input: 2
-  blue:
-  - code: puts gets
-    cases:
-    - input: 2
-      expected_output: 2
-    - input: 5
-      expected_output: 5
+    - input: "5\n1\n"
+    - input: "2\n3\n"
   - code: |
       y = gets
-      puts 3
-    cases:
-    - input: 1
-      expected_output: 3
-    - input: 2
-      expected_output: 3
-  - code: |
+      puts y
+      puts y
       z = gets
-      puts 9
+    cases:
+    - input: "5\n9\n"
+    - input: "4\n3\n"
+  blue:
+  - code: |
+      x = gets
+      puts 1
+      x = gets
+      puts x
+    cases:
+    - input: 2
+      expected_output: "1\n2\n"
+    - input: 5
+      expected_output: "1\n5\n"
+  - code: |
+      y = gets
+      z = gets
+      puts y
+      print -1
       puts z
     cases:
-    - input: 10
-      expected_output: |
-        9
-        10
-    - input: 4
-      expected_output: |
-        9
-        4
+    - input: "1\n8\n"
+      expected_output: "1\n-18\n"
+    - input: "2\n5\n"
+      expected_output: "2\n-15\n"
+  - code: |
+      puts 1
+      puts 10
+      y = gets
+      z = gets
+    cases:
+    - input: "3\n4\n"
+      expected_output: "1\n10\n"
+    - input: "10\n7\n"
+      expected_output: "1\n10\n"
   red:
   - code: |
-      gets = x
+      x = gets
+      x = gets
       puts x
       puts x
     solution: |
       x = gets
       puts x
+      x = gets
       puts x
     cases:
-    - input: 5
-      expected_output: |
-        5
-        5
-    - input: 6
-      expected_output: |
-        6
-        6
+    - input: "3\n5\n"
+      expected_output: "3\n5\n"
+    - input: "6\n1\n"
+      expected_output: "6\n1\n"
   - code: |
       x = gets
-      puts 3
-      puts gets
+      y = gets
+      puts y
+      puts y
     solution: |
       x = gets
-      puts 3
+      y = gets
+      puts x
+      puts x
+    cases:
+    - input: "1\n5\n"
+      expected_output: "1\n1\n"
+    - input: "7\n9\n"
+      expected_output: "7\n7\n"
+  - code: |
+      puts 8
+      x = gets
+      x = gets
+    solution: |
+      puts 8
+      x = gets
+      puts x
+      x = gets
       puts x
     cases:
     - input: 5
-      expected_output: |
-        3
-        5
+      expected_output: "8\n5\n5\n"
     - input: 6
-      expected_output: |
-        3
-        6
-  - code: |
-      puts 8
-      puts gets
-      puts 9
-    solution: |
-      puts 8
-      gets
-      puts 9
-    cases:
-    - input: 5
-      expected_output: |
-        8
-        9
-    - input: 6
-      expected_output: |
-        8
-        9
+      expected_output: "8\n6\n6\n"
   green:
   - solution: |
       x = gets
@@ -515,8 +734,8 @@
         1
       expected_output: "8\n"
   - solution: |
-      gets
-      gets
+      z = gets
+      y = gets
       puts 5
     cases:
     - input: |
@@ -529,14 +748,15 @@
       expected_output: "5\n"
   - solution: |
       y = gets
+      z = gets
       puts y
       puts y
-      puts y
+      puts z
     cases:
-    - input: "9\n"
-      expected_output: "9\n9\n9\n"
-    - input: "4\n"
-      expected_output: "4\n4\n4\n"
+    - input: "9\n4\n"
+      expected_output: "9\n9\n4\n"
+    - input: "4\n5\n"
+      expected_output: "4\n4\n5\n"
 
 #- title: Multiple arguments
 #  features: run step instructions console
@@ -617,7 +837,7 @@
   #      puts 1
   #      puts 1, 2
   #      puts 1, 2, 3
-  #      
+  #
   #      puts 3, 2, 1
   #      puts    2, 1
   #      puts       1
