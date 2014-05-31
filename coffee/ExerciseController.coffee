@@ -34,9 +34,15 @@ class ExerciseController
         autofocus: true
         readOnly: false
       textarea = @$div.querySelector('textarea.code')
-      codeMirror = CodeMirror.fromTextArea textarea, options
-      makeRetriever = (codeMirror) -> (-> codeMirror.getValue())
-      @retrieveNewCode = makeRetriever codeMirror
+      isMobileSafari = ->
+         navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
+         navigator.userAgent.match(/AppleWebKit/)
+      if isMobileSafari()
+        @retrieveNewCode = -> textarea.value
+      else
+        codeMirror = CodeMirror.fromTextArea textarea, options
+        makeRetriever = (codeMirror) -> (-> codeMirror.getValue())
+        @retrieveNewCode = makeRetriever codeMirror
       if @color == 'red' || @color == 'green'
         @handleRun()
     @render callback
