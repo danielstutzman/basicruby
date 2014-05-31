@@ -1,0 +1,117 @@
+title: Output numbers and blank lines
+title_html: "Output numbers<br>and blank lines"
+features: run step instructions console
+purple:
+- youtube_id: s_wpThTIC9k
+  video_script:
+    Hi everyone :-)
+    In this lesson, we'll call the "put-s" method.
+    "Put-s" outputs a number or a blank line.
+
+    So the Ruby code is here at the left.
+    And you'll run it by clicking Run...
+
+    Or... by clicking Debug,
+    so you can step through the program, line by line.
+
+    Okay, your turn.
+  code: |
+    puts 5
+    puts 4
+    puts
+    puts 3
+yellow:
+- code: |
+    puts 8
+    puts
+    puts 3
+- code: |
+    puts 1
+    puts 9
+- code: |
+    puts
+    puts 5
+    puts 4
+blue:
+- code: |
+    puts 6
+    puts 4
+  cases:
+  - expected_output: |
+      6
+      4
+- code: |
+    puts 11
+    puts 1
+    puts
+  cases:
+  - expected_output: |
+      11
+      1
+
+- code: |
+    puts
+    puts
+    puts 1
+  cases:
+  - expected_output: |
+
+
+      1
+red:
+- code: |
+    puts 4
+    ptus 2
+  solution: |
+    puts 4
+    puts 2
+  cases:
+  - expected_output: |
+      4
+      2
+- code: |
+    puts 3
+    puts 4
+    put5 5
+  solution: |
+    puts 3
+    puts 4
+    puts 5
+  cases:
+  - expected_output: |
+      3
+      4
+      5
+- code: |
+    puts 5
+    puts 3
+    puts 1
+    puts-1
+  solution: |
+    puts 5
+    puts 3
+    puts 1
+    puts -1
+  cases:
+  - expected_output: |
+      5
+      3
+      1
+      -1
+green:
+- solution: |
+    puts
+    puts 10
+  cases:
+  - expected_output: "\n10\n"
+- solution: |
+    puts 3
+    puts
+    puts
+  cases:
+  - expected_output: "3\n\n\n"
+- solution: |
+    puts 7
+    puts 77
+  cases:
+  - expected_output: "7\n77\n"

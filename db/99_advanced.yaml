@@ -1,0 +1,12 @@
+title: Demo of advanced debugger features
+features: run step partial_calls vars instructions console tokens
+yellow:
+  assignment: Demo of advanced debugger features
+  code: |
+    puts 3 + 4 +
+      gets.to_i
+  cases:
+  - input: 5
+    expected_output: "12\n"
+  - input: 10
+    expected_output: "17\n"

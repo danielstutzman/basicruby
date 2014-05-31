@@ -1,0 +1,164 @@
+title: Multiple inputs
+features: run step instructions console vars
+purple:
+- youtube_id: omK25lAm7gM
+  video_script:
+    Hi everyone :-)
+    This lesson is like the previous one;
+    we're gonna call "get-s" to read from either the keyboard,
+      or the test cases.
+    But this time we can call "get-s" more than once.
+    So you'll have to either type in multiple inputs,
+      or the test cases will have to have multiple lines.
+    Let's see an example.
+    We'll read one line of input into x... one line into y.
+    And then output them, in reverse order.
+    Keep in mind, there's no rule saying we have to do anything with the input.
+  code: |
+    x = gets
+    y = gets
+    puts y
+    puts x
+  cases:
+  - input: "3\n2\n"
+  - input: "8\n9\n"
+yellow:
+- code: |
+    x = gets
+    x = gets
+    puts x
+    puts x
+  cases:
+  - input: "7\n2\n"
+  - input: "3\n1\n"
+- code: |
+    z = gets
+    x = gets
+    puts x
+  cases:
+  - input: "5\n1\n"
+  - input: "2\n3\n"
+- code: |
+    y = gets
+    puts y
+    puts y
+    z = gets
+  cases:
+  - input: "5\n9\n"
+  - input: "4\n3\n"
+blue:
+- code: |
+    x = gets
+    puts 1
+    x = gets
+    puts x
+  cases:
+  - input: 2
+    expected_output: "1\n2\n"
+  - input: 5
+    expected_output: "1\n5\n"
+- code: |
+    y = gets
+    z = gets
+    puts y
+    print -1
+    puts z
+  cases:
+  - input: "1\n8\n"
+    expected_output: "1\n-18\n"
+  - input: "2\n5\n"
+    expected_output: "2\n-15\n"
+- code: |
+    puts 1
+    puts 10
+    y = gets
+    z = gets
+  cases:
+  - input: "3\n4\n"
+    expected_output: "1\n10\n"
+  - input: "10\n7\n"
+    expected_output: "1\n10\n"
+red:
+- code: |
+    x = gets
+    x = gets
+    puts x
+    puts x
+  solution: |
+    x = gets
+    puts x
+    x = gets
+    puts x
+  cases:
+  - input: "3\n5\n"
+    expected_output: "3\n5\n"
+  - input: "6\n1\n"
+    expected_output: "6\n1\n"
+- code: |
+    x = gets
+    y = gets
+    puts y
+    puts y
+  solution: |
+    x = gets
+    y = gets
+    puts x
+    puts x
+  cases:
+  - input: "1\n5\n"
+    expected_output: "1\n1\n"
+  - input: "7\n9\n"
+    expected_output: "7\n7\n"
+- code: |
+    puts 8
+    x = gets
+    x = gets
+  solution: |
+    puts 8
+    x = gets
+    puts x
+    x = gets
+    puts x
+  cases:
+  - input: 5
+    expected_output: "8\n5\n5\n"
+  - input: 6
+    expected_output: "8\n6\n6\n"
+green:
+- solution: |
+    x = gets
+    y = gets
+    puts x
+  cases:
+  - input: |
+      2
+      3
+    expected_output: "2\n"
+  - input: |
+      8
+      1
+    expected_output: "8\n"
+- solution: |
+    z = gets
+    y = gets
+    puts 5
+  cases:
+  - input: |
+      7
+      9
+    expected_output: "5\n"
+  - input: |
+      2
+      1
+    expected_output: "5\n"
+- solution: |
+    y = gets
+    z = gets
+    puts y
+    puts y
+    puts z
+  cases:
+  - input: "9\n4\n"
+    expected_output: "9\n9\n4\n"
+  - input: "4\n5\n"
+    expected_output: "4\n4\n5\n"

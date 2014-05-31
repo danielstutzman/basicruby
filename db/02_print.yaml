@@ -1,0 +1,156 @@
+title: Multiple outputs sharing a line
+title_html: "Multiple outputs<br>sharing a line"
+features: run step instructions console
+purple:
+- youtube_id: 6gG3v6lNwt4
+  video_script:
+    Hi everyone :-)
+    In this lesson, we'll call the print method.
+    Unlike "put-s", "print" doesn't move the cursor to the next line,
+     after it outputs the number.
+    So you can put multiple things on one line.
+    Let's see that in the debugger.
+    Line 1 prints 4, and the cursor stays on the same line.
+    Line 2 is similar.
+    With Line 3, the cursor does go to the next line.
+    So line 4 starts at the beginning.
+  code: |
+    print 0
+    print 3
+    puts -1
+    print 7
+yellow:
+- code: |
+    print 4
+    puts 5
+    print 9
+    puts 10
+- code: |
+    print 12
+    print 23
+    print -456
+- code: |
+    puts 1
+
+    print 1
+    puts 1
+
+    print 1
+    print 1
+    print 1
+    puts
+blue:
+- code: |
+    puts 1
+    print 2
+    puts 3
+  cases:
+  - expected_output: |
+      12
+      3
+- code: |
+    print 11
+    print -11
+    print -11
+  cases:
+  - expected_output: 11-11-11
+- code: |
+    print 1
+    puts
+    print 0
+  cases:
+  - expected_output:
+      1
+      0
+red:
+- code: |
+    puts 8
+    print 9
+    puts 10
+    puts 0
+    print 11
+  solution: |
+    print 8
+    puts 9
+    puts 10
+    print 0
+    print 11
+  cases:
+  - expected_output: |
+      89
+      10
+      011
+- code: |
+    print 1
+    print 0.01
+    puts 0.01
+    puts 0.01
+  solution: |
+    print 1
+    puts 0.01
+    print 0.01
+    puts 0.01
+  cases:
+  - expected_output: |
+      10.01
+      10.010.01
+- code: |
+    puts 1.1
+    print 1.11
+    puts 1.1
+    puts 1.11
+  solution: |
+    puts 1.1
+    print 1.1
+    puts 1.11
+    puts 11.1
+  cases:
+  - expected_output: |
+      1.1
+      1.11.11
+      11.1
+green:
+- solution: |
+    puts 1
+    puts -1
+    print 1
+    puts -1
+    print -1
+    puts -1
+    print 1
+    print -1
+    puts -1
+  cases:
+  - expected_output: |
+      1
+      -1
+      1-1
+      -1-1
+      1-1-1
+- solution: |
+    print 1.1
+    print -1.1
+    puts -1.1
+    print 1.11
+    puts 1.1
+    puts 1.1
+  cases:
+  - expected_output: |
+      1.1-1.1-1.1
+      1.111.1
+      1.1
+- solution: |
+    print 0
+    print 0
+    print 0
+    puts 1000
+    print 0
+    print 0
+    puts 10100
+    print 0
+    puts 100010
+  cases:
+  - expected_output: |
+      0001000
+      0010100
+      0100010
