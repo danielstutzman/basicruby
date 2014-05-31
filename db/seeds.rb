@@ -8,10 +8,10 @@ Exercise.transaction do
   dir = File.dirname(__FILE__)
   topic_num = 1
   Dir.glob("#{dir}/*.yaml") do |path|
+    puts path
     yaml = YAML.load_file(path)
-    p yaml
 
-    topic = Topic.create! num: topic_num + 1,
+    topic = Topic.create! num: topic_num,
       title: yaml['title'],
       title_html: yaml['title_html'] || yaml['title'],
       features: yaml['features']
