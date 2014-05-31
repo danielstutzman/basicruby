@@ -1,13 +1,14 @@
 require 'yaml'
 require 'json'
 
+ActiveRecord::Base.logger = nil
 Exercise.transaction do
   Topic.delete_all
   Exercise.delete_all
 
   dir = File.dirname(__FILE__)
   topic_num = 1
-  Dir.glob("#{dir}/*.yaml") do |path|
+  Dir.glob("#{dir}/*.yaml").sort.each do |path|
     puts path
     yaml = YAML.load_file(path)
 
