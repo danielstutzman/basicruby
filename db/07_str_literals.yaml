@@ -1,0 +1,147 @@
+title: String literals vs. variables
+features: run step instructions console vars
+purple:
+- youtube_id: JOqilx7t0LI
+  video_script:
+    Hi everyone :-)
+    In this lesson, we'll use double-quotes to make strings.
+    Double quotes tell Ruby, "I'm talking about a sequence of letters;
+      don't interpret them as looking up a variable, or calling a method,
+      or anything like that."
+    It's like in English, if someone told you,
+      'My name is unique' versus telling you,
+      'My name is literally *the word* "Unique"'
+    They mean different things.
+    ...
+    So let's see it in action...
+    On line 2 we're not using double-quotes.
+    So x gets interpreted to mean the value of the variable x, which is 5.
+    On line 3 we *are* using double-quotes.
+    And double-quote x double-quote is interpreted to mean -
+      literally the letter x.
+    So we'll see the letter x in the output.
+    ...
+    Again, on line 5, we set y to the value of the variable x.
+    Versus on line 6, we set z to the letter x.
+    So when we "put-s" the value of y, we'll see 5.
+    When we "put-s" the value of z, we'll see the letter "x".
+  code: |
+    #My name is unique.
+    #My name is
+    #  literally the
+    #  word "Unique." 
+
+    x = 5
+    puts x
+    puts "x"
+
+    y = x
+    z = "x"
+    puts y
+    puts z
+yellow:
+- code: |
+    x = gets
+    y = "gets"
+    puts x
+    puts y
+  cases:
+  - input: 5
+  - input: 2
+- code: |
+    x = "y"
+    y = "x"
+    puts "x"
+- code: |
+    z = "a"
+    puts "z"
+    puts z
+blue:
+- code: |
+    b = "c"
+    c = b
+    puts c
+    puts b
+  cases:
+  - expected_output: "c\nc\n"
+- code: |
+    x = 7
+    y = "f"
+    z = x
+    w = y
+    puts w
+  cases:
+  - expected_output: "f\n"
+- code: |
+    a = gets
+    b = "a"
+    puts b
+    puts "gets"
+  cases:
+  - input: 5
+    expected_output: "a\ngets\n"
+  - input: 1
+    expected_output: "a\ngets\n"
+red:
+- code: |
+    puts "a"
+    "puts"
+    puts "z"
+  solution: |
+    puts "a"
+    puts
+    puts "z"
+  cases:
+  - expected_output: "a\n\nz\n"
+- code: |
+    puts a
+    puts b
+    puts c
+  solution: |
+    puts "a"
+    puts "b"
+    puts "c"
+  cases:
+  - expected_output: "a\nb\nc\n"
+- code: |
+    x = gets
+    y = x
+    z = y
+    puts "z"
+  solution: |
+    x = gets
+    y = x
+    z = y
+    puts z
+  cases:
+  - input: 3
+    expected_output: 3
+  - input: 4
+    expected_output: 4
+green:
+- solution: |
+    puts "gets"
+    x = gets
+  cases:
+  - input: 1
+    expected_output: "gets\n"
+  - input: 3
+    expected_output: "gets\n"
+- solution: |
+    x = gets
+    puts x
+    puts "gets"
+  cases:
+  - input: 1
+    expected_output: "1\ngets\n"
+  - input: 3
+    expected_output: "3\ngets\n"
+- solution: |
+    z = gets
+    y = gets
+    puts "x"
+  cases:
+  - input: "4\n5\n"
+    expected_output: "4\n5\nx\n"
+  - input: "2\n7\n"
+    expected_output: "2\n7\nx\n"

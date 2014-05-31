@@ -1,0 +1,201 @@
+title: Copying variables
+features: run step instructions console vars
+purple:
+- youtube_id: YhjTpi7Y4M4
+  video_script:
+    Hi everyone :-)
+    In this lesson, we'll copy one variable to another.
+    For example... (start debugger)
+    Let's set x to 3.
+    Then we'll set y to the value of x. So now y is also 3.
+    Now when we change x to 4, what do you think...
+    will y change to 4 too?  Or will it stay 3?
+    Pause the video now if you want time to think.
+    ... ... ...
+    Okay, let's find out...
+    So, y stayed at 3.
+    Because x was 3 when we ran line 2, it's as if
+      we scratched out x and wrote 3 instead, like this; it behaves the same.
+    ...
+    Now this principle has some exceptions -
+      It only works for values that can't be changed in place,
+        so it works for numbers, but not some other data types we'll cover.
+    ...
+    And it doesn't work to the left of the equals sign.
+    So I can rewrite y = x as y = 3.
+    But I couldn't rewrite this x as 3 = 4; that actually raises an error.
+    Even if we wrote 3 = 3, it would still raise an error.
+    Because unlike the equals sign in math,
+      the left and the right side of the Ruby equals sign
+        mean different things -
+      the left is always a variable name,
+      whereas the right is just any value.
+    
+  code: |
+    x = 3
+    y = x
+    x = 4
+    puts y
+yellow:
+- code: |
+    y = 1
+    z = y
+    y = 2
+    puts y
+- code: |
+    x = 5
+    y = x
+    x = 6
+    y = x
+    x = 5
+    puts y
+- code: |
+    x = 4
+    x = x
+    puts x
+blue:
+- code: |
+    w = 4
+    x = w
+    w = 3
+    y = w
+    y = x
+    puts y
+  cases:
+  - expected_output: 4
+- code: |
+    a = 9
+    b = 2
+    a = b
+    b = a
+    puts a
+    puts b
+  cases:
+  - expected_output: "2\n2\n"
+- code: |
+    x = 6
+    y = 3
+    y = 1
+    y = y
+    x = y
+    y = 6
+    puts x
+  cases:
+  - expected_output: 1
+red:
+- code: |
+    x = y
+    y = gets
+    puts x
+  solution: |
+    y = gets
+    x = y
+    puts x
+  cases:
+  - input: 5
+    expected_output: 5
+  - input: 6
+    expected_output: 6
+- code: |
+    y = gets
+    x = y
+    3 = x
+    puts x
+  solution: |
+    y = gets
+    x = y
+    x = 3
+    puts x
+  cases:
+  - input: 3
+    expected_output: 3
+  - input: 5
+    expected_output: 3
+- code: |
+    x = gets
+    y = gets
+    x = y
+    y = z
+    puts x
+    puts y
+  solution: |
+    x = gets
+    y = gets
+    x = y
+    y = x
+    puts x
+    puts y
+  cases:
+  - input: "2\n4\n"
+    expected_output: "4\n2\n"
+  - input: "5\n6\n"
+    expected_output: "6\n5\n"
+green:
+- code: |
+    x = gets
+    y = gets
+
+
+
+    puts x
+    puts y
+  cases:
+  solution: |
+    x = gets
+    y = gets
+
+    y = x
+
+    puts x
+    puts y
+  cases:
+  - input: "1\n2\n"
+    expected_output: "1\n1\n"
+  - input: "9\n5\n"
+    expected_output: "9\n9\n"
+- code: |
+    x = gets
+    y = gets
+
+
+
+    puts x
+    puts y
+  cases:
+  solution: |
+    x = gets
+    y = gets
+
+    x = y
+
+    puts x
+    puts y
+  cases:
+  - input: "1\n2\n"
+    expected_output: "2\n2\n"
+  - input: "9\n5\n"
+    expected_output: "5\n5\n"
+- code: |
+    x = gets
+    y = gets
+
+
+
+    puts x
+    puts y
+  cases:
+  solution: |
+    x = gets
+    y = gets
+
+    z = x
+    x = y
+    y = z
+
+    puts x
+    puts y
+  cases:
+  - input: "1\n2\n"
+    expected_output: "2\n1\n"
+  - input: "9\n5\n"
+    expected_output: "5\n9\n"
