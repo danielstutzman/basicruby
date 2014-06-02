@@ -24,7 +24,7 @@ class ExerciseController
     @cases = @json.cases || [{}]
     @actualOutput = if @color == 'green' then [] else null
     @retrieveNewCode = null
-    @showingSuccessPopup = false
+    @popup = null
 
   setup: ->
     callback = =>
@@ -52,7 +52,7 @@ class ExerciseController
       code: @json.code || ''
       color: @color
       cases: @cases
-      showingSuccessPopup: @showingSuccessPopup
+      popup: @popup
       doCommand:
         run: =>
           @handleRun()
@@ -66,7 +66,7 @@ class ExerciseController
           e.target.disabled = true
           window.location.href = @pathForNextRep
         showSolution: => @handleShowSolution()
-        closeSuccessPopup: => @showingSuccessPopup = false; @render()
+        closePopup: => @popup = null; @render()
         setPredictedOutput: (caseNum, newText) =>
           @cases[caseNum].predicted_output = newText
           @render()
@@ -143,15 +143,18 @@ class ExerciseController
           rtrim(join(case_.actual_output)) == rtrim(case_.predicted_output)
         else if @color == 'red' || @color == 'green'
           rtrim(join(case_.actual_output)) == rtrim(case_.expected_output.toString())
-    if _.every(@cases, (case_) -> case_.actual_matches_expected)
-      changeBackground = (i) =>
-        for span in document.querySelectorAll('.passed')
-          span.style.opacity = if (i % 2 == 1) then '1.0' else '0.0'
-        if i > 0
-          window.setTimeout (-> changeBackground(i - 1)), 300
-        else
-          @showingSuccessPopup = true
-          @render()
-      changeBackground 5
+    passed = _.every(@cases, (case_) -> case_.actual_matches_expected)
+    changeBackground = (i, selector, popup) =>
+      for span in document.querySelectorAll(selector)
+        span.style.opacity = if (i % 2 == 0) then '1.0' else '0.0'
+      if i > 0
+        window.setTimeout (-> changeBackground(i - 1, selector, popup)), 300
+      else
+        @popup = popup
+        @render()
+    if passed
+      changeBackground 5, '.passed', 'PASSED'
+    else if !passed && @color == 'blue'
+      changeBackground 5, '.failed', 'FAILED'
 
 module.exports = ExerciseController

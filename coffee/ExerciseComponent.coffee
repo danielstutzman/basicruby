@@ -16,7 +16,7 @@ ExerciseComponent = React.createClass
     color: type.string.isRequired
     code: type.string.isRequired
     cases: type.array.isRequired
-    showingSuccessPopup: type.bool.isRequired
+    popup: type.string
     doCommand: type.object.isRequired
 
   componentDidMount: ->
@@ -138,9 +138,9 @@ ExerciseComponent = React.createClass
                     if case0.actual_output == undefined
                       ''
                     else if case0.actual_matches_expected
-                      span { className: 'passed' }, ' = Predicted'
+                      span { className: 'passed' }, '=Predicted'
                     else
-                      span { className: 'failed' }, " #{NOT_EQUALS} Predicted"
+                      span { className: 'failed' }, "#{NOT_EQUALS}Predicted"
                   else
                     if case0.actual_matches_expected
                       span { className: 'passed' }, ' = Expected'
@@ -221,15 +221,14 @@ ExerciseComponent = React.createClass
             else
               'Run Tests'
 
-      if @props.showingSuccessPopup
+      if @props.popup == 'PASSED'
         div
-          ref: 'success'
-          className: 'success'
+          className: 'popup passed'
           a
             className: 'close-button'
             href: '#'
             onClick: (e) =>
-              @props.doCommand.closeSuccessPopup()
+              @props.doCommand.closePopup()
               e.preventDefault()
             X_FOR_CLOSE
           h1 {}, 'Congratulations!'
@@ -243,9 +242,7 @@ ExerciseComponent = React.createClass
           button
             className: 'do-another'
             disabled: @props.doCommand.nextRep == null
-            onClick: (e) =>
-              console.log 'do another'
-              @props.doCommand.nextRep e
+            onClick: (e) => @props.doCommand.nextRep e
             "#{RELOAD_ICON} Do another"
           br {}
           button
@@ -253,5 +250,23 @@ ExerciseComponent = React.createClass
             disabled: @props.doCommand.next == null
             onClick: (e) => @props.doCommand.next e
             "#{RIGHT_ARROW} Go on"
+
+      if @props.popup == 'FAILED'
+        div
+          className: 'popup failed'
+          a
+            className: 'close-button'
+            href: '#'
+            onClick: (e) =>
+              @props.doCommand.closePopup()
+              e.preventDefault()
+            X_FOR_CLOSE
+          h1 {}, 'Not quite'
+          p {}, 'Compare the actual output to see what you missed.'
+          button
+            className: 'do-another'
+            disabled: @props.doCommand.nextRep == null
+            onClick: (e) => @props.doCommand.nextRep e
+            "#{RELOAD_ICON} Try another"
 
 module.exports = ExerciseComponent

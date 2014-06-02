@@ -189,7 +189,7 @@ div.exercise {
         text-align: left;
         height: 25px;
         .passed { color: #0f0; }
-        .failed { color: #f00; }
+        .failed { color: #f77; font-weight: normal; }
       }
       td {
         background-color: white;
@@ -281,16 +281,24 @@ div.exercise {
   }
 }
 
-.success {
+.popup {
   position: absolute;
   top: 150px;
   height: 250px;
-  left: 230px;
+  left: 130px;
   width: 390px;
-  background-color: #2a0;
   border: 10px green solid;
   padding: 10px 20px;
   z-index: 5;
+
+  &.passed {
+    background-color: #2a0;
+    border: 10px green solid;
+  }
+  &.failed {
+    background-color: #f77;
+    border: 10px #f44 solid;
+  }
 
   h1 {
     margin: 0;
