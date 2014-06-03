@@ -1,7 +1,7 @@
 type           = React.PropTypes
 
 RIGHT_ARROW    = '\u2192'
-ARROW_CENTER_Y = 49
+ARROW_CENTER_Y = 129
 
 InstructionsComponent = React.createClass
 

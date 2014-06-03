@@ -6,11 +6,12 @@
 }
 
 $border-width: 5px;
-$instructions-font-size: 30pt;
+$instructions-font-size: 25pt;
 $console-font-size: 30pt;
 $min-width-for-extra-padding: 1000px;
 $value-min-font-size: 16pt;
 $lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
+$label-height: 30px;
 
 .debugger {
   position: absolute;
@@ -71,16 +72,18 @@ $lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
   }
   .instructions, .variables, .console {
     float: left;
-    height: 350px - 30px;
+    height: 350px - $label-height;
   }
   .showInstructions.showConsole {
     .instructions-with-label { width: 380px; margin-right: 10px; }
     .console-with-label { width: 380px; }
   }
   .showInstructions.showConsole.showVariables {
-    .instructions-with-label { width: 350px; margin-right: 10px; }
-    .variables-with-label { width: 200px; margin-right: 10px; }
-    .console-with-label { width: 200px; }
+    .instructions-with-label { width: 440px; margin-right: 10px; }
+    .variables-with-label { width: 320px; height: 140px; margin-right: 10px; }
+    .console-with-label { width: 320px; height: 210px; }
+    .variables { height: 140px - $label-height; }
+    .console { height: 210px - $label-height; }
   }
 
   label {
@@ -91,6 +94,7 @@ $lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
     display: block;
     padding-left: 10px;
     font-size: 20pt;
+    height: $label-height;
   }
 
   .partial-calls {
@@ -188,7 +192,7 @@ $lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
 
     .pointer {
       position: absolute;
-      top: 40px;
+      top: 120px;
     }
 
     .content {
@@ -198,16 +202,15 @@ $lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
 
       .num {
         float: left;
-        width: 80px;
+        width: 60px;
         overflow: hidden;
         color: #060;
-        padding-left: 40px;
         text-align: right;
         clear: left;
       }
       .code {
-        margin-left: 100px;
-        white-space: pre-wrap;
+        margin-left: 80px;
+        white-space: pre;
 
         span.highlight {
           background-color: #0f0;
