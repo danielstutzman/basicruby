@@ -45,6 +45,7 @@ class AstToBytecodeCompiler
       when :nil     then [[:token] + sexp.source, [:result, nil]]
       when :true    then [[:token] + sexp.source, [:result, true]]
       when :false   then [[:token] + sexp.source, [:result, false]]
+      when :array   then compile_array sexp
       when :block   then compile_block sexp
       when :call    then compile_call sexp
       when :arglist then compile_arglist sexp
@@ -56,6 +57,23 @@ class AstToBytecodeCompiler
       when :evstr   then compile sexp[1]
       else no "s-exp with head #{sexp[0]}"
     end
+  end
+
+  def compile_array sexp
+    _, *elements = sexp
+    bytecodes = []
+    bytecodes.push [:start_call]
+    bytecodes.push [:result, []]
+    bytecodes.push [:arg]
+    bytecodes.push [:result, :push]
+    bytecodes.push [:arg]
+    elements.each do |element|
+      bytecodes.concat compile(element)
+      bytecodes.push [:arg]
+    end
+    bytecodes.push [:pre_call]
+    bytecodes.push [:call]
+    bytecodes
   end
 
   def compile_block sexp
