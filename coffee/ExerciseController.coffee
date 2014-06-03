@@ -70,7 +70,10 @@ class ExerciseController
         setPredictedOutput: (caseNum, newText) =>
           @cases[caseNum].predicted_output = newText
           @render()
-          @checkForPassingTests()
+          isCaseFinished = (case_) -> case_.predicted_output != undefined &&
+                                      case_.actual_output != undefined
+          if _.every @cases, isCaseFinished
+            @checkForPassingTests()
     React.renderComponent ExerciseComponent(props), @$div, callback
 
   handleRun: ->
