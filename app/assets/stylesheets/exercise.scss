@@ -325,23 +325,3 @@ div.exercise {
     margin-top: 20px;
   }
 }
-
-.big-video-background {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 840px;
-  height: 550px;
-  background-color: black;
-  z-index: 5;
-  padding: 30px;
-
-  a.close-button {
-    float: right;
-    font-size: 25pt;
-    text-decoration: none;
-    color: white;
-    line-height: 0.5;
-    margin-right: -10px;
-  }
-}
