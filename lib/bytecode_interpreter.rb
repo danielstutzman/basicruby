@@ -13,6 +13,17 @@ if RUBY_PLATFORM == 'opal'
       $stdout.write "\n"
     end
   end
+
+  def p *args
+    args.each do |arg|
+      $stdout.write arg.inspect + "\n"
+    end
+    case args.size
+      when 0 then nil
+      when 1 then args[0]
+      else args
+    end
+  end
 end
 
 $console_texts = []
