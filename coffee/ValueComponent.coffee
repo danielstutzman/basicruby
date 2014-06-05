@@ -20,19 +20,20 @@ ValueComponent = React.createClass
 
     css_class =
       if display == 'main'
-        'main'
+        'value main'
       else
         switch type
-          when 'String' then 'string'
-          when 'Symbol' then 'symbol'
-          else ''
+          when 'String' then 'value string'
+          when 'Symbol' then 'value symbol'
+          else 'value'
 
     div { className: 'value' },
       div { key: 'value', className: css_class },
         if type == 'String'
           lines = display.split("\n")
           _.map lines, (line, i) ->
-            div { key: "line#{i}", className: 'line' },
+            maybe_last = if (i == lines.length - 1) then 'last' else ''
+            div { key: "line#{i}", className: "line #{maybe_last}" },
               if line == ''
                 div { className: 'empty-line' }
               else
@@ -41,7 +42,7 @@ ValueComponent = React.createClass
                 br {}
         else
           display
-      div { key: 'type', className: 'type' },
-        type
+        div { key: 'type', className: 'type' },
+          type
 
 module.exports = ValueComponent

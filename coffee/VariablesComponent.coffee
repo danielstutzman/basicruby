@@ -26,27 +26,19 @@ VariablesComponent = React.createClass
 
     div { className: 'variables-with-label' },
       label {}, 'Variables'
-      div { className: 'variables' },
-        table {},
-          tr { key: 'var_names' },
-            _.map var_names, (var_name) ->
-              th { key: var_name },
-                var_name
-            _.map future_var_names, (var_name) ->
-              th { key: var_name, className: 'future' },
-                var_name
-          tr { key: 'var_values' },
-            _.map var_names, (var_name) =>
-              var_value = @props.vars.map[var_name]
-              td { key: var_name },
-                ValueComponent value: var_value
-            _.map future_var_names, (var_name) ->
-              td { key: var_name, className: 'future' },
-                '...'
-          tr { key: 'var_pending' },
-            _.map var_names, (var_name) =>
-              td { key: var_name, className: 'future' },
-                if var_name in @props.startedVarNames
-                  '...'
+      div { className: 'variables-scroller' },
+        table { className: 'variables' },
+          _.map var_names, (var_name) =>
+            var_value = @props.vars.map[var_name]
+            tr { key: var_name },
+              td {}, var_name
+              td {},
+                ValueComponent(value: var_value) if var_value != undefined
+                '...' if @props.startedVarNames.indexOf(var_name) != -1
+          _.map future_var_names, (var_name) =>
+            tr { key: var_name },
+              td {}, var_name
+              td { className: 'future' },
+              '...'
 
 module.exports = VariablesComponent

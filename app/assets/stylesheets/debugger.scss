@@ -9,7 +9,6 @@ $border-width: 5px;
 $instructions-font-size: 25pt;
 $console-font-size: 30pt;
 $min-width-for-extra-padding: 1000px;
-$value-min-font-size: 16pt;
 $lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
 $label-height: 30px;
 
@@ -70,7 +69,7 @@ $label-height: 30px;
     float: left;
     height: 350px;
   }
-  .instructions, .variables, .console {
+  .instructions, .variables-scroller, .console {
     float: left;
     height: 350px - $label-height;
   }
@@ -80,10 +79,10 @@ $label-height: 30px;
   }
   .showInstructions.showConsole.showVariables {
     .instructions-with-label { width: 440px; margin-right: 10px; }
-    .variables-with-label { width: 320px; height: 140px; margin-right: 10px; }
-    .console-with-label { width: 320px; height: 210px; }
-    .variables { height: 140px - $label-height; }
-    .console { height: 210px - $label-height; }
+    .variables-with-label { width: 320px; height: 160px; margin-right: 10px; }
+    .console-with-label { width: 320px; height: 190px; }
+    .variables-scroller { height: 160px - $label-height; }
+    .console { height: 190px - $label-height; }
   }
 
   label {
@@ -147,16 +146,18 @@ $label-height: 30px;
     }
   }
 
-  .variables {
-    width: 200px;
+  .variables-with-label {
     background-color: black;
-    border: 2px #222 solid;
-    border-bottom: 2px #444 solid;
+  }
+
+  .variables-scroller {
+    overflow: scroll;
+  }
+
+  .variables {
     color: #0f0;
     font-size: 20pt;
-    width: 100%;
     padding-left: 15px;
-    overflow: scroll;
 
     tr {
       vertical-align: top;
@@ -268,14 +269,19 @@ $label-height: 30px;
     }
   } // end .console
 
+  .value {
+    display: inline-block; // so ... is directly after
+  }
   .string {
     font-family: monospace;
     white-space: pre-wrap;
-    background-color: #040;
     display: inline; // so its width doesn't expand
     white-space: pre;
     .line {
       line-height: 0.6;
+      &.last {
+        display: inline-block; // so type label is directly after
+      }
       span {
         background-color: $lightening-to-show-spaces;
         line-height: 1.0;
@@ -289,7 +295,10 @@ $label-height: 30px;
     }
   }
   .type {
+    display: inline-block;
+    font-family: sans-serif;
     font-size: 12pt;
     color: #040;
+    padding-left: 5px;
   }
 } // end .debugger2
