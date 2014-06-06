@@ -78,7 +78,8 @@ class AstToBytecodeCompiler
     bytecodes.push [:arg]
     bytecodes.push [:result, :push]
     bytecodes.push [:arg]
-    bytecodes.push [:block_arg, nil]
+    bytecodes.push [:result, :nil]
+    bytecodes.push [:arg] # no block
     elements.each do |element|
       bytecodes.concat compile(element)
       bytecodes.push [:arg]
@@ -126,10 +127,11 @@ class AstToBytecodeCompiler
       statement = optional_iter[2]
       block_label = "start_#{source(statement).join('_')}"
       bytecodes.concat compile(optional_iter)
-      bytecodes.push [:block_arg, block_label]
+      bytecodes.push [:make_proc, block_label]
     else
-      bytecodes.push [:block_arg, nil]
+      bytecodes.push [:result, nil] # no block arg
     end
+    bytecodes.push [:arg]
 
     bytecodes.concat compile(arglist)
 
@@ -194,7 +196,8 @@ class AstToBytecodeCompiler
     bytecodes.push [:arg]
     bytecodes.push [:result, :<<]
     bytecodes.push [:arg]
-    bytecodes.push [:block_arg, nil]
+    bytecodes.push [:result, nil]
+    bytecodes.push [:arg] # no block
     strs_or_evstrs.each do |str_or_evstr|
       bytecodes.concat compile(str_or_evstr)
       bytecodes.push [:arg]
@@ -207,13 +210,21 @@ class AstToBytecodeCompiler
   def compile_iter sexp
     _, assignments, statement = sexp
     bytecodes = []
-    no "assignments in block" if assignments
 
     label_after_return = "after_return_#{source(statement).join('_')}"
     bytecodes.push [:goto, label_after_return]
 
     start_label = "start_#{source(statement).join('_')}"
     bytecodes.push [:label, start_label]
+
+    if assignments.nil?
+      bytecodes.push [:params_are]
+    elsif assignments[0] == :lasgn
+      bytecodes.push [:params_are, assignments[1]]
+    else
+      no 'multiple params'
+    end
+
     bytecodes.concat compile(statement)
     bytecodes.push [:return]
 

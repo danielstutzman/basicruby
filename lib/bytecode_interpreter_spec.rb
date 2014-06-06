@@ -134,4 +134,31 @@ describe BytecodeInterpreter, '#run' do
   it 'runs p lambda {3+2}.call' do
     output_of("p lambda {3+2}.call").should == "5\n"
   end
+  it 'runs lambda {x=3}.call; p x' do
+    expect { output_of("lambda {x=3}.call; p x") }.to raise_exception(NameError)
+  end
+  it 'runs x=5; lambda {x=3}.call; p x' do
+    output_of("x=5; lambda {x=3}.call; p x").should == "3\n"
+  end
+  it 'runs x=5; lambda {p x}.call' do
+    output_of("x=5; lambda {p x}.call").should == "5\n"
+  end
+  it 'runs p lambda { x=5; lambda {x} }.call.call' do
+    output_of("p lambda { x=5; lambda {x} }.call.call").should == "5\n"
+  end
+  it 'runs lambda { x=5; lambda {x} }.call.call; p x' do
+    expect {
+      output_of("lambda { x=5; lambda {x} }.call.call; p x")
+    }.to raise_exception(NameError)
+  end
+
+  it 'runs lambda {|x| p x}.call(3)' do
+    output_of("lambda {|x| p x}.call(3)").should == "3\n"
+  end
+  it 'runs x = 1; lambda {|x| p x}.call(2); p x' do
+    output_of("x = 1; lambda {|x| p x}.call(2); p x").should == "2\n1\n"
+  end
+  it 'runs p lambda{|x|}.arity' do
+    output_of("p lambda{|x|}.arity").should == "1\n"
+  end
 end

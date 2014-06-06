@@ -48,12 +48,16 @@ end
 class ProgramTerminated < RuntimeError
 end
 
+class NewProc
+  attr_accessor :label, :env, :param_names
+end
+
 class BytecodeInterpreter
   def initialize
     @partial_calls = []
     @num_partial_call_executing = nil
     @result = [] # a stack with 0 or 1 items in it
-    @vars = {}
+    @vars_stack = [{}]
     @started_var_names = []
     @main = (RUBY_PLATFORM == 'opal') ?
       `Opal.top` : TOPLEVEL_BINDING.eval('self')
@@ -69,7 +73,7 @@ class BytecodeInterpreter
     {
       partial_calls: @partial_calls.map { |call| call.clone },
       started_var_names: @started_var_names,
-      vars: @vars,
+      vars: @vars_stack.last,
       output: $console_texts,
       num_partial_call_executing: @num_partial_call_executing,
       accepting_input: @accepting_input,
@@ -100,15 +104,19 @@ class BytecodeInterpreter
       when :arg
         result = pop_result
         @partial_calls.last.push result
-      when :block_arg
-        @partial_calls.last.push bytecode[1]
+      when :make_proc
+        result = NewProc.new
+        result.label = bytecode[1]
+        result.env = @vars_stack.last
+        result_is result
       when :pre_call
         @num_partial_call_executing = @partial_calls.size - 1
         if @partial_calls.last == [@main, :gets]
           @accepting_input = true
-        elsif Proc === @partial_calls.last[0]
-          @gosubbing_label = @partial_calls.last[0].call
-          @partial_calls.pop
+        elsif NewProc === @partial_calls.last[0] &&
+              @partial_calls.last[1] == :call
+          proc_ = @partial_calls.last[0]
+          @gosubbing_label = proc_.label
         end
       when :call
         @num_partial_call_executing = nil
@@ -116,6 +124,9 @@ class BytecodeInterpreter
         if @accepted_input != nil
           result_is @accepted_input
           @accepted_input = nil
+        elsif NewProc === call[0] && call[1] == :call
+          # we've now returned from calling the proc; result is already set
+          @vars_stack.pop
         else
           begin
             result_is do_call *call
@@ -130,18 +141,38 @@ class BytecodeInterpreter
         var_name = bytecode[1]
         @started_var_names = @started_var_names - [var_name]
         value = pop_result
-        @vars[var_name] = value
+        # store vars in arrays, so closures can modify their values
+        if @vars_stack.last.has_key? var_name
+          @vars_stack.last[var_name][0] = value
+        else
+          @vars_stack.last[var_name] = [value]
+        end
         result_is value
       when :from_var
         var_name = bytecode[1]
-        out = @vars[var_name]
-        result_is out
+        if @vars_stack.last.has_key? var_name
+          out = @vars_stack.last[var_name][0] # in array so closures can modify
+          result_is out
+        else
+          raise "Looking up unset variable #{var_name}"
+        end
       when :make_symbol
         result = pop_result
         `result.is_symbol = true;` if RUBY_PLATFORM == 'opal'
         result_is result
       when :goto_if_not
         pop_result
+      when :params_are
+        if NewProc === @partial_calls.last[0]
+          new_vars = @partial_calls.last[0].env.clone
+        else
+          new_vars = {}
+        end
+        args = @partial_calls.last[3..-1]
+        bytecode[1..-1].each do |param_name|
+          new_vars[param_name] = [args.shift] # in array so closures can modify
+        end
+        @vars_stack.push new_vars
     end
     nil
   end
@@ -191,16 +222,11 @@ class BytecodeInterpreter
     raise "Result stack has too many items: #{@result}" if @result.size > 1
   end
 
-  def do_call receiver, method_name, block_label, *args
+  def do_call receiver, method_name, proc_, *args
     begin
-      if block_label
+      if proc_
         if receiver == @main && method_name == :lambda
-          block = lambda { block_label }
-          result = @main.public_send method_name, *args, &block
-          if RUBY_PLATFORM == 'opal'
-            `result.toString = function() { return result.$to_s(); };`
-          end
-          result
+          proc_
         else
           raise Exception.new "Basic Ruby doesn't support the calling of
             arbitrary methods with blocks"

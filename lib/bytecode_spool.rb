@@ -58,9 +58,9 @@ class BytecodeSpool
               "Can't find label #{bytecode[1]}"
           end
         when :return
-          @counter = @counter_stack.pop
+          @counter = @counter_stack.pop - 1
       end
-      @counter += 1 # ok to step past label or where returned to
+      @counter += 1 # ok to step past label
       bytecode
     end
   end

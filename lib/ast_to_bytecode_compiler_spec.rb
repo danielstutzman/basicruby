@@ -19,7 +19,7 @@ describe AstToBytecodeCompiler, '#compile' do
     compile('puts 3').should == [
       [:position, 1, 0], [:start_call], [:top], [:arg],
       [:token, 1, 0], [:result, :puts], [:make_symbol], [:arg],
-      [:block_arg, nil],
+      [:result, nil], [:arg],
       [:token, 1, 5], [:result, 3], [:arg],
       [:pre_call], [:call],
     ]
@@ -76,7 +76,7 @@ describe AstToBytecodeCompiler, '#compile' do
     compile('puts ""').should == [
       [:position, 1, 0], [:start_call], [:top], [:arg],
       [:token, 1, 0], [:result, :puts], [:make_symbol], [:arg],
-      [:block_arg, nil],
+      [:result, nil], [:arg],
       [:result, ""], [:arg], [:pre_call], [:call]
     ]
   end
@@ -86,8 +86,9 @@ describe AstToBytecodeCompiler, '#compile' do
       [:position, 1, 0], [:start_call], [:top], [:arg],
       [:token, 1, 0], [:result, :lambda], [:make_symbol], [:arg],
       [:goto, "after_return_1_9"],
-      [:label, "start_1_9"], [:token, 1, 9], [:result, 4], [:return],
-      [:label, "after_return_1_9"], [:block_arg, "start_1_9"],
+      [:label, "start_1_9"], [:params_are],
+      [:token, 1, 9], [:result, 4], [:return],
+      [:label, "after_return_1_9"], [:make_proc, "start_1_9"], [:arg],
       [:pre_call], [:call]
     ]
   end
