@@ -196,7 +196,7 @@ class BytecodeInterpreter
       if block_label
         if receiver == @main && method_name == :lambda
           block = lambda { block_label }
-          result = @main.send method_name, *args, &block
+          result = @main.public_send method_name, *args, &block
           if RUBY_PLATFORM == 'opal'
             `result.toString = function() { return result.$to_s(); };`
           end
@@ -208,7 +208,7 @@ class BytecodeInterpreter
       elsif receiver == @main
         begin
           $is_capturing_stdout = true
-          result = @main.send method_name, *args
+          result = @main.public_send method_name, *args
           $is_capturing_stdout = false
           result
         rescue NoMethodError => e
