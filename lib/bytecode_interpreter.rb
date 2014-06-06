@@ -234,7 +234,7 @@ class BytecodeInterpreter
       elsif receiver == @main
         begin
           $is_capturing_stdout = true
-          result = @main.public_send method_name, *args
+          result = @main.send method_name, *args
           $is_capturing_stdout = false
           result
         rescue NoMethodError => e
@@ -247,7 +247,7 @@ class BytecodeInterpreter
         end
       else
         $is_capturing_stdout = true
-        result = receiver.send(method_name, *args)
+        result = receiver.public_send(method_name, *args)
         $is_capturing_stdout = false
         result
       end
