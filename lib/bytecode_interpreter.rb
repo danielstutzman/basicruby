@@ -59,6 +59,7 @@ class BytecodeInterpreter
       `Opal.top` : TOPLEVEL_BINDING.eval('self')
     @accepting_input = false
     @accepted_input = nil
+    @gosubbing_label = nil
     @last_token_pos = nil
 
     $console_texts = []
@@ -84,6 +85,7 @@ class BytecodeInterpreter
   end
 
   def interpret bytecode #, speed, stdin
+    @gosubbing_label = nil
     case bytecode[0]
       when :token
         @last_token_pos = [bytecode[1], bytecode[2]]
@@ -98,10 +100,15 @@ class BytecodeInterpreter
       when :arg
         result = pop_result
         @partial_calls.last.push result
+      when :block_arg
+        @partial_calls.last.push bytecode[1]
       when :pre_call
         @num_partial_call_executing = @partial_calls.size - 1
         if @partial_calls.last == [@main, :gets]
           @accepting_input = true
+        elsif Proc === @partial_calls.last[0]
+          @gosubbing_label = @partial_calls.last[0].call
+          @partial_calls.pop
         end
       when :call
         @num_partial_call_executing = nil
@@ -161,6 +168,10 @@ class BytecodeInterpreter
     $console_texts.select { |pair| pair[0] == :stdout || pair[0] == :stderr }
   end
 
+  def gosubbing_label
+    @gosubbing_label
+  end
+
   private
 
   def result_is new_result
@@ -180,9 +191,21 @@ class BytecodeInterpreter
     raise "Result stack has too many items: #{@result}" if @result.size > 1
   end
 
-  def do_call receiver, method_name, *args
+  def do_call receiver, method_name, block_label, *args
     begin
-      if receiver == @main
+      if block_label
+        if receiver == @main && method_name == :lambda
+          block = lambda { block_label }
+          result = @main.send method_name, *args, &block
+          if RUBY_PLATFORM == 'opal'
+            `result.toString = function() { return result.$to_s(); };`
+          end
+          result
+        else
+          raise Exception.new "Basic Ruby doesn't support the calling of
+            arbitrary methods with blocks"
+        end
+      elsif receiver == @main
         begin
           $is_capturing_stdout = true
           result = @main.send method_name, *args

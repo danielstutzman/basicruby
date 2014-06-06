@@ -12,7 +12,8 @@ class RspecRubyRunner
     spool.queue_run_until 'DONE'
     interpreter = BytecodeInterpreter.new
     while true
-      bytecode = spool.get_next_bytecode interpreter.is_result_truthy?
+      bytecode = spool.get_next_bytecode interpreter.is_result_truthy?,
+        interpreter.gosubbing_label
       break if bytecode.nil?
       interpreter.interpret bytecode
     end

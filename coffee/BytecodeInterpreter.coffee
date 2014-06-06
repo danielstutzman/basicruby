@@ -76,4 +76,11 @@ class BytecodeInterpreter
       console.error e.stack
       throw e
 
+  gosubbingLabel: ->
+    try
+      @_nilToNull @interpreter['$gosubbing_label']()
+    catch e
+      console.error e.stack
+      throw e
+
 module.exports = BytecodeInterpreter

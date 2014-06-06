@@ -6,6 +6,7 @@ class BytecodeSpool
     @breakpoint = 'NEXT_POSITION'
     @num_steps_queued = 0
     @is_done = false
+    @counter_stack = []
   end
 
   def visible_state
@@ -27,13 +28,19 @@ class BytecodeSpool
     end
   end
 
-  def get_next_bytecode is_result_truthy
+  def get_next_bytecode is_result_truthy, gosubbing_label
     if @is_done
       nil
     elsif @counter >= @bytecodes.size
       nil
     elsif @num_steps_queued == 0
       nil
+    elsif gosubbing_label != nil # "!= nil" is required for opal
+      @counter_stack.push @counter
+      @counter = @label_to_counter[gosubbing_label] or raise \
+        "Can't find label #{gosubbing_label}"
+      bytecode = @bytecodes[@counter]
+      @counter += 1 # ok to step once past label
     else
       bytecode = @bytecodes[@counter]
       case bytecode[0]
@@ -43,13 +50,17 @@ class BytecodeSpool
           @num_steps_queued = 0
           @is_done = true
         when :goto
-          @counter = @label_to_counter[bytecode[1]]
+          @counter = @label_to_counter[bytecode[1]] or raise \
+            "Can't find label #{bytecode[1]}"
         when :goto_if_not
           if !is_result_truthy
-            @counter = @label_to_counter[bytecode[1]]
+            @counter = @label_to_counter[bytecode[1]] or raise \
+              "Can't find label #{bytecode[1]}"
           end
+        when :return
+          @counter = @counter_stack.pop
       end
-      @counter += 1 # ok to step past label
+      @counter += 1 # ok to step past label or where returned to
       bytecode
     end
   end

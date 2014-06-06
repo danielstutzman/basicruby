@@ -55,7 +55,18 @@ class AstToBytecodeCompiler
       when :if      then compile_if sexp
       when :dstr    then compile_dstr sexp
       when :evstr   then compile sexp[1]
+      when :iter    then compile_iter sexp
       else no "s-exp with head #{sexp[0]}"
+    end
+  end
+
+  def source statement
+    if statement == nil
+      [0, 0]
+    elsif statement[0] == :block
+      statement[1].source
+    else
+      statement.source
     end
   end
 
@@ -67,6 +78,7 @@ class AstToBytecodeCompiler
     bytecodes.push [:arg]
     bytecodes.push [:result, :push]
     bytecodes.push [:arg]
+    bytecodes.push [:block_arg, nil]
     elements.each do |element|
       bytecodes.concat compile(element)
       bytecodes.push [:arg]
@@ -94,7 +106,7 @@ class AstToBytecodeCompiler
   end
 
   def compile_call sexp
-    _, receiver, method_name, arglist = sexp
+    _, receiver, method_name, arglist, optional_iter = sexp
     bytecodes = []
     bytecodes.push [:start_call]
 
@@ -110,6 +122,15 @@ class AstToBytecodeCompiler
     bytecodes.push [:make_symbol]
     bytecodes.push [:arg]
     
+    if optional_iter
+      statement = optional_iter[2]
+      block_label = "start_#{source(statement).join('_')}"
+      bytecodes.concat compile(optional_iter)
+      bytecodes.push [:block_arg, block_label]
+    else
+      bytecodes.push [:block_arg, nil]
+    end
+
     bytecodes.concat compile(arglist)
 
     bytecodes.push [:pre_call]
@@ -173,12 +194,31 @@ class AstToBytecodeCompiler
     bytecodes.push [:arg]
     bytecodes.push [:result, :<<]
     bytecodes.push [:arg]
+    bytecodes.push [:block_arg, nil]
     strs_or_evstrs.each do |str_or_evstr|
       bytecodes.concat compile(str_or_evstr)
       bytecodes.push [:arg]
     end
     bytecodes.push [:pre_call]
     bytecodes.push [:call]
+    bytecodes
+  end
+
+  def compile_iter sexp
+    _, assignments, statement = sexp
+    bytecodes = []
+    no "assignments in block" if assignments
+
+    label_after_return = "after_return_#{source(statement).join('_')}"
+    bytecodes.push [:goto, label_after_return]
+
+    start_label = "start_#{source(statement).join('_')}"
+    bytecodes.push [:label, start_label]
+    bytecodes.concat compile(statement)
+    bytecodes.push [:return]
+
+    bytecodes.push [:label, label_after_return]
+
     bytecodes
   end
 end

@@ -102,7 +102,7 @@ class DebuggerController
     if @spool
       # run step until the first position
       @spool.queueRunUntil 'NEXT_POSITION'
-      bytecode = @spool.getNextBytecode
+      bytecode = @spool.getNextBytecode false, null
       @highlighter.interpret bytecode
     @render()
 
@@ -116,7 +116,8 @@ class DebuggerController
 
   handleNextBytecode: ->
     if @spool && @highlighter && @interpreter && !@interpreter.isAcceptingInput()
-      bytecode = @spool.getNextBytecode @interpreter.isResultTruthy
+      bytecode = @spool.getNextBytecode @interpreter.isResultTruthy(),
+        @interpreter.gosubbingLabel()
       if bytecode
         @highlighter.interpret bytecode
 

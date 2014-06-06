@@ -124,4 +124,14 @@ describe BytecodeInterpreter, '#run' do
   it 'runs x = if false then 3 end; p x' do
     output_of("x = if false then 3 end; p x").should == "nil\n"
   end
+
+  it 'runs p lambda {3}.call' do
+    output_of("p lambda {3}.call").should == "3\n"
+  end
+  it 'runs p lambda {3}.call + 2' do
+    output_of("p lambda {3}.call + 2").should == "5\n"
+  end
+  it 'runs p lambda {3+2}.call' do
+    output_of("p lambda {3+2}.call").should == "5\n"
+  end
 end
