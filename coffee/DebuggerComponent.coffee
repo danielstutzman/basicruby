@@ -1,4 +1,5 @@
 ConsoleComponent      = require './ConsoleComponent.coffee'
+HeapComponent         = require './HeapComponent.coffee'
 InstructionsComponent = require './InstructionsComponent.coffee'
 VariablesComponent    = require './VariablesComponent.coffee'
 PartialCallsComponent = require './PartialCallsComponent.coffee'
@@ -73,6 +74,9 @@ DebuggerComponent = React.createClass
 
       if @props.features.showVariables
         VariablesComponent @props.interpreter
+
+      if @props.features.showHeap
+        HeapComponent @props.interpreter
 
       if @props.features.showConsole
         ConsoleComponent

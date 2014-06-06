@@ -164,6 +164,18 @@ class BytecodeInterpreter
   private
 
   def result_is new_result
+    # use boxed JavaScript objects not primitives, so we can look up their
+    # object_id, at least for strings. Maybe override number and bool's
+    # object_id to be constant, like MRI's, later.
+    if RUBY_PLATFORM == 'opal'
+      `if (typeof(new_result) === 'number') {
+        new_result = new Number(new_result);
+      } else if (typeof(new_result) === 'string') {
+        new_result = new String(new_result);
+      } else if (typeof(new_result) === 'boolean') {
+        new_result = new Boolean(new_result);
+      }`
+    end
     @result.push new_result
     raise "Result stack has too many items: #{@result}" if @result.size > 1
   end

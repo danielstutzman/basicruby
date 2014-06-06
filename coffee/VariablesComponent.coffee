@@ -33,7 +33,11 @@ VariablesComponent = React.createClass
             tr { key: var_name },
               td {}, var_name
               td {},
-                ValueComponent(value: var_value) if var_value != undefined
+                if var_value != undefined
+                  ValueComponent
+                    value: var_value
+                    object_ids: []
+                    show_type: true
                 '...' if @props.startedVarNames.indexOf(var_name) != -1
           _.map future_var_names, (var_name) =>
             tr { key: var_name },

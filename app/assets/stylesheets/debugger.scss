@@ -77,7 +77,8 @@ $label-height: 30px;
     .instructions-with-label { width: 380px; margin-right: 10px; }
     .console-with-label { width: 380px; }
   }
-  .showInstructions.showConsole.showVariables {
+  .showInstructions.showConsole.showVariables,
+  .showInstructions.showConsole.showHeap {
     .instructions-with-label { width: 440px; margin-right: 10px; }
     .variables-with-label { width: 320px; height: 160px; margin-right: 10px; }
     .console-with-label { width: 320px; height: 190px; }
@@ -179,6 +180,96 @@ $label-height: 30px;
     }
   }
 
+  .vars-and-heap {
+    width: 320px;
+    height: 150px;
+    margin-bottom: 10px;
+    float: left;
+    position: relative;
+
+    .black-background {
+      position: absolute;
+      width: inherit;
+      height: inherit;
+      background-color: black;
+      z-index: -1;
+    }
+    .scroller {
+      width: inherit;
+      height: inherit;
+      overflow: scroll;
+      position: relative;
+      white-space: nowrap; // so heap won't wrap to next line
+
+      .gray-background {
+        position: absolute;
+        width: inherit;
+        height: 52px;
+        background-color: #333;
+        z-index: -1;
+      }
+    }
+
+    .just-vars {
+      background-color: #777;
+      padding-right: 10px;
+      margin-right: -10px;
+      display: inline-block;
+      vertical-align: top;
+    }
+    .just-heap {
+      background-color: #777;
+      padding-left: 10px;
+      margin-left: -10px;
+      display: inline-block;
+      vertical-align: top;
+    }
+    table {
+      border-collapse: collapse;
+    }
+    tr {
+      vertical-align: top;
+    }
+    th {
+      background-color: #333;
+      color: black;
+      font-weight: bold;
+      text-transform: uppercase;
+      text-align: left;
+      padding-right: 5px;
+      &.bigger {
+        padding-left: 5px;
+        padding-right: 5px;
+        font-size: 20pt;
+      }
+    }
+    td {
+      color: #0f0;
+      font-size: 20pt;
+      background-color: black;
+      padding-right: 5px;
+      .object-id {
+        display: inline-block;
+        font-family: sans-serif;
+        font-size: 12pt;
+        background-color: #0f0;
+        color: black;
+        vertical-align: top;
+        margin-top: 5px;
+      }
+    }
+    .left {
+      padding-left: 5px;
+    }
+    .between {
+      width: 10px;
+      height: 150px;
+      background-color: #777;
+      display: inline-block;
+      vertical-align: top;
+    }
+  }
+
   .instructions {
     position: relative;
     width: 100%;
@@ -271,34 +362,50 @@ $label-height: 30px;
 
   .value {
     display: inline-block; // so ... is directly after
-  }
-  .string {
-    font-family: monospace;
-    white-space: pre-wrap;
-    display: inline; // so its width doesn't expand
-    white-space: pre;
-    .line {
-      line-height: 0.6;
-      &.last {
-        display: inline-block; // so type label is directly after
-      }
-      span {
-        background-color: $lightening-to-show-spaces;
-        line-height: 1.0;
-      }
-      .empty-line { // a little sliver of background color
-        width: 4px;
-        height: 28px;
-        display: inline-block;
-        background-color: $lightening-to-show-spaces;
+
+    .string {
+      font-family: monospace;
+      white-space: pre-wrap;
+      display: inline; // so its width doesn't expand
+      white-space: pre;
+      .line {
+        line-height: 0.6;
+        &.last {
+          display: inline-block; // so type label is directly after
+        }
+        span {
+          background-color: $lightening-to-show-spaces;
+          line-height: 1.0;
+        }
+        .empty-line { // a little sliver of background color
+          width: 4px;
+          height: 28px;
+          display: inline-block;
+          background-color: $lightening-to-show-spaces;
+        }
       }
     }
-  }
-  .type {
-    display: inline-block;
-    font-family: sans-serif;
-    font-size: 12pt;
-    color: #040;
-    padding-left: 5px;
+    table.array {
+      display: inline-block;
+      td {
+        border: 1px #040 solid;
+        padding-right: 2px;
+
+        .index {
+          font-size: 10pt;
+          display: inline-block;
+          vertical-align: top;
+          padding-left: 1px;
+          padding-right: 2px;
+          color: #040;
+        }
+      }
+    }
+    .type {
+      display: inline-block;
+      font-family: sans-serif;
+      font-size: 12pt;
+      color: #040;
+    }
   }
 } // end .debugger
