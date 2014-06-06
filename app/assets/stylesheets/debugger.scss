@@ -363,7 +363,7 @@ $label-height: 30px;
   .value {
     display: inline-block; // so ... is directly after
 
-    .string {
+    &.string {
       font-family: monospace;
       white-space: pre-wrap;
       display: inline; // so its width doesn't expand
