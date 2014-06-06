@@ -229,7 +229,7 @@ class BytecodeInterpreter
       $is_capturing_stdout = false
       text = "#{e.class}: #{e.message}#{error_position}\n"
       $console_texts = $console_texts.clone + [[:stderr, text]]
-      raise ProgramTerminated.new e
+      raise ProgramTerminated.new text
     end
   end
 

@@ -11,12 +11,20 @@ class RspecRubyRunner
     spool = BytecodeSpool.new bytecodes
     spool.queue_run_until 'DONE'
     interpreter = BytecodeInterpreter.new
-    while true
-      bytecode = spool.get_next_bytecode interpreter.is_result_truthy?,
-        interpreter.gosubbing_label
-      break if bytecode.nil?
-      interpreter.interpret bytecode
+    begin
+      while true
+        bytecode = spool.get_next_bytecode interpreter.is_result_truthy?,
+          interpreter.gosubbing_label
+        break if bytecode.nil?
+        interpreter.interpret bytecode
+      end
+      interpreter.visible_state[:output].map { |pair| pair[1] }.join
+    rescue ProgramTerminated => e
+      if e.message.include?(':')
+        raise Module.const_get(e.message.split(':')[0]), e.message.split(':')[1]
+      else
+        raise
+      end
     end
-    interpreter.visible_state[:output].map { |pair| pair[1] }.join
   end
 end
