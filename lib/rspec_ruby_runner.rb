@@ -16,6 +16,6 @@ class RspecRubyRunner
       break if bytecode.nil?
       interpreter.interpret bytecode
     end
-    interpreter.visible_state[:output].join
+    interpreter.visible_state[:output].map { |pair| pair[1] }.join
   end
 end
