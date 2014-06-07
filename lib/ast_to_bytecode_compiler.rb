@@ -1,4 +1,8 @@
 class AstToBytecodeCompiler
+  def initialize
+    @next_unique_label = 0
+  end
+
   # bytecodes need to have position at the front; the debugger is counting
   # on this to know where to start.
   def compile_program sexp
@@ -64,15 +68,24 @@ class AstToBytecodeCompiler
   end
 
   def source statement
-    if statement == nil
-      [0, 0]
-    elsif statement[0] == :block
+    if statement[0] == :block
       statement[1].source
     elsif statement[0] == :masgn
       statement[1][1].source
     else
       statement.source
     end
+  end
+
+  def unique_label name1, sexp_for_source, name2=nil
+    label = name1 + '_'
+    if sexp_for_source && source(sexp_for_source)
+      label += source(sexp_for_source).join('_')
+    else
+      label += (@next_unique_label += 1).to_s
+    end
+    label += "_#{name2}" if name2
+    label
   end
 
   def compile_array sexp
@@ -129,10 +142,17 @@ class AstToBytecodeCompiler
     bytecodes.push [:arg]
     
     if optional_iter
-      statement = optional_iter[2]
-      block_label = "start_#{source(statement).join('_')}"
+      label_after_return = unique_label 'after_return', optional_iter[2]
+      bytecodes.push [:goto, label_after_return]
+
+      start_label = unique_label 'start', optional_iter[2]
+      bytecodes.push [:label, start_label]
+
       bytecodes.concat compile(optional_iter)
-      bytecodes.push [:make_proc, block_label]
+
+      bytecodes.push [:label, label_after_return]
+
+      bytecodes.push [:make_proc, start_label]
     else
       bytecodes.push [:result, nil] # no block arg
     end
@@ -176,8 +196,8 @@ class AstToBytecodeCompiler
     _, condition, then_block, else_block = sexp
     bytecodes = []
     bytecodes.concat compile(condition)
-    label_else = "else_#{sexp.source.join('_')}"
-    label_endif = "endif_#{sexp.source.join('_')}"
+    label_else = unique_label 'else', sexp
+    label_endif = unique_label 'endif', sexp
     bytecodes.push [:goto_if_not, label_else]
     if then_block && then_block.source
       bytecodes.push [:position] + then_block.source
@@ -215,12 +235,6 @@ class AstToBytecodeCompiler
   def compile_iter sexp
     _, assignments, statement = sexp
     bytecodes = []
-
-    label_after_return = "after_return_#{source(statement).join('_')}"
-    bytecodes.push [:goto, label_after_return]
-
-    start_label = "start_#{source(statement).join('_')}"
-    bytecodes.push [:label, start_label]
 
     splat_num = nil
     optional_block = nil
@@ -266,7 +280,7 @@ class AstToBytecodeCompiler
 
     if optional_block
       labels = (0..var_names.size).map do |i|
-        "param_defaults_#{source(statement).join('_')}_#{i}"
+        unique_label 'param_defaults', statement, i
       end
       bytecodes.push [:goto_param_defaults] + labels
       labels.each_with_index do |label, i|
@@ -280,8 +294,6 @@ class AstToBytecodeCompiler
 
     bytecodes.concat compile(statement)
     bytecodes.push [:return]
-
-    bytecodes.push [:label, label_after_return]
 
     bytecodes
   end
