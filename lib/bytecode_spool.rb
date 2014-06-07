@@ -35,13 +35,13 @@ class BytecodeSpool
       nil
     elsif @num_steps_queued == 0
       nil
-    elsif gosubbing_label != nil # "!= nil" is required for opal
+    elsif gosubbing_label
       @counter_stack.push @counter
       @counter = @label_to_counter[gosubbing_label] or raise \
         "Can't find label #{gosubbing_label}"
       bytecode = @bytecodes[@counter]
       @counter += 1 # ok to step once past label
-    elsif gotoing_label != nil # "!= nil" is required for opal
+    elsif gotoing_label
       @counter = @label_to_counter[gotoing_label] or raise \
         "Can't find label #{gotoing_label}"
       bytecode = @bytecodes[@counter]
