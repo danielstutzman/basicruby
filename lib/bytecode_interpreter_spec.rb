@@ -188,4 +188,13 @@ describe BytecodeInterpreter, '#run' do
   it 'runs lambda {|*x|}.call(1,2)' do
     output_of("lambda {|*x|}.call(1,2)").should == "" # no error
   end
+  it 'runs lambda {|x=1,y=2| p x, y }.call' do
+    output_of("lambda {|x=1,y=2| p x, y }.call").should == "1\n2\n"
+  end
+  it 'runs lambda {|x=1,y=2| p x, y }.call(3)' do
+    output_of("lambda {|x=1,y=2| p x, y }.call(3)").should == "3\n2\n"
+  end
+  it 'runs lambda {|x=1,y=2| p x, y }.call(3,4)' do
+    output_of("lambda {|x=1,y=2| p x, y }.call(3,4)").should == "3\n4\n"
+  end
 end
