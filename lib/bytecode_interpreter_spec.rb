@@ -166,4 +166,10 @@ describe BytecodeInterpreter, '#run' do
   it 'runs x, y = 3, 4; p x, y' do
     output_of("x, y = 3, 4; p x, y").should == "3\n4\n"
   end
+  it 'runs x,*y = 3,4,5; p x,y' do
+    output_of("x,*y = 3,4,5; p x,y").should == "3\n[4, 5]\n"
+  end
+  it 'runs lambda {|x,*y| p x, y }.call(3,4,5)' do
+    output_of("lambda {|x,*y| p x, y }.call(3,4,5)").should == "3\n[4, 5]\n"
+  end
 end

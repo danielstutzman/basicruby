@@ -8,6 +8,8 @@ class AstToBytecodeCompiler
       position = [] # because position will be printed anyway
     elsif sexp.source
       position = [[:position] + sexp.source]
+    elsif sexp[0] == :masgn
+      position = [[:position] + sexp[1][1].source]
     else
       no 'top s-exp with nil source'
     end
@@ -226,16 +228,22 @@ class AstToBytecodeCompiler
       bytecodes.push [:vars_from_env_except, var_name]
       bytecodes.push [:to_vars, nil, var_name]
     elsif assignments[0] == :masgn
+      splat_num = nil
       if assignments[1][0] == :array
+        i = -1
         var_names = assignments[1][1..-1].map do |lasgn|
+          i += 1
           if lasgn[0] == :lasgn
             lasgn[1]
+          elsif lasgn[0] == :splat && lasgn[1][0] == :lasgn
+            splat_num = i
+            lasgn[1][1]
           else
-            no "contents of :masgn's :array except :lasgn"
+            no "contents of :masgn's :array except :lasgn or :splat :lasgn"
           end
         end
         bytecodes.push [:vars_from_env_except] + var_names
-        bytecodes.push [:to_vars, nil] + var_names
+        bytecodes.push [:to_vars, splat_num] + var_names
       else
         no 'contents of :masgn besides :array'
       end
@@ -254,12 +262,18 @@ class AstToBytecodeCompiler
 
   def compile_masgn sexp
     _, to_array, from_expression = sexp
+    splat_num = nil
     if to_array[0] == :array
+      i = -1
       var_names = to_array[1..-1].map do |lasgn|
+        i += 1
         if lasgn[0] == :lasgn
           lasgn[1]
+        elsif lasgn[0] == :splat && lasgn[1][0] == :lasgn
+          splat_num = i
+          lasgn[1][1]
         else
-          no "contents of :masgn's :array except :lasgn"
+          no "contents of :masgn's :array except :lasgn or :splat :lasgn"
         end
       end
     else
@@ -268,7 +282,7 @@ class AstToBytecodeCompiler
 
     bytecodes = []
     bytecodes.concat compile(from_expression)
-    bytecodes.push [:to_vars, nil] + var_names
+    bytecodes.push [:to_vars, splat_num] + var_names
     bytecodes
   end
 end

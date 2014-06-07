@@ -151,10 +151,15 @@ class BytecodeInterpreter
       when :to_vars
         array = pop_result
         old_array = array.clone
+        splat_num = bytecode[1]
         var_names = bytecode[2..-1]
         @started_var_names = @started_var_names - var_names
-        var_names.each do |var_name|
-          value = array.shift
+        var_names.each_with_index do |var_name, i|
+          if i == splat_num
+            value = array
+          else
+            value = array.shift
+          end
           # store vars in arrays, so closures can modify their values
           if @vars_stack.last.has_key? var_name
             @vars_stack.last[var_name][0] = value
