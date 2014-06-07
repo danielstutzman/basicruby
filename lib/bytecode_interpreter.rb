@@ -73,7 +73,11 @@ class BytecodeInterpreter
     {
       partial_calls: @partial_calls.map { |call| call.clone },
       started_var_names: @started_var_names,
-      vars: @vars_stack.last,
+      vars: @vars_stack.last.inject({}) { |accum, pair|
+        key, value = pair
+        accum[key] = value[0] # undo the array wrapping
+        accum
+      },
       output: $console_texts,
       num_partial_call_executing: @num_partial_call_executing,
       accepting_input: @accepting_input,
