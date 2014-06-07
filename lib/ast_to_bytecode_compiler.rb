@@ -56,6 +56,7 @@ class AstToBytecodeCompiler
       when :dstr    then compile_dstr sexp
       when :evstr   then compile sexp[1]
       when :iter    then compile_iter sexp
+      when :masgn   then compile_masgn sexp
       else no "s-exp with head #{sexp[0]}"
     end
   end
@@ -78,7 +79,7 @@ class AstToBytecodeCompiler
     bytecodes.push [:arg]
     bytecodes.push [:result, :push]
     bytecodes.push [:arg]
-    bytecodes.push [:result, :nil]
+    bytecodes.push [:result, nil]
     bytecodes.push [:arg] # no block
     elements.each do |element|
       bytecodes.concat compile(element)
@@ -156,7 +157,7 @@ class AstToBytecodeCompiler
     _, var_name, expression = sexp
     bytecodes = []
     bytecodes.push [:token] + sexp.source
-    bytecodes.push [:start_var, var_name]
+    bytecodes.push [:start_vars, var_name]
     bytecodes.concat compile(expression)
     bytecodes.push [:to_var, var_name]
     bytecodes
@@ -217,19 +218,57 @@ class AstToBytecodeCompiler
     start_label = "start_#{source(statement).join('_')}"
     bytecodes.push [:label, start_label]
 
+    bytecodes.push [:args]
     if assignments.nil?
-      bytecodes.push [:params_are]
+      bytecodes.push [:vars_from_env_except]
     elsif assignments[0] == :lasgn
-      bytecodes.push [:params_are, assignments[1]]
+      var_name = assignments[1]
+      bytecodes.push [:vars_from_env_except, var_name]
+      bytecodes.push [:to_vars, nil, var_name]
+    elsif assignments[0] == :masgn
+      if assignments[1][0] == :array
+        var_names = assignments[1][1..-1].map do |lasgn|
+          if lasgn[0] == :lasgn
+            lasgn[1]
+          else
+            no "contents of :masgn's :array except :lasgn"
+          end
+        end
+        bytecodes.push [:vars_from_env_except] + var_names
+        bytecodes.push [:to_vars, nil] + var_names
+      else
+        no 'contents of :masgn besides :array'
+      end
     else
-      no 'multiple params'
+      no 'assignments other than :lasgn and :masgn'
     end
+    bytecodes.push [:discard] # since result of multi-assign is ignored
 
     bytecodes.concat compile(statement)
     bytecodes.push [:return]
 
     bytecodes.push [:label, label_after_return]
 
+    bytecodes
+  end
+
+  def compile_masgn sexp
+    _, to_array, from_expression = sexp
+    if to_array[0] == :array
+      var_names = to_array[1..-1].map do |lasgn|
+        if lasgn[0] == :lasgn
+          lasgn[1]
+        else
+          no "contents of :masgn's :array except :lasgn"
+        end
+      end
+    else
+      no 'masgn[1] except array' if to_array[0] != :array
+    end
+
+    bytecodes = []
+    bytecodes.concat compile(from_expression)
+    bytecodes.push [:to_vars, nil] + var_names
     bytecodes
   end
 end

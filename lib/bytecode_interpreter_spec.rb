@@ -160,5 +160,10 @@ describe BytecodeInterpreter, '#run' do
   end
   it 'runs p lambda{|x|}.arity' do
     output_of("p lambda{|x|}.arity").should == "1\n"
+  it 'runs lambda {|x, y| p x, y }.call(3, 4)' do
+    output_of("lambda {|x, y| p x, y }.call(3, 4)").should == "3\n4\n"
+  end
+  it 'runs x, y = 3, 4; p x, y' do
+    output_of("x, y = 3, 4; p x, y").should == "3\n4\n"
   end
 end

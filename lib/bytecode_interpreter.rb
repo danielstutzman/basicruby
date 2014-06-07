@@ -135,8 +135,8 @@ class BytecodeInterpreter
             raise
           end
         end
-      when :start_var
-        @started_var_names.push bytecode[1]
+      when :start_vars
+        @started_var_names += bytecode[1..-1]
       when :to_var
         var_name = bytecode[1]
         @started_var_names = @started_var_names - [var_name]
@@ -148,6 +148,21 @@ class BytecodeInterpreter
           @vars_stack.last[var_name] = [value]
         end
         result_is value
+      when :to_vars
+        array = pop_result
+        old_array = array.clone
+        var_names = bytecode[2..-1]
+        @started_var_names = @started_var_names - var_names
+        var_names.each do |var_name|
+          value = array.shift
+          # store vars in arrays, so closures can modify their values
+          if @vars_stack.last.has_key? var_name
+            @vars_stack.last[var_name][0] = value
+          else
+            @vars_stack.last[var_name] = [value]
+          end
+        end
+        result_is old_array
       when :from_var
         var_name = bytecode[1]
         if @vars_stack.last.has_key? var_name
@@ -162,15 +177,17 @@ class BytecodeInterpreter
         result_is result
       when :goto_if_not
         pop_result
-      when :params_are
+      when :args
+        args = @partial_calls.last[3..-1]
+        result_is args
+      when :vars_from_env_except
+        var_names = bytecode[1..-1]
         if NewProc === @partial_calls.last[0]
-          new_vars = @partial_calls.last[0].env.clone
+          new_vars = @partial_calls.last[0].env.reject do |var_name|
+            var_names.include?(var_name)
+          end
         else
           new_vars = {}
-        end
-        args = @partial_calls.last[3..-1]
-        bytecode[1..-1].each do |param_name|
-          new_vars[param_name] = [args.shift] # in array so closures can modify
         end
         @vars_stack.push new_vars
     end

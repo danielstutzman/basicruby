@@ -36,21 +36,21 @@ describe AstToBytecodeCompiler, '#compile' do
   it 'compiles x = 3' do
     compile('x = 3').should == [
       [:position, 1, 0],
-      [:token, 1, 0], [:start_var, :x],
+      [:token, 1, 0], [:start_vars, :x],
       [:token, 1, 4], [:result, 3],
       [:to_var, :x],
     ]
   end
   it 'compiles x = 3; x' do
     compile('x = 3; x').should == [
-      [:position, 1, 0], [:token, 1, 0], [:start_var, :x],
+      [:position, 1, 0], [:token, 1, 0], [:start_vars, :x],
       [:token, 1, 4], [:result, 3], [:to_var, :x], [:discard],
       [:position, 1, 7], [:token, 1, 7], [:from_var, :x],
     ]
   end
   it 'compiles x = if true then 3 end' do
     compile('x = if true then 3 end').should == [
-      [:position, 1, 0], [:token, 1, 0], [:start_var, :x],
+      [:position, 1, 0], [:token, 1, 0], [:start_vars, :x],
       [:token, 1, 7], [:result, true],
       [:goto_if_not, "else_1_4"],
       [:position, 1, 17],
@@ -62,6 +62,7 @@ describe AstToBytecodeCompiler, '#compile' do
       [:to_var, :x],
     ]
   end
+if false
   it 'compiles "1#{2}3"' do
     compile('"1#{2}3"').should == [
       [:position, 1, 1],
@@ -86,7 +87,7 @@ describe AstToBytecodeCompiler, '#compile' do
       [:position, 1, 0], [:start_call], [:top], [:arg],
       [:token, 1, 0], [:result, :lambda], [:make_symbol], [:arg],
       [:goto, "after_return_1_9"],
-      [:label, "start_1_9"], [:params_are],
+      [:label, "start_1_9"], [:args], [:vars_from_env_except], [:discard],
       [:token, 1, 9], [:result, 4], [:return],
       [:label, "after_return_1_9"], [:make_proc, "start_1_9"], [:arg],
       [:pre_call], [:call]
