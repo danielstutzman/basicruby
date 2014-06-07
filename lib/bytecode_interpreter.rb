@@ -311,14 +311,15 @@ class BytecodeInterpreter
         result
       end
     rescue RedirectMethod => e
+      $is_capturing_stdout = false
       raise # don't wrap with ProgramTerminated
     rescue Exception => e
+      $is_capturing_stdout = false
       raise_exception e
     end
   end
 
   def raise_exception e
-    $is_capturing_stdout = false
     text = "#{e.class}: #{e.message}#{error_position}\n"
     $console_texts = $console_texts.clone + [[:stderr, text]]
     raise ProgramTerminated.new text
