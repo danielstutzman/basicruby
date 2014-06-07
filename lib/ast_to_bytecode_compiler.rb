@@ -223,36 +223,54 @@ class AstToBytecodeCompiler
     bytecodes.push [:label, start_label]
 
     bytecodes.push [:args]
+    splat_num = nil
+    optional_block = nil
     if assignments.nil?
-      bytecodes.push [:vars_from_env_except]
+      var_names = []
     elsif assignments[0] == :lasgn
-      var_name = assignments[1]
-      bytecodes.push [:vars_from_env_except, var_name]
-      bytecodes.push [:to_vars, nil, var_name]
+      var_names = [assignments[1]]
     elsif assignments[0] == :masgn
-      splat_num = nil
       if assignments[1][0] == :array
         i = -1
-        var_names = assignments[1][1..-1].map do |lasgn|
+        var_names = assignments[1][1..-1].map do |part|
           i += 1
-          if lasgn[0] == :lasgn
-            lasgn[1]
-          elsif lasgn[0] == :splat && lasgn[1][0] == :lasgn
+          if part[0] == :lasgn
+            part[1]
+          elsif part[0] == :splat && part[1][0] == :lasgn
             splat_num = i
-            lasgn[1][1]
+            part[1][1]
+          elsif part[0] == :block
+            optional_block = part
+            nil
           else
-            no "contents of :masgn's :array except :lasgn or :splat :lasgn"
+            no "contents of :masgn's :array except " +
+              " :lasgn, :splat :lasgn, or :block"
           end
         end
-        bytecodes.push [:vars_from_env_except] + var_names
-        bytecodes.push [:to_vars, splat_num] + var_names
+        var_names = var_names.compact
       else
         no 'contents of :masgn besides :array'
       end
     else
       no 'assignments other than :lasgn and :masgn'
     end
+    bytecodes.push [:vars_from_env_except] + var_names
+    bytecodes.push [:to_vars, splat_num] + var_names
     bytecodes.push [:discard] # since result of multi-assign is ignored
+
+    if optional_block
+      labels = (0..var_names.size).map do |i|
+        "param_defaults_#{source(statement).join('_')}_#{i}"
+      end
+      bytecodes.push [:goto_param_defaults] + labels
+      labels.each_with_index do |label, i|
+        bytecodes.push [:label, label]
+        if i < labels.size - 1
+          bytecodes.concat compile(optional_block[i + 1])
+          bytecodes.push [:discard] # since result of assignment is ignored
+        end
+      end
+    end
 
     bytecodes.concat compile(statement)
     bytecodes.push [:return]

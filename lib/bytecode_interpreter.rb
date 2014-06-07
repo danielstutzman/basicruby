@@ -64,6 +64,7 @@ class BytecodeInterpreter
     @accepting_input = false
     @accepted_input = nil
     @gosubbing_label = nil
+    @gotoing_label = nil
     @last_token_pos = nil
 
     $console_texts = []
@@ -94,6 +95,7 @@ class BytecodeInterpreter
 
   def interpret bytecode #, speed, stdin
     @gosubbing_label = nil
+    @gotoing_label = nil
     case bytecode[0]
       when :token
         @last_token_pos = [bytecode[1], bytecode[2]]
@@ -199,6 +201,14 @@ class BytecodeInterpreter
           new_vars = {}
         end
         @vars_stack.push new_vars
+      when :goto_param_defaults
+        num_args = @partial_calls.last.size - 3
+        if 1 + num_args >= bytecode.size
+          label = bytecode.last
+        else
+          label = bytecode[1 + (num_args)]
+        end
+        @gotoing_label = label
     end
     nil
   end
@@ -227,6 +237,10 @@ class BytecodeInterpreter
 
   def gosubbing_label
     @gosubbing_label
+  end
+
+  def gotoing_label
+    @gotoing_label
   end
 
   private

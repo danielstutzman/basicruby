@@ -28,7 +28,7 @@ class BytecodeSpool
     end
   end
 
-  def get_next_bytecode is_result_truthy, gosubbing_label
+  def get_next_bytecode is_result_truthy, gosubbing_label, gotoing_label
     if @is_done
       nil
     elsif @counter >= @bytecodes.size
@@ -39,6 +39,11 @@ class BytecodeSpool
       @counter_stack.push @counter
       @counter = @label_to_counter[gosubbing_label] or raise \
         "Can't find label #{gosubbing_label}"
+      bytecode = @bytecodes[@counter]
+      @counter += 1 # ok to step once past label
+    elsif gotoing_label != nil # "!= nil" is required for opal
+      @counter = @label_to_counter[gotoing_label] or raise \
+        "Can't find label #{gotoing_label}"
       bytecode = @bytecodes[@counter]
       @counter += 1 # ok to step once past label
     else

@@ -14,7 +14,7 @@ class RspecRubyRunner
     begin
       while true
         bytecode = spool.get_next_bytecode interpreter.is_result_truthy?,
-          interpreter.gosubbing_label
+          interpreter.gosubbing_label, interpreter.gotoing_label
         break if bytecode.nil?
         interpreter.interpret bytecode
       end

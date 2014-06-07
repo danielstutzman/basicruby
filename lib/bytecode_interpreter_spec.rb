@@ -158,8 +158,6 @@ describe BytecodeInterpreter, '#run' do
   it 'runs x = 1; lambda {|x| p x}.call(2); p x' do
     output_of("x = 1; lambda {|x| p x}.call(2); p x").should == "2\n1\n"
   end
-  it 'runs p lambda{|x|}.arity' do
-    output_of("p lambda{|x|}.arity").should == "1\n"
   it 'runs lambda {|x, y| p x, y }.call(3, 4)' do
     output_of("lambda {|x, y| p x, y }.call(3, 4)").should == "3\n4\n"
   end
@@ -171,5 +169,11 @@ describe BytecodeInterpreter, '#run' do
   end
   it 'runs lambda {|x,*y| p x, y }.call(3,4,5)' do
     output_of("lambda {|x,*y| p x, y }.call(3,4,5)").should == "3\n[4, 5]\n"
+  end
+  it 'runs lambda {|x=1| p x }.call()' do
+    output_of("lambda {|x=1| p x }.call").should == "1\n"
+  end
+  it 'runs lambda {|x=1| p x }.call(2)' do
+    output_of("lambda {|x=1| p x }.call(2)").should == "2\n"
   end
 end
