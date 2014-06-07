@@ -48,8 +48,15 @@ end
 class ProgramTerminated < RuntimeError
 end
 
+class RedirectMethod < Exception
+end
+
 class NewProc
   attr_accessor :label, :env, :param_names
+
+  def call(*args)
+    raise RedirectMethod.new @label
+  end
 end
 
 class BytecodeInterpreter
@@ -119,28 +126,27 @@ class BytecodeInterpreter
         @num_partial_call_executing = @partial_calls.size - 1
         if @partial_calls.last == [@main, :gets]
           @accepting_input = true
-        elsif NewProc === @partial_calls.last[0] &&
-              @partial_calls.last[1] == :call
-          proc_ = @partial_calls.last[0]
-          @gosubbing_label = proc_.label
         end
       when :call
         @num_partial_call_executing = nil
-        call = @partial_calls.pop
+        call = @partial_calls.last
         if @accepted_input != nil
           result_is @accepted_input
           @accepted_input = nil
-        elsif NewProc === call[0] && call[1] == :call
-          # we've now returned from calling the proc; result is already set
-          @vars_stack.pop
         else
           begin
             result_is do_call *call
-          rescue
+            @partial_calls.pop
+          rescue RedirectMethod => e
+            @gosubbing_label = e.message
+          rescue => e
             result_is nil
             raise
           end
         end
+      when :will_return
+        @partial_calls.pop
+        @vars_stack.pop
       when :start_var
         @started_var_names.push bytecode[1]
       when :to_var
@@ -279,7 +285,7 @@ class BytecodeInterpreter
     begin
       if proc_
         if receiver == @main && method_name == :lambda
-          proc_
+          result = proc_
         else
           raise Exception.new "Basic Ruby doesn't support the calling of
             arbitrary methods with blocks"
@@ -304,6 +310,8 @@ class BytecodeInterpreter
         $is_capturing_stdout = false
         result
       end
+    rescue RedirectMethod => e
+      raise # don't wrap with ProgramTerminated
     rescue Exception => e
       raise_exception e
     end

@@ -293,6 +293,7 @@ class AstToBytecodeCompiler
     end
 
     bytecodes.concat compile(statement)
+    bytecodes.push [:will_return]
     bytecodes.push [:return]
 
     bytecodes

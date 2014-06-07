@@ -90,7 +90,7 @@ end
       [:goto, "after_return_1_9"],
       [:label, "start_1_9"],
       [:args, 0, 0], [:vars_from_env_except], [:to_vars, nil], [:discard],
-      [:token, 1, 9], [:result, 4], [:return],
+      [:token, 1, 9], [:result, 4], [:will_return], [:return],
       [:label, "after_return_1_9"], [:make_proc, "start_1_9"], [:arg],
       [:pre_call], [:call]
     ]
@@ -123,7 +123,7 @@ end
           [:token, 1, 8], [:start_var, :x], [:token, 1, 10],
           [:result, 1], [:to_var, :x], [:discard],
         [:label, "param_defaults_4_1"],
-      [:result, nil], [:return],
+      [:result, nil], [:will_return], [:return],
       [:label, "after_return_1"],
       [:make_proc, "start_2"],
       [:arg], [:pre_call], [:call]
