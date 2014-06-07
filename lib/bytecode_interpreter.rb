@@ -135,8 +135,8 @@ class BytecodeInterpreter
             raise
           end
         end
-      when :start_vars
-        @started_var_names += bytecode[1..-1]
+      when :start_var
+        @started_var_names.push bytecode[1]
       when :to_var
         var_name = bytecode[1]
         @started_var_names = @started_var_names - [var_name]

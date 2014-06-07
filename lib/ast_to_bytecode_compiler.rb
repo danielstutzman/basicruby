@@ -159,7 +159,7 @@ class AstToBytecodeCompiler
     _, var_name, expression = sexp
     bytecodes = []
     bytecodes.push [:token] + sexp.source
-    bytecodes.push [:start_vars, var_name]
+    bytecodes.push [:start_var, var_name]
     bytecodes.concat compile(expression)
     bytecodes.push [:to_var, var_name]
     bytecodes
@@ -262,14 +262,19 @@ class AstToBytecodeCompiler
 
   def compile_masgn sexp
     _, to_array, from_expression = sexp
+    bytecodes = []
     splat_num = nil
     if to_array[0] == :array
       i = -1
       var_names = to_array[1..-1].map do |lasgn|
         i += 1
         if lasgn[0] == :lasgn
+          bytecodes.push [:token] + lasgn.source
+          bytecodes.push [:start_var, lasgn[1]]
           lasgn[1]
         elsif lasgn[0] == :splat && lasgn[1][0] == :lasgn
+          bytecodes.push [:token] + lasgn[1].source
+          bytecodes.push [:start_var, lasgn[1][1]]
           splat_num = i
           lasgn[1][1]
         else
@@ -280,7 +285,6 @@ class AstToBytecodeCompiler
       no 'masgn[1] except array' if to_array[0] != :array
     end
 
-    bytecodes = []
     bytecodes.concat compile(from_expression)
     bytecodes.push [:to_vars, splat_num] + var_names
     bytecodes

@@ -36,21 +36,21 @@ describe AstToBytecodeCompiler, '#compile' do
   it 'compiles x = 3' do
     compile('x = 3').should == [
       [:position, 1, 0],
-      [:token, 1, 0], [:start_vars, :x],
+      [:token, 1, 0], [:start_var, :x],
       [:token, 1, 4], [:result, 3],
       [:to_var, :x],
     ]
   end
   it 'compiles x = 3; x' do
     compile('x = 3; x').should == [
-      [:position, 1, 0], [:token, 1, 0], [:start_vars, :x],
+      [:position, 1, 0], [:token, 1, 0], [:start_var, :x],
       [:token, 1, 4], [:result, 3], [:to_var, :x], [:discard],
       [:position, 1, 7], [:token, 1, 7], [:from_var, :x],
     ]
   end
   it 'compiles x = if true then 3 end' do
     compile('x = if true then 3 end').should == [
-      [:position, 1, 0], [:token, 1, 0], [:start_vars, :x],
+      [:position, 1, 0], [:token, 1, 0], [:start_var, :x],
       [:token, 1, 7], [:result, true],
       [:goto_if_not, "else_1_4"],
       [:position, 1, 17],
@@ -92,6 +92,19 @@ end
       [:token, 1, 9], [:result, 4], [:return],
       [:label, "after_return_1_9"], [:make_proc, "start_1_9"], [:arg],
       [:pre_call], [:call]
+    ]
+  end
+
+  it 'compiles x,y=3,4' do
+    compile('x,y=3,4').should == [
+      [:position, 1, 0], [:token, 1, 0], [:start_var, :x],
+      [:token, 1, 2], [:start_var, :y],
+      [:start_call], [:result, []], [:arg], [:result, :push],
+      [:arg], [:result, nil],
+      [:arg], [:token, 1, 4], [:result, 3],
+      [:arg], [:token, 1, 6], [:result, 4],
+      [:arg], [:pre_call], [:call],
+      [:to_vars, nil, :x, :y]
     ]
   end
 end
