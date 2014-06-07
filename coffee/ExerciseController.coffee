@@ -98,7 +98,7 @@ class ExerciseController
         @spool.queueRunUntil 'DONE'
         until @spool.isDone()
           bytecode = @spool.getNextBytecode @interpreter.isResultTruthy(),
-            @interpreter.gosubbingLabel()
+            @interpreter.gosubbingLabel(), @interpreter.gotoingLabel()
           try
             @interpreter.interpret bytecode
           catch e

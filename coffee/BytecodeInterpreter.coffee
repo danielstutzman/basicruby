@@ -83,4 +83,11 @@ class BytecodeInterpreter
       console.error e.stack
       throw e
 
+  gotoingLabel: ->
+    try
+      @_nilToNull @interpreter['$gotoing_label']()
+    catch e
+      console.error e.stack
+      throw e
+
 module.exports = BytecodeInterpreter
