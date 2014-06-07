@@ -155,10 +155,10 @@ class BytecodeInterpreter
         end
         result_is value
       when :to_vars
+        _, splat_num, *var_names = bytecode
         array = pop_result
         old_array = array.clone
-        splat_num = bytecode[1]
-        var_names = bytecode[2..-1]
+
         @started_var_names = @started_var_names - var_names
         var_names.each_with_index do |var_name, i|
           if i == splat_num
@@ -189,8 +189,21 @@ class BytecodeInterpreter
       when :goto_if_not
         pop_result
       when :args
+        _, min_num_args, max_num_args = bytecode
         args = @partial_calls.last[3..-1]
         result_is args
+
+        if (min_num_args && args.size < min_num_args) ||
+           (max_num_args && args.size > max_num_args)
+          num_expected =
+            if max_num_args.nil? then "#{min_num_args}+"
+            elsif min_num_args == max_num_args then min_num_args
+            else "#{min_num_args}..#{max_num_args}"
+            end
+          message =
+            "wrong number of arguments (#{args.size} for #{num_expected})"
+          raise_exception ArgumentError.new message
+        end
       when :vars_from_env_except
         var_names = bytecode[1..-1]
         if NewProc === @partial_calls.last[0]
@@ -292,11 +305,15 @@ class BytecodeInterpreter
         result
       end
     rescue Exception => e
-      $is_capturing_stdout = false
-      text = "#{e.class}: #{e.message}#{error_position}\n"
-      $console_texts = $console_texts.clone + [[:stderr, text]]
-      raise ProgramTerminated.new text
+      raise_exception e
     end
+  end
+
+  def raise_exception e
+    $is_capturing_stdout = false
+    text = "#{e.class}: #{e.message}#{error_position}\n"
+    $console_texts = $console_texts.clone + [[:stderr, text]]
+    raise ProgramTerminated.new text
   end
 
   def error_position

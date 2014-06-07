@@ -222,12 +222,13 @@ class AstToBytecodeCompiler
     start_label = "start_#{source(statement).join('_')}"
     bytecodes.push [:label, start_label]
 
-    bytecodes.push [:args]
     splat_num = nil
     optional_block = nil
+    min_num_args = max_num_args = 0
     if assignments.nil?
       var_names = []
     elsif assignments[0] == :lasgn
+      min_num_args = max_num_args = 1
       var_names = [assignments[1]]
     elsif assignments[0] == :masgn
       if assignments[1][0] == :array
@@ -235,11 +236,15 @@ class AstToBytecodeCompiler
         var_names = assignments[1][1..-1].map do |part|
           i += 1
           if part[0] == :lasgn
+            min_num_args += 1
+            max_num_args += 1
             part[1]
           elsif part[0] == :splat && part[1][0] == :lasgn
+            max_num_args = nil # no maximum
             splat_num = i
             part[1][1]
           elsif part[0] == :block
+            min_num_args -= (part.size - 1)
             optional_block = part
             nil
           else
@@ -254,6 +259,7 @@ class AstToBytecodeCompiler
     else
       no 'assignments other than :lasgn and :masgn'
     end
+    bytecodes.push [:args, min_num_args, max_num_args]
     bytecodes.push [:vars_from_env_except] + var_names
     bytecodes.push [:to_vars, splat_num] + var_names
     bytecodes.push [:discard] # since result of multi-assign is ignored

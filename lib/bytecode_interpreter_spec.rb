@@ -176,4 +176,16 @@ describe BytecodeInterpreter, '#run' do
   it 'runs lambda {|x=1| p x }.call(2)' do
     output_of("lambda {|x=1| p x }.call(2)").should == "2\n"
   end
+  it 'runs lambda {}.call(2)' do
+    expect { output_of("lambda {}.call(2)") }.to raise_exception(ArgumentError)
+  end
+  it 'runs lambda {|x=1|}.call' do
+    output_of("lambda {|x=1|}.call").should == "" # no error
+  end
+  it 'runs lambda {|*x|}.call' do
+    output_of("lambda {|*x|}.call").should == "" # no error
+  end
+  it 'runs lambda {|*x|}.call(1,2)' do
+    output_of("lambda {|*x|}.call(1,2)").should == "" # no error
+  end
 end

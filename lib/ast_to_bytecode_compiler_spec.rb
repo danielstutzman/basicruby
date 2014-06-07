@@ -89,7 +89,7 @@ end
       [:token, 1, 0], [:result, :lambda], [:make_symbol], [:arg],
       [:goto, "after_return_1_9"],
       [:label, "start_1_9"],
-      [:args], [:vars_from_env_except], [:to_vars, nil], [:discard],
+      [:args, 0, 0], [:vars_from_env_except], [:to_vars, nil], [:discard],
       [:token, 1, 9], [:result, 4], [:return],
       [:label, "after_return_1_9"], [:make_proc, "start_1_9"], [:arg],
       [:pre_call], [:call]
@@ -115,7 +115,7 @@ end
       [:top], [:arg],
       [:token, 1, 0], [:result, :lambda], [:make_symbol], [:arg],
       [:goto, "after_return_0_0"], [:label, "start_0_0"],
-      [:args], [:vars_from_env_except, :x],
+      [:args, 0, 1], [:vars_from_env_except, :x],
       [:to_vars, nil, :x],
       [:discard],
       [:goto_param_defaults, "param_defaults_0_0_0", "param_defaults_0_0_1"],
