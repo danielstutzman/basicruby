@@ -73,6 +73,7 @@ if false
       [:pre_call], [:call],
     ]
   end
+end
   it 'compiles puts ""' do
     compile('puts ""').should == [
       [:position, 1, 0], [:start_call], [:top], [:arg],
