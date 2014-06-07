@@ -68,6 +68,8 @@ class AstToBytecodeCompiler
       [0, 0]
     elsif statement[0] == :block
       statement[1].source
+    elsif statement[0] == :masgn
+      statement[1][1].source
     else
       statement.source
     end
@@ -97,8 +99,8 @@ class AstToBytecodeCompiler
     bytecodes = []
 
     statements.each_with_index do |statement, i|
-      if statement.source
-        bytecodes.push [:position] + statement.source
+      if source(statement)
+        bytecodes.push [:position] + source(statement)
       end
       bytecodes.concat compile(statement)
       if i < statements.size - 1
