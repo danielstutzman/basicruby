@@ -51,14 +51,6 @@ end
 class RedirectMethod < Exception
 end
 
-class NewProc
-  attr_accessor :label, :env, :param_names
-
-  def call(*args)
-    raise RedirectMethod.new @label
-  end
-end
-
 class BytecodeInterpreter
   def initialize
     @partial_calls = []
@@ -118,9 +110,8 @@ class BytecodeInterpreter
         result = pop_result
         @partial_calls.last.push result
       when :make_proc
-        result = NewProc.new
-        result.label = bytecode[1]
-        result.env = @vars_stack.last
+        result = Proc.new { raise RedirectMethod, bytecode[1] }
+        result.instance_variable_set '@env', @vars_stack.last
         result_is result
       when :pre_call
         @num_partial_call_executing = @partial_calls.size - 1
@@ -212,8 +203,9 @@ class BytecodeInterpreter
         end
       when :vars_from_env_except
         var_names = bytecode[1..-1]
-        if NewProc === @partial_calls.last[0]
-          new_vars = @partial_calls.last[0].env.reject do |var_name|
+        if Proc === @partial_calls.last[0]
+          env = @partial_calls.last[0].instance_variable_get '@env'
+          new_vars = env.reject do |var_name|
             var_names.include?(var_name)
           end
         else
@@ -228,6 +220,16 @@ class BytecodeInterpreter
           label = bytecode[1 + (num_args)]
         end
         @gotoing_label = label
+      when :to_method
+        main = @main
+        method_name = bytecode[1]
+        value = pop_result
+        if RUBY_PLATFORM == 'opal'
+          `Opal.defs(main, '$' + method_name, value);`
+        else
+          @main.send :define_method, method_name, &value
+        end
+        result_is nil
     end
     nil
   end

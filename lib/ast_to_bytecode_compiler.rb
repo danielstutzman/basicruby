@@ -63,6 +63,7 @@ class AstToBytecodeCompiler
       when :evstr   then compile sexp[1]
       when :iter    then compile_iter sexp
       when :masgn   then compile_masgn sexp
+      when :def     then compile_def sexp
       else no "s-exp with head #{sexp[0]}"
     end
   end
@@ -326,6 +327,37 @@ class AstToBytecodeCompiler
 
     bytecodes.concat compile(from_expression)
     bytecodes.push [:to_vars, splat_num] + var_names
+    bytecodes
+  end
+
+  def compile_def sexp
+    # (:def, nil, :f, (:args, :x, :"*y", :"&z"), (:block, (:int, 3)))
+    _, object, method_name, args, block = sexp
+    no 'dot in method name' if object
+
+    bytecodes = []
+    label_after_return = unique_label 'after_return', sexp
+    bytecodes.push [:goto, label_after_return]
+
+    start_label = unique_label 'start', sexp
+    bytecodes.push [:label, start_label]
+
+    var_names = []
+    splat_num = nil
+    bytecodes.push [:args, 0, 0] #min_num_args, max_num_args]
+    bytecodes.push [:vars_from_env_except] + var_names
+    bytecodes.push [:to_vars, splat_num] + var_names
+    bytecodes.push [:discard] # since result of multi-assign is ignored
+
+    bytecodes.concat compile(block)
+
+    bytecodes.push [:will_return]
+    bytecodes.push [:return]
+
+    bytecodes.push [:label, label_after_return]
+    bytecodes.push [:make_proc, start_label]
+    bytecodes.push [:to_method, method_name]
+
     bytecodes
   end
 end

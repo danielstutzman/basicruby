@@ -197,4 +197,7 @@ describe BytecodeInterpreter, '#run' do
   it 'runs lambda {|x=1,y=2| p x, y }.call(3,4)' do
     output_of("lambda {|x=1,y=2| p x, y }.call(3,4)").should == "3\n4\n"
   end
+  it 'runs def f; 3; end; p f' do
+    output_of("def f; 3; end; p f").should == "3\n"
+  end
 end
