@@ -102,7 +102,7 @@ class DebuggerController
     if @spool
       # run step until the first position
       @spool.queueRunUntil 'NEXT_POSITION'
-      bytecode = @spool.getNextBytecode false, null
+      bytecode = @spool.getNextBytecode false, Opal.nil, Opal.nil
       @highlighter.interpret bytecode
     @render()
 
