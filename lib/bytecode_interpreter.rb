@@ -110,7 +110,7 @@ class BytecodeInterpreter
         result = pop_result
         @partial_calls.last.push result
       when :make_proc
-        result = Proc.new { raise RedirectMethod, bytecode[1] }
+        result = Proc.new { |*args| raise RedirectMethod, bytecode[1] }
         result.instance_variable_set '@env', @vars_stack.last
         result_is result
       when :pre_call

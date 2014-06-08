@@ -278,21 +278,10 @@ class AstToBytecodeCompiler
     bytecodes.push [:vars_from_env_except] + var_names
     bytecodes.push [:to_vars, splat_num] + var_names
     bytecodes.push [:discard] # since result of multi-assign is ignored
-
     if optional_block
-      labels = (0..var_names.size).map do |i|
-        unique_label 'param_defaults', statement, i
-      end
-      bytecodes.push [:goto_param_defaults] + labels
-      labels.each_with_index do |label, i|
-        bytecodes.push [:label, label]
-        if i < labels.size - 1
-          bytecodes.concat compile(optional_block[i + 1])
-          bytecodes.push [:discard] # since result of assignment is ignored
-        end
-      end
+      bytecodes.concat _compile_default_params(
+        optional_block, var_names, statement)
     end
-
     bytecodes.concat compile(statement)
     bytecodes.push [:will_return]
     bytecodes.push [:return]
@@ -342,13 +331,34 @@ class AstToBytecodeCompiler
     start_label = unique_label 'start', sexp
     bytecodes.push [:label, start_label]
 
-    var_names = []
+    i = -1
     splat_num = nil
-    bytecodes.push [:args, 0, 0] #min_num_args, max_num_args]
+    min_num_args = 0
+    max_num_args = 0
+    optional_block = nil
+    var_names = []
+    args[1..-1].each do |part|
+      i += 1
+      if part[0] == :block
+        min_num_args -= (part.size - 1)
+        optional_block = part
+      elsif part.to_s.start_with?('*')
+        splat_num = i
+        max_num_args = nil
+        var_names.push part[1..-1].intern
+      else
+        min_num_args += 1
+        max_num_args += 1
+        var_names.push part
+      end
+    end
+    bytecodes.push [:args, min_num_args, max_num_args]
     bytecodes.push [:vars_from_env_except] + var_names
     bytecodes.push [:to_vars, splat_num] + var_names
     bytecodes.push [:discard] # since result of multi-assign is ignored
-
+    if optional_block
+      bytecodes.concat _compile_default_params(optional_block, var_names, sexp)
+    end
     bytecodes.concat compile(block)
 
     bytecodes.push [:will_return]
@@ -358,6 +368,22 @@ class AstToBytecodeCompiler
     bytecodes.push [:make_proc, start_label]
     bytecodes.push [:to_method, method_name]
 
+    bytecodes
+  end
+
+  def _compile_default_params defaulting_block, var_names, sexp
+    bytecodes = []
+    labels = (0..var_names.size).map do |i|
+      unique_label 'param_defaults', sexp, i
+    end
+    bytecodes.push [:goto_param_defaults] + labels
+    labels.each_with_index do |label, i|
+      bytecodes.push [:label, label]
+      if i < labels.size - 1
+        bytecodes.concat compile(defaulting_block[i + 1])
+        bytecodes.push [:discard] # since result of assignment is ignored
+      end
+    end
     bytecodes
   end
 end

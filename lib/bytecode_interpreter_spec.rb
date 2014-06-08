@@ -200,4 +200,24 @@ describe BytecodeInterpreter, '#run' do
   it 'runs def f; 3; end; p f' do
     output_of("def f; 3; end; p f").should == "3\n"
   end
+  it 'runs def f(x); x; end; p f(1)' do
+    output_of("def f(x); x; end; p f(1)").should == "1\n"
+  end
+  it 'runs def f(x); x; end; p f' do
+    expect { output_of("def f(x); x; end; p f")
+      }.to raise_exception(ArgumentError)
+  end
+  it 'runs def f(x, *y); [x, y]; end; p f(1, 2, 3)' do
+    output_of("def f(x, *y); [x, y]; end; p f(1, 2, 3)").should ==
+      "[1, [2, 3]]\n"
+  end
+  it 'runs def f(x=1, y=2); p x, y; end; f' do
+    output_of("def f(x=1, y=2); p x, y; end; f").should == "1\n2\n"
+  end
+  it 'runs def f(x=1, y=2); p x, y; end; f 3' do
+    output_of("def f(x=1, y=2); p x, y; end; f 3").should == "3\n2\n"
+  end
+  it 'runs def f(x=1, y=2); p x, y; end; f 3, 4' do
+    output_of("def f(x=1, y=2); p x, y; end; f 3, 4").should == "3\n4\n"
+  end
 end
