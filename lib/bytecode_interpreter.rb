@@ -224,16 +224,6 @@ class BytecodeInterpreter
           label = bytecode[1 + (num_args)]
         end
         @gotoing_label = label
-      when :to_method
-        main = @main
-        method_name = bytecode[1]
-        value = pop_result
-        if RUBY_PLATFORM == 'opal'
-          `Opal.defs(main, '$' + method_name, value);`
-        else
-          @main.send :define_method, method_name, &value
-        end
-        result_is nil
     end
     nil
   end
@@ -292,6 +282,13 @@ class BytecodeInterpreter
       if proc_
         if receiver == @main && method_name == :lambda
           result = proc_
+        elsif method_name == :define_method
+          if RUBY_PLATFORM == 'opal'
+            `Opal.defs(receiver, '$' + args[0], proc_);`
+            result = nil
+          else
+            result = @main.send method_name, *args, &proc_
+          end
         else
           raise Exception.new "Basic Ruby doesn't support the calling of
             arbitrary methods with blocks"

@@ -220,4 +220,7 @@ describe BytecodeInterpreter, '#run' do
   it 'runs def f(x=1, y=2); p x, y; end; f 3, 4' do
     output_of("def f(x=1, y=2); p x, y; end; f 3, 4").should == "3\n4\n"
   end
+  it 'runs a=[]; def a.f; 3; end; p a.f' do
+    output_of("a=[]; def a.f; 3; end; p a.f").should == "3\n"
+  end
 end

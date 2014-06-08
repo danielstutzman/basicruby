@@ -135,9 +135,10 @@ end
       [:position, 1, 0], [:goto, "after_return_1_0"], [:label, "start_1_0"],
       [:args, 0, 0], [:vars_from_env_except], [:to_vars, nil], [:discard],
       [:position, 1, 7], [:token, 1, 7], [:result, 3],
-      [:will_return], [:return],
-      [:label, "after_return_1_0"], [:make_proc, "start_1_0"],
-      [:to_method, :f]
+      [:will_return], [:return], [:label, "after_return_1_0"],
+      [:start_call], [:top], [:arg], [:result, :define_method], [:arg],
+      [:make_proc, "start_1_0"], [:arg], [:result, :f], [:arg],
+      [:pre_call], [:call]
     ]
   end
 end

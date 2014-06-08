@@ -322,7 +322,6 @@ class AstToBytecodeCompiler
   def compile_def sexp
     # (:def, nil, :f, (:args, :x, :"*y", :"&z"), (:block, (:int, 3)))
     _, object, method_name, args, block = sexp
-    no 'dot in method name' if object
 
     bytecodes = []
     label_after_return = unique_label 'after_return', sexp
@@ -363,10 +362,23 @@ class AstToBytecodeCompiler
 
     bytecodes.push [:will_return]
     bytecodes.push [:return]
-
     bytecodes.push [:label, label_after_return]
+
+    bytecodes.push [:start_call]
+    if object
+      bytecodes.concat compile(object)
+    else
+      bytecodes.push [:top]
+    end
+    bytecodes.push [:arg]
+    bytecodes.push [:result, :define_method]
+    bytecodes.push [:arg]
     bytecodes.push [:make_proc, start_label]
-    bytecodes.push [:to_method, method_name]
+    bytecodes.push [:arg]
+    bytecodes.push [:result, method_name]
+    bytecodes.push [:arg]
+    bytecodes.push [:pre_call]
+    bytecodes.push [:call]
 
     bytecodes
   end
