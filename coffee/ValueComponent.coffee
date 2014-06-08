@@ -32,7 +32,7 @@ ValueComponent = React.createClass
           else ''
 
     div { className: "value #{css_class}" },
-      if object_ids.indexOf(value.$object_id().toString()) != -1
+      if object_ids && object_ids.indexOf(value.$object_id().toString()) != -1
         div { key: 'object-id', className: 'object-id' },
           value.$object_id()
       else if type == 'String'
