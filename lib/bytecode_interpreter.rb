@@ -46,6 +46,10 @@ class String
 end
 
 class ProgramTerminated < RuntimeError
+  attr_reader :cause
+  def initialize(cause)
+    @cause = cause
+  end
 end
 
 class RedirectMethod < Exception
@@ -324,7 +328,7 @@ class BytecodeInterpreter
   def raise_exception e
     text = "#{e.class}: #{e.message}#{error_position}\n"
     $console_texts = $console_texts.clone + [[:stderr, text]]
-    raise ProgramTerminated.new text
+    raise ProgramTerminated.new e
   end
 
   def error_position

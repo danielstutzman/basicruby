@@ -20,12 +20,7 @@ class RspecRubyRunner
       end
       interpreter.visible_state[:output].map { |pair| pair[1] }.join
     rescue ProgramTerminated => e
-      if match = e.message.match(/^([A-Za-z0-9_]+): (.*)$/)
-        exception_class, message = match[1], match[2]
-        raise Module.const_get(exception_class), message
-      else
-        raise
-      end
+      raise e.cause
     end
   end
 end
