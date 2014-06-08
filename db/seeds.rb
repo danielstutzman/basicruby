@@ -13,9 +13,10 @@ Exercise.transaction do
     yaml = YAML.load_file(path)
 
     topic = Topic.create! num: topic_num,
-      title: yaml['title'],
+      title:      yaml['title'],
       title_html: yaml['title_html'] || yaml['title'],
-      features: yaml['features']
+      level:      yaml['level'],
+      features:   yaml['features']
 
     %w[purple yellow blue red green orange].each do |color|
       exercises = yaml[color]

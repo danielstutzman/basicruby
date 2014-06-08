@@ -49,16 +49,22 @@
     /  Undo
     /  %br
     /  tricks
-  - @topics.each do |topic|
+  - %w[beginner intermediate].each do |level|
     %tr
-      %th.title!= topic.title_html
-      %td.purple= done_indicator topic.num, 'P'
-      %td.yellow= done_indicator topic.num, 'Y'
-      %td.blue=   done_indicator topic.num, 'B'
-      %td.red=    done_indicator topic.num, 'R'
-      %td.green=  done_indicator topic.num, 'G'
-      /%td.orange= image_tag 'under_construction.png',
-      /  title: 'Under construction'
+      %th.title
+        %h2= level.humanize
+      %td.purple
+      %td.yellow
+      %td.blue
+      %td.red
+      %td.green
+    - @topics.select { |topic| topic.level == level }.each do |topic|
+      %tr
+        %th.title!= topic.title_html
+        - %w[purple yellow blue red green].each do |color|
+          %td{class: color}
+            - if @topic_id_color_exists[[topic.id, color]]
+              = done_indicator topic.num, color.upcase[0]
 %br
 %br
 %br

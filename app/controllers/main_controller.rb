@@ -1,8 +1,10 @@
 class MainController < ApplicationController
   def menu
     @topics = Topic.order(:num)
-    @topics.reject! do |topic|
-      topic.title == 'Demo of advanced debugger features'
+    @exercises = Exercise.select('topic_id, color').all
+    @topic_id_color_exists = @exercises.inject({}) do |accum, exercise|
+      accum[[exercise.topic_id, exercise.color]] = true
+      accum
     end
   end
   def exercise
