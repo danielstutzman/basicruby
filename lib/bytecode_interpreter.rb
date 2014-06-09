@@ -1,6 +1,5 @@
 if RUBY_PLATFORM == 'opal'
   def gets
-    `window.$stdin_is_waiting = true;`
   end
 
   def puts *args
@@ -119,7 +118,7 @@ class BytecodeInterpreter
         result_is result
       when :pre_call
         @num_partial_call_executing = @partial_calls.size - 1
-        if @partial_calls.last == [@main, :gets]
+        if @partial_calls.last == [@main, :gets, nil]
           @accepting_input = true
         end
       when :call
@@ -128,6 +127,7 @@ class BytecodeInterpreter
         if @accepted_input != nil
           result_is @accepted_input
           @accepted_input = nil
+          @partial_calls.pop
         else
           begin
             result_is do_call *call
