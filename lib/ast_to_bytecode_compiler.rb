@@ -40,32 +40,33 @@ class AstToBytecodeCompiler
   def compile sexp
     return [[:result, nil]] if sexp.nil?
     case sexp[0]
-      when :int     then [[:token] + sexp.source, [:result, sexp[1]]]
-      when :float   then [[:token] + sexp.source, [:result, sexp[1]]]
+      when :int      then [[:token] + sexp.source, [:result, sexp[1]]]
+      when :float    then [[:token] + sexp.source, [:result, sexp[1]]]
       when :str
         if sexp.source # will be nil for "" literal
           [[:token] + sexp.source, [:result, sexp[1]]]
         else
           [[:result, sexp[1]]]
         end
-      when :nil     then [[:token] + sexp.source, [:result, nil]]
-      when :true    then [[:token] + sexp.source, [:result, true]]
-      when :false   then [[:token] + sexp.source, [:result, false]]
-      when :array   then compile_array sexp
-      when :block   then compile_block sexp
-      when :call    then compile_call sexp
-      when :arglist then compile_arglist sexp
-      when :paren   then compile sexp[1]
-      when :lasgn   then compile_lasgn sexp
-      when :lvar    then compile_lvar sexp
-      when :if      then compile_if sexp
-      when :dstr    then compile_dstr sexp
-      when :evstr   then compile sexp[1]
-      when :iter    then compile_iter sexp
-      when :masgn   then compile_masgn sexp
-      when :def     then compile_def sexp
-      when :yield   then compile_yield sexp
-      when :while   then compile_while sexp
+      when :nil      then [[:token] + sexp.source, [:result, nil]]
+      when :true     then [[:token] + sexp.source, [:result, true]]
+      when :false    then [[:token] + sexp.source, [:result, false]]
+      when :array    then compile_array sexp
+      when :block    then compile_block sexp
+      when :call     then compile_call sexp
+      when :arglist  then compile_arglist sexp
+      when :paren    then compile sexp[1]
+      when :lasgn    then compile_lasgn sexp
+      when :lvar     then compile_lvar sexp
+      when :if       then compile_if sexp
+      when :dstr     then compile_dstr sexp
+      when :evstr    then compile sexp[1]
+      when :iter     then compile_iter sexp
+      when :masgn    then compile_masgn sexp
+      when :def      then compile_def sexp
+      when :yield    then compile_yield sexp
+      when :while    then compile_while sexp
+      when :attrasgn then compile_attrasgn sexp
       else no "s-exp with head #{sexp[0]}"
     end
   end
@@ -444,6 +445,22 @@ class AstToBytecodeCompiler
     bytecodes.push [:goto, label_start]
     bytecodes.push [:label, label_end]
     bytecodes.push [:result, nil] # so there's something to discard
+    bytecodes
+  end
+
+  def compile_attrasgn sexp
+    _, receiver, method_name, arglist = sexp
+    bytecodes = []
+    bytecodes.push [:start_call]
+    bytecodes.concat compile(receiver)
+    bytecodes.push [:arg]
+    bytecodes.push [:result, method_name]
+    bytecodes.push [:arg]
+    bytecodes.push [:result, nil] # no block
+    bytecodes.push [:arg]
+    bytecodes.concat compile(arglist)
+    bytecodes.push [:pre_call]
+    bytecodes.push [:call]
     bytecodes
   end
 end

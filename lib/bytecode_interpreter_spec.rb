@@ -247,7 +247,28 @@ describe BytecodeInterpreter, '#run' do
   it 'runs [1, 2, 3].each { |x| p x }' do
     output_of("[1, 2, 3].each { |x| p x }").should == "1\n2\n3\n"
   end
+  it 'runs [1, 2, 3].each_index { |x| p x }' do
+    output_of("[1, 2, 3].each_index { |x| p x }").should == "0\n1\n2\n"
+  end
+  it 'runs p [1, 2, 3].keep_if { |x| x % 2 == 1 }' do
+    output_of("p [1, 2, 3].keep_if { |x| x % 2 == 1 }").should == "[1, 3]\n"
+  end
   it 'runs p [1, 2, 3].map { |x| x + 1 }' do
     output_of("p [1, 2, 3].map { |x| x + 1 }").should == "[2, 3, 4]\n"
+  end
+  it 'runs a = [1, 2, 3]; a.map! { |x| x + 1 }; p a' do
+    output_of("a = [1, 2, 3]; a.map! { |x| x + 1 }; p a").should ==
+      "[2, 3, 4]\n"
+  end
+  it 'runs p [1, 2, 3].reject { |x| x % 2 == 0 }' do
+    output_of("p [1, 2, 3].reject { |x| x % 2 == 0 }").should == "[1, 3]\n"
+  end
+  it 'runs a = [1, 2, 3]; p a.select! { |x| x % 2 == 1 }; p a' do
+    output_of("a = [1, 2, 3]; p a.select! { |x| x % 2 == 1 }; p a").should ==
+      "[1, 3]\n[1, 3]\n"
+  end
+  it 'runs a = [1, 2, 3]; p a.select! { |x| x < 4 }; p a' do
+    output_of("a = [1, 2, 3]; p a.select! { |x| x < 4 }; p a").should ==
+      "nil\n[1, 2, 3]\n"
   end
 end

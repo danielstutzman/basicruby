@@ -297,11 +297,21 @@ class BytecodeInterpreter
 
   def do_call receiver, method_name, proc_, *args
     begin
-      if Array === receiver && method_name == :each
-        simulate_call_to :__array_each, @partial_calls.last[0], &proc_
-      elsif Array === receiver && method_name == :map ||
-            Array === receiver && method_name == :collect
-        simulate_call_to :__array_map, @partial_calls.last[0], &proc_
+      if Array === receiver && %w[collect each each_index keep_if map map!
+          reject select select!].include?(method_name.to_s)
+        new_method_name = case method_name
+          when :collect    then :__array_map # same as map
+          when :each       then :__array_each
+          when :each_index then :__array_each_index
+          when :keep_if    then :__array_keep_if
+          when :map        then :__array_map
+          when :map!       then :__array_map!
+          when :reject     then :__array_reject
+          when :select     then :__array_select
+          when :select!    then :__array_select!
+        end
+        simulate_call_to new_method_name, @partial_calls.last[0], &proc_
+
       elsif method_name == :define_method
         if RUBY_PLATFORM == 'opal'
           `Opal.defs(receiver, '$' + args[0], proc_);`
@@ -309,6 +319,7 @@ class BytecodeInterpreter
         else
           result = @main.send method_name, *args, &proc_
         end
+
       elsif receiver == @main
         begin
           $is_capturing_stdout = true
@@ -323,6 +334,7 @@ class BytecodeInterpreter
             raise e
           end
         end
+
       else
         $is_capturing_stdout = true
         result = receiver.public_send method_name, *args, &proc_
@@ -374,6 +386,28 @@ def __array_each array
   end
   array
 end
+def __array_each_index array
+  i = 0
+  n = array.size
+  while i < n
+    yield i
+    i += 1
+  end
+  array
+end
+def __array_keep_if array
+  i = 0
+  n = array.size
+  while i < n
+    if !(yield array[i])
+      array.slice! i
+      i -= 1
+      n -= 1
+    end
+    i += 1
+  end
+  array
+end
 def __array_map array
   i = 0
   n = array.size
@@ -383,6 +417,54 @@ def __array_map array
     i += 1
   end
   out
+end
+def __array_map! array
+  i = 0
+  n = array.size
+  while i < n
+    array[i] = yield array[i]
+    i += 1
+  end
+  array
+end
+def __array_reject array
+  i = 0
+  n = array.size
+  out = []
+  while i < n
+    if !(yield array[i])
+      out.push array[i]
+    end
+    i += 1
+  end
+  out
+end
+def __array_select array
+  i = 0
+  n = array.size
+  out = []
+  while i < n
+    if yield array[i]
+      out.push array[i]
+    end
+    i += 1
+  end
+  out
+end
+def __array_select! array
+  i = 0
+  n = array.size
+  changed = false
+  while i < n
+    if !(yield array[i])
+      array.slice! i
+      i -= 1
+      n -= 1
+      changed = true
+    end
+    i += 1
+  end
+  changed ? array : nil
 end
 EOF
   end
