@@ -65,6 +65,7 @@ class AstToBytecodeCompiler
       when :masgn   then compile_masgn sexp
       when :def     then compile_def sexp
       when :yield   then compile_yield sexp
+      when :while   then compile_while sexp
       else no "s-exp with head #{sexp[0]}"
     end
   end
@@ -424,6 +425,22 @@ class AstToBytecodeCompiler
     end
     bytecodes.push [:pre_call]
     bytecodes.push [:call]
+    bytecodes
+  end
+
+  def compile_while sexp
+    _, condition, block = sexp
+    bytecodes = []
+    label_start = unique_label 'start', condition
+    label_end = unique_label 'end', condition
+    bytecodes.push [:label, label_start]
+    bytecodes.concat compile(condition)
+    bytecodes.push [:goto_if_not, label_end]
+    bytecodes.concat compile(block)
+    bytecodes.push [:discard]
+    bytecodes.push [:goto, label_start]
+    bytecodes.push [:label, label_end]
+    bytecodes.push [:result, nil] # so there's something to discard
     bytecodes
   end
 end

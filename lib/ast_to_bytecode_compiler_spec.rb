@@ -153,4 +153,15 @@ end
       [:arg], [:pre_call], [:call]
     ]
   end
- end
+
+  # nil at the beginning to avoid nil source
+  it 'compiles nil; while false; 3; end' do
+    compile('nil; while false; 3; end').should == [
+      [:position, 1, 0], [:token, 1, 0], [:result, nil], [:discard],
+      [:label, "start_1_11"], [:token, 1, 11], [:result, false],
+      [:goto_if_not, "end_1_11"],
+      [:token, 1, 18], [:result, 3], [:discard],
+      [:goto, "start_1_11"], [:label, "end_1_11"], [:result, nil]
+    ]
+  end
+end

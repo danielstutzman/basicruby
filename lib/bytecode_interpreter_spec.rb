@@ -236,4 +236,12 @@ describe BytecodeInterpreter, '#run' do
   it 'runs def f; yield 3; end; f { |x| p x }' do
     output_of("def f; yield 3; end; f { |x| p x }").should == "3\n"
   end
+
+  it 'runs n = 1; while n <= 3; puts n; n += 1; end' do
+    output_of("n = 1; while n <= 3; puts n; n += 1; end").should == "1\n2\n3\n"
+  end
+
+  it 'runs [1, 2, 3].each { |x| p x }' do
+    output_of("[1, 2, 3].each { |x| p x }").should == "1\n2\n3\n"
+  end
 end

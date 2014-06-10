@@ -288,7 +288,15 @@ class BytecodeInterpreter
 
   def do_call receiver, method_name, proc_, *args
     begin
-      if method_name == :define_method
+      if Array === receiver && method_name == :each
+        array = @partial_calls.last[0]
+        # since :args bytecode looks at partial_calls to determine what the
+        # args were, it's not enough just to call the right method; we have
+        # to setup partial_calls with arguments that the runtime expects.
+        @partial_calls.pop
+        @partial_calls.push [@main, :__array_each, proc_, array]
+        @main.__array_each receiver
+      elsif method_name == :define_method
         if RUBY_PLATFORM == 'opal'
           `Opal.defs(receiver, '$' + args[0], proc_);`
           result = nil
@@ -347,5 +355,19 @@ class BytecodeInterpreter
   def pop_result
     raise "Empty result stack" if @result == []
     @result.pop
+  end
+
+  def self.RUNTIME_PRELUDE
+    <<EOF
+def __array_each array
+  i = 0
+  n = array.size
+  while i < n
+    yield array[i]
+    i += 1
+  end
+  array
+end
+EOF
   end
 end
