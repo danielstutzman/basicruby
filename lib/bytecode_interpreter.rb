@@ -212,7 +212,7 @@ class BytecodeInterpreter
             end
           message =
             "wrong number of arguments (#{args.size} for #{num_expected})"
-          raise_exception ArgumentError.new message
+          raise_exception { raise ArgumentError.new(message) }
         end
       when :vars_from_env_except
         var_names = bytecode[1..-1]
@@ -320,11 +320,19 @@ class BytecodeInterpreter
       raise # don't wrap with ProgramTerminated
     rescue Exception => e
       $is_capturing_stdout = false
-      raise_exception e
+      wrap_exception e
     end
   end
 
-  def raise_exception e
+  def raise_exception(&block)
+    begin
+      yield
+    rescue => e
+      wrap_exception e
+    end
+  end
+
+  def wrap_exception e
     text = "#{e.class}: #{e.message}#{error_position}\n"
     $console_texts = $console_texts.clone + [[:stderr, text]]
     raise ProgramTerminated.new e
