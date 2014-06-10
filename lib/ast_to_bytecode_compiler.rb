@@ -288,6 +288,9 @@ class AstToBytecodeCompiler
       bytecodes.concat _compile_default_params(
         optional_block, var_names, statement)
     end
+    if statement && source(statement) && statement[0] != :block
+      bytecodes.push [:position] + source(statement)
+    end
     bytecodes.concat compile(statement)
     bytecodes.push [:will_return]
     bytecodes.push [:return]

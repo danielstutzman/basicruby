@@ -90,7 +90,8 @@ end
       [:goto, "after_return_1_9"],
       [:label, "start_1_9"],
       [:args, 0, 0], [:vars_from_env_except], [:to_vars, nil, nil], [:discard],
-      [:token, 1, 9], [:result, 4], [:will_return], [:return],
+      [:position, 1, 9], [:token, 1, 9], [:result, 4],
+      [:will_return], [:return],
       [:label, "after_return_1_9"], [:make_proc, "start_1_9"], [:arg],
       [:pre_call], [:call]
     ]
