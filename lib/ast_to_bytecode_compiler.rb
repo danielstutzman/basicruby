@@ -64,6 +64,7 @@ class AstToBytecodeCompiler
       when :iter    then compile_iter sexp
       when :masgn   then compile_masgn sexp
       when :def     then compile_def sexp
+      when :yield   then compile_yield sexp
       else no "s-exp with head #{sexp[0]}"
     end
   end
@@ -238,6 +239,7 @@ class AstToBytecodeCompiler
     bytecodes = []
 
     splat_num = nil
+    block_num = nil
     optional_block = nil
     min_num_args = max_num_args = 0
     if assignments.nil?
@@ -258,13 +260,16 @@ class AstToBytecodeCompiler
             max_num_args = nil # no maximum
             splat_num = i
             part[1][1]
+          elsif part[0] == :block_pass && part[1][0] == :lasgn
+            block_num = i
+            part[1][1]
           elsif part[0] == :block
             min_num_args -= (part.size - 1)
             optional_block = part
             nil
           else
             no "contents of :masgn's :array except " +
-              " :lasgn, :splat :lasgn, or :block"
+              " :lasgn, :splat :lasgn, :block_pass :lasgn, or :block"
           end
         end
         var_names = var_names.compact
@@ -276,7 +281,7 @@ class AstToBytecodeCompiler
     end
     bytecodes.push [:args, min_num_args, max_num_args]
     bytecodes.push [:vars_from_env_except] + var_names
-    bytecodes.push [:to_vars, splat_num] + var_names
+    bytecodes.push [:to_vars, splat_num, block_num] + var_names
     bytecodes.push [:discard] # since result of multi-assign is ignored
     if optional_block
       bytecodes.concat _compile_default_params(
@@ -315,7 +320,7 @@ class AstToBytecodeCompiler
     end
 
     bytecodes.concat compile(from_expression)
-    bytecodes.push [:to_vars, splat_num] + var_names
+    bytecodes.push [:to_vars, splat_num, nil] + var_names
     bytecodes
   end
 
@@ -332,6 +337,7 @@ class AstToBytecodeCompiler
 
     i = -1
     splat_num = nil
+    block_num = nil
     min_num_args = 0
     max_num_args = 0
     optional_block = nil
@@ -345,6 +351,9 @@ class AstToBytecodeCompiler
         splat_num = i
         max_num_args = nil
         var_names.push part[1..-1].intern
+      elsif part.to_s.start_with?('&')
+        block_num = i
+        var_names.push part[1..-1].intern
       else
         min_num_args += 1
         max_num_args += 1
@@ -353,7 +362,7 @@ class AstToBytecodeCompiler
     end
     bytecodes.push [:args, min_num_args, max_num_args]
     bytecodes.push [:vars_from_env_except] + var_names
-    bytecodes.push [:to_vars, splat_num] + var_names
+    bytecodes.push [:to_vars, splat_num, block_num] + var_names
     bytecodes.push [:discard] # since result of multi-assign is ignored
     if optional_block
       bytecodes.concat _compile_default_params(optional_block, var_names, sexp)

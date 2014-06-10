@@ -223,4 +223,11 @@ describe BytecodeInterpreter, '#run' do
   it 'runs a=[]; def a.f; 3; end; p a.f' do
     output_of("a=[]; def a.f; 3; end; p a.f").should == "3\n"
   end
+  it 'runs def f(&b); b.call; end; f { p 3 }' do
+    output_of("def f(&b); b.call; end; f { p 3 }").should == "3\n"
+  end
+  it 'runs def f(a, &b); p a; b.call; end; f(2) { p 3 }' do
+    output_of("def f(a, &b); p a; b.call; end; f(2) { p 3 }").should ==
+      "2\n3\n"
+  end
 end

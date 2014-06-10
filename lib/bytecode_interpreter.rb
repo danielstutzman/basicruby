@@ -156,14 +156,22 @@ class BytecodeInterpreter
         end
         result_is value
       when :to_vars
-        _, splat_num, *var_names = bytecode
+        _, splat_num, block_num, *var_names = bytecode
         array = pop_result
         old_array = array.clone
 
         @started_var_names = @started_var_names - var_names
+
+        if block_num
+          if Proc === array.last
+            block = array.pop # remove it first before splat param
+          end
+        end
         var_names.each_with_index do |var_name, i|
           if i == splat_num
             value = array
+          elsif i == block_num
+            value = block
           else
             value = array.shift
           end
@@ -191,8 +199,9 @@ class BytecodeInterpreter
         pop_result
       when :args
         _, min_num_args, max_num_args = bytecode
+        block = @partial_calls.last[2]
         args = @partial_calls.last[3..-1]
-        result_is args
+        result_is args + (block ? [block] : [])
 
         if (min_num_args && args.size < min_num_args) ||
            (max_num_args && args.size > max_num_args)
@@ -279,24 +288,17 @@ class BytecodeInterpreter
 
   def do_call receiver, method_name, proc_, *args
     begin
-      if proc_
-        if receiver == @main && method_name == :lambda
-          result = proc_
-        elsif method_name == :define_method
-          if RUBY_PLATFORM == 'opal'
-            `Opal.defs(receiver, '$' + args[0], proc_);`
-            result = nil
-          else
-            result = @main.send method_name, *args, &proc_
-          end
+      if method_name == :define_method
+        if RUBY_PLATFORM == 'opal'
+          `Opal.defs(receiver, '$' + args[0], proc_);`
+          result = nil
         else
-          raise Exception.new "Basic Ruby doesn't support the calling of
-            arbitrary methods with blocks"
+          result = @main.send method_name, *args, &proc_
         end
       elsif receiver == @main
         begin
           $is_capturing_stdout = true
-          result = @main.send method_name, *args
+          result = @main.send method_name, *args, &proc_
           $is_capturing_stdout = false
           result
         rescue NoMethodError => e
@@ -309,7 +311,7 @@ class BytecodeInterpreter
         end
       else
         $is_capturing_stdout = true
-        result = receiver.public_send(method_name, *args)
+        result = receiver.public_send method_name, *args, &proc_
         $is_capturing_stdout = false
         result
       end

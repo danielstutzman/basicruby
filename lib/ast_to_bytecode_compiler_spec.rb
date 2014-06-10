@@ -89,7 +89,7 @@ end
       [:token, 1, 0], [:result, :lambda], [:make_symbol], [:arg],
       [:goto, "after_return_1_9"],
       [:label, "start_1_9"],
-      [:args, 0, 0], [:vars_from_env_except], [:to_vars, nil], [:discard],
+      [:args, 0, 0], [:vars_from_env_except], [:to_vars, nil, nil], [:discard],
       [:token, 1, 9], [:result, 4], [:will_return], [:return],
       [:label, "after_return_1_9"], [:make_proc, "start_1_9"], [:arg],
       [:pre_call], [:call]
@@ -105,7 +105,7 @@ end
       [:arg], [:token, 1, 4], [:result, 3],
       [:arg], [:token, 1, 6], [:result, 4],
       [:arg], [:pre_call], [:call],
-      [:to_vars, nil, :x, :y]
+      [:to_vars, nil, nil, :x, :y]
     ]
   end
 
@@ -116,7 +116,7 @@ end
       [:token, 1, 0], [:result, :lambda], [:make_symbol], [:arg],
       [:goto, "after_return_1"], [:label, "start_2"],
       [:args, 0, 1], [:vars_from_env_except, :x],
-      [:to_vars, nil, :x],
+      [:to_vars, nil, nil, :x],
       [:discard],
       [:goto_param_defaults, "param_defaults_3_0", "param_defaults_4_1"],
         [:label, "param_defaults_3_0"],
@@ -133,7 +133,7 @@ end
   it 'compiles def f; 3; end' do
     compile('def f; 3; end').should == [
       [:position, 1, 0], [:goto, "after_return_1_0"], [:label, "start_1_0"],
-      [:args, 0, 0], [:vars_from_env_except], [:to_vars, nil], [:discard],
+      [:args, 0, 0], [:vars_from_env_except], [:to_vars, nil, nil], [:discard],
       [:position, 1, 7], [:token, 1, 7], [:result, 3],
       [:will_return], [:return], [:label, "after_return_1_0"],
       [:start_call], [:top], [:arg], [:result, :define_method], [:arg],
@@ -141,4 +141,16 @@ end
       [:pre_call], [:call]
     ]
   end
-end
+
+  it 'compiles lambda{|&b|}' do
+    compile('lambda{|&b|}').should == [
+      [:position, 1, 0], [:start_call], [:top], [:arg],
+      [:token, 1, 0], [:result, :lambda], [:make_symbol], [:arg],
+      [:goto, "after_return_1"], [:label, "start_2"], [:args, 0, 0],
+      [:vars_from_env_except, :b], [:to_vars, nil, 0, :b], [:discard],
+      [:result, nil], [:will_return], [:return],
+      [:label, "after_return_1"], [:make_proc, "start_2"],
+      [:arg], [:pre_call], [:call]
+    ]
+  end
+ end
