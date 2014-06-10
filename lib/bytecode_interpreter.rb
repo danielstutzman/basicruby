@@ -286,16 +286,22 @@ class BytecodeInterpreter
     raise "Result stack has too many items: #{@result}" if @result.size > 1
   end
 
+  # since :args bytecode looks at partial_calls to determine what the
+  # args were, it's not enough just to call the right method; we have
+  # to setup partial_calls with arguments that the runtime expects.
+  def simulate_call_to method_name, *args, &proc_
+    @partial_calls.pop
+    @partial_calls.push [@main, :__array_each, proc_, *args]
+    @main.public_send method_name, *args
+  end
+
   def do_call receiver, method_name, proc_, *args
     begin
       if Array === receiver && method_name == :each
-        array = @partial_calls.last[0]
-        # since :args bytecode looks at partial_calls to determine what the
-        # args were, it's not enough just to call the right method; we have
-        # to setup partial_calls with arguments that the runtime expects.
-        @partial_calls.pop
-        @partial_calls.push [@main, :__array_each, proc_, array]
-        @main.__array_each receiver
+        simulate_call_to :__array_each, @partial_calls.last[0], &proc_
+      elsif Array === receiver && method_name == :map ||
+            Array === receiver && method_name == :collect
+        simulate_call_to :__array_map, @partial_calls.last[0], &proc_
       elsif method_name == :define_method
         if RUBY_PLATFORM == 'opal'
           `Opal.defs(receiver, '$' + args[0], proc_);`
@@ -367,6 +373,16 @@ def __array_each array
     i += 1
   end
   array
+end
+def __array_map array
+  i = 0
+  n = array.size
+  out = []
+  while i < n
+    out.push yield array[i]
+    i += 1
+  end
+  out
 end
 EOF
   end

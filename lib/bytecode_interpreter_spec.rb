@@ -241,7 +241,13 @@ describe BytecodeInterpreter, '#run' do
     output_of("n = 1; while n <= 3; puts n; n += 1; end").should == "1\n2\n3\n"
   end
 
+  it 'runs p [1, 2, 3].collect { |x| x + 1 }' do
+    output_of("p [1, 2, 3].collect { |x| x + 1 }").should == "[2, 3, 4]\n"
+  end
   it 'runs [1, 2, 3].each { |x| p x }' do
     output_of("[1, 2, 3].each { |x| p x }").should == "1\n2\n3\n"
+  end
+  it 'runs p [1, 2, 3].map { |x| x + 1 }' do
+    output_of("p [1, 2, 3].map { |x| x + 1 }").should == "[2, 3, 4]\n"
   end
 end
