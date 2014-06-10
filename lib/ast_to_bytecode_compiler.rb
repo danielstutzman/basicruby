@@ -407,4 +407,23 @@ class AstToBytecodeCompiler
     end
     bytecodes
   end
+
+  def compile_yield sexp
+    _, *args = sexp
+    bytecodes = []
+    bytecodes.push [:start_call]
+    bytecodes.push [:from_var, '__block__']
+    bytecodes.push [:arg]
+    bytecodes.push [:result, :call]
+    bytecodes.push [:arg]
+    bytecodes.push [:result, nil]
+    bytecodes.push [:arg]
+    args.each do |arg|
+      bytecodes.concat compile(arg)
+      bytecodes.push [:arg]
+    end
+    bytecodes.push [:pre_call]
+    bytecodes.push [:call]
+    bytecodes
+  end
 end

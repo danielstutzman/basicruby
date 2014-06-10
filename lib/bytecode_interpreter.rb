@@ -1,3 +1,5 @@
+UNNAMED_BLOCK = '__block__'
+
 if RUBY_PLATFORM == 'opal'
   def gets
   end
@@ -162,16 +164,14 @@ class BytecodeInterpreter
 
         @started_var_names = @started_var_names - var_names
 
-        if block_num
-          if Proc === array.last
-            block = array.pop # remove it first before splat param
-          end
+        if Proc === array.last
+          @vars_stack.last[UNNAMED_BLOCK] = [array.pop]
         end
         var_names.each_with_index do |var_name, i|
           if i == splat_num
             value = array
           elsif i == block_num
-            value = block
+            value = @vars_stack.last[UNNAMED_BLOCK][0]
           else
             value = array.shift
           end

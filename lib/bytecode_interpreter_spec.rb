@@ -230,4 +230,10 @@ describe BytecodeInterpreter, '#run' do
     output_of("def f(a, &b); p a; b.call; end; f(2) { p 3 }").should ==
       "2\n3\n"
   end
+  it 'runs def f; yield; end; f { p 3 }' do
+    output_of("def f; yield; end; f { p 3 }").should == "3\n"
+  end
+  it 'runs def f; yield 3; end; f { |x| p x }' do
+    output_of("def f; yield 3; end; f { |x| p x }").should == "3\n"
+  end
 end
