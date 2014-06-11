@@ -76,7 +76,11 @@ CasesComponent = React.createClass
             if hasInputs
               th {}, 'Input'
             th {},
-              'Actual output'
+              if hasCode
+                'Test results'
+              else
+                'Actual output'
+
               if hasExpectedOutputs && @props.cases.length == 1
                 case0 = @props.cases[0]
                 if @props.color == 'blue'

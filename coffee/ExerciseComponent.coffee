@@ -58,11 +58,17 @@ ExerciseComponent = React.createClass
         when 'red'
           div
             className: 'banner red'
-            "Fix the program to output#{SOUTH_EAST}"
+            if @props.cases[0].code
+              "Fix the program to pass #{SOUTH_EAST}"
+            else
+              "Fix the program to output#{SOUTH_EAST}"
         when 'green'
           div
             className: 'banner green'
-            "Write a program to output#{SOUTH_EAST}"
+            if @props.cases[0].code
+              "Write a program to pass #{SOUTH_EAST}"
+            else
+              "Write a program to output#{SOUTH_EAST}"
         when 'orange'
           div { className: 'banner green' }, 'Simplification'
 
