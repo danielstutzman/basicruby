@@ -44,6 +44,15 @@ class ExerciseController
         codeMirror = CodeMirror.fromTextArea textarea, options
         makeRetriever = (codeMirror) -> (-> codeMirror.getValue())
         @retrieveNewCode = makeRetriever codeMirror
+
+      for textareaTests in @$div.querySelectorAll('textarea.expected')
+        options =
+          mode: 'ruby'
+          lineNumbers: true
+          readOnly: 'nocursor'
+          lineWrapping: true
+        CodeMirror.fromTextArea textareaTests, options
+
       if @color == 'red' || @color == 'green'
         @handleRun()
     @render callback
