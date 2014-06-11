@@ -119,6 +119,11 @@ div.exercise {
     }
   }
 
+  textarea.code, .CodeMirror {
+    background-color: #ddd;
+    font-family: monospace;
+  }
+
   .col-1-of-2 {
     width:550px;
     height:400px;
@@ -127,8 +132,6 @@ div.exercise {
     textarea.code, .CodeMirror {
       width: 100%;
       height: 100%;
-      background-color: #ddd;
-      font-family: monospace;
       font-size: $code-font-size;
 
       .CodeMirror-linenumbers {
@@ -198,6 +201,7 @@ div.exercise {
         white-space: pre;
         word-wrap: break-word;
         border-bottom: 1px black solid;
+        padding: 0;
         &.hidden {
           background-image: image-url('black-curtains.jpg');
           background-size: cover;
@@ -216,13 +220,15 @@ div.exercise {
         span.stdin {
           background-color: yellow;
         }
-        span.stderr {
+        span.stdout, span.stderr {
           display: inline-block; // so text-indent is supported
-          color: red;
           word-wrap: normal;
           white-space: normal;
           text-indent: -10px;
           margin-left: 10px;
+        }
+        span.stderr {
+          color: red;
         }
         textarea.expected {
           height: 60px;
@@ -235,6 +241,8 @@ div.exercise {
             height: 100%;
           }
         }
+        .CodeMirror-linenumbers { background-color: #ccc; }
+        .CodeMirror-linenumber { color: black; opacity: 0.2; }
         .passed { color: #070; }
         .failed { color: #f00; }
       } // end td
