@@ -167,4 +167,31 @@ end
       [:goto, "start_test_1_11"], [:label, "end_test_1_11"], [:result, nil]
     ]
   end
+
+  it 'compiles 2; begin; 3; rescue Exception => e; end' do
+    compile('2; begin; 3; rescue Exception => e; end').should == [
+      [:position, "test", 1, 0], [:token, 1, 0], [:result, 2], [:discard],
+      [:push_rescue, "rescue_test_1"], [:token, 1, 10], [:result, 3],
+      [:goto, "end_test_2"],
+      [:label, "rescue_test_1"], [:discard], [:start_call], [:token, 1, 20],
+      [:const, :Exception], [:arg], [:result, :===], [:make_symbol], [:arg],
+      [:result, nil], [:arg], [:from_gvar, :$!], [:arg], [:pre_call], [:call],
+      [:goto_if_not, "endif_test_3"],
+      [:token, 1, 33], [:start_var, :e], [:from_gvar, :$!], [:to_var, :e],
+      [:discard], [:result, nil], [:goto, "end_test_2"],
+      [:label, "endif_test_3"], [:label, "end_test_2"]
+    ]
+  end
+
+  it 'compiles $a' do
+    compile('$a').should == [
+      [:position, "test", 1, 0], [:token, 1, 0], [:from_gvar, :$a]
+    ]
+  end
+  it 'compiles $a = 1' do
+    compile('$a = 1').should == [
+      [:position, "test", 1, 0], [:token, 1, 0], [:token, 1, 5],
+        [:result, 1], [:to_gvar, :$a]
+    ]
+  end
 end

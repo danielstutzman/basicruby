@@ -74,6 +74,11 @@ class AstToBytecodeCompiler
       when :yield    then compile_yield sexp
       when :while    then compile_while sexp
       when :attrasgn then compile_attrasgn sexp
+      when :begin    then compile_begin sexp
+      when :rescue   then compile_rescue sexp
+      when :gvar     then compile_gvar sexp
+      when :gasgn    then compile_gasgn sexp
+      when :const    then compile_const sexp
       else no "s-exp with head #{sexp[0]}"
     end
   end
@@ -469,5 +474,94 @@ class AstToBytecodeCompiler
     bytecodes.push [:pre_call]
     bytecodes.push [:call]
     bytecodes
+  end
+
+  def compile_begin sexp
+    raise unless sexp.size == 2
+    compile sexp[1]
+  end
+
+  def compile_rescue sexp
+    _, body, *resbodies = sexp
+    bytecodes = []
+
+    label_rescue = unique_label 'rescue', resbodies[0]
+    bytecodes.push [:push_rescue, label_rescue]
+
+    bytecodes.concat compile(body)
+
+    label_end = unique_label 'end', resbodies[0]
+    bytecodes.push [:goto, label_end]
+
+    bytecodes.push [:label, label_rescue]
+    bytecodes.push [:discard]
+
+    resbodies.each do |resbody|
+      bytecodes.concat _compile_resbody(resbody, label_end)
+    end
+
+    bytecodes.push [:label, label_end]
+
+    bytecodes
+  end
+
+  def _compile_resbody sexp, label_end
+    # (:array, (:const, :Exception), (:lasgn, :e, (:gvar, :$!)))
+    _, array, body = sexp
+    _, klass, lasgn = array
+
+    bytecodes = []
+
+    # RuntimeException === $!
+    bytecodes.push [:start_call]
+    bytecodes.concat compile(klass)
+    bytecodes.push [:arg]
+    bytecodes.push [:result, :===]
+    bytecodes.push [:make_symbol]
+    bytecodes.push [:arg]
+    bytecodes.push [:result, nil] # no block
+    bytecodes.push [:arg]
+    bytecodes.push [:from_gvar, :$!]
+    bytecodes.push [:arg]
+    bytecodes.push [:pre_call]
+    bytecodes.push [:call]
+
+    # if true, then run body of rescue
+    label_endif = unique_label 'endif', sexp
+    bytecodes.push [:goto_if_not, label_endif]
+    bytecodes.concat compile(lasgn) # e = $!
+    bytecodes.push [:discard]
+    bytecodes.concat compile(body) # body of rescue
+    bytecodes.push [:goto, label_end]
+    bytecodes.push [:label, label_endif]
+
+    bytecodes
+  end
+
+  def compile_gvar sexp
+    _, var_name = sexp
+    if sexp.source
+      [[:token] + sexp.source, [:from_gvar, var_name]]
+    else
+      [[:from_gvar, var_name]]
+    end
+  end
+
+  def compile_gasgn sexp
+    _, var_name, expression = sexp
+    bytecodes = []
+    bytecodes.push [:token] + sexp.source
+    bytecodes.concat compile(expression)
+    bytecodes.push [:to_gvar, var_name]
+    bytecodes
+  end
+
+  def compile_const sexp
+    _, const_name = sexp
+    if sexp.source
+      [[:token] + sexp.source, [:const, const_name]]
+    else
+      [[:const, const_name]]
+    end
   end
 end

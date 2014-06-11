@@ -70,6 +70,8 @@ class BytecodeInterpreter
     @gosubbing_label = nil
     @gotoing_label = nil
     @last_token_pos = nil
+    @rescue_labels = []
+    @global_vars = {}
 
     $console_texts = []
   end
@@ -233,6 +235,19 @@ class BytecodeInterpreter
           label = bytecode[1 + (num_args)]
         end
         @gotoing_label = label
+      when :push_rescue
+        @rescue_labels.push bytecode[1]
+      when :to_gvar
+        var_name = bytecode[1]
+        value = pop_result
+        @global_vars[var_name] = value
+        result_is value
+      when :from_gvar
+        var_name = bytecode[1]
+        out = @global_vars[var_name]
+        result_is out
+      when :const
+        result_is Module.const_get(bytecode[1])
     end
     nil
   end
@@ -346,7 +361,10 @@ class BytecodeInterpreter
       raise # don't wrap with ProgramTerminated
     rescue Exception => e
       $is_capturing_stdout = false
-      wrap_exception e
+
+      # It's necessary to write "return" here because of an Opal bug where
+      # only the first rescue gets return like it should.
+      return handle_exception(e)
     end
   end
 
@@ -354,14 +372,19 @@ class BytecodeInterpreter
     begin
       yield
     rescue => e
-      wrap_exception e
+      handle_exception e
     end
   end
 
-  def wrap_exception e
-    text = "#{e.class}: #{e.message}#{error_position}\n"
-    $console_texts = $console_texts.clone + [[:stderr, text]]
-    raise ProgramTerminated.new e
+  def handle_exception e
+    if @rescue_labels.size > 0
+      @gotoing_label = @rescue_labels.pop
+      @global_vars[:$!] = e
+    else
+      text = "#{e.class}: #{e.message}#{error_position}\n"
+      $console_texts = $console_texts.clone + [[:stderr, text]]
+      raise ProgramTerminated.new e
+    end
   end
 
   def error_position
