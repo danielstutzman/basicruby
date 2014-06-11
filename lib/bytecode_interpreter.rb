@@ -466,6 +466,11 @@ def __array_select! array
   end
   changed ? array : nil
 end
+def assert_equal a, b
+  if b != a
+    raise "Assertion failed"
+  end
+end
 EOF
   end
 end

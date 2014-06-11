@@ -7,10 +7,10 @@ class RspecRubyRunner
     parser = Opal::Parser.new
     compiler = AstToBytecodeCompiler.new
     sexp1 = parser.parse BytecodeInterpreter.RUNTIME_PRELUDE
-    bytecodes1 = compiler.compile_program sexp1
+    bytecodes1 = compiler.compile_program 'runtime', sexp1
     bytecodes1.reject! { |bytecode| [:position, :token].include?(bytecode[0]) }
     sexp2 = parser.parse ruby_code
-    bytecodes2 = compiler.compile_program sexp2
+    bytecodes2 = compiler.compile_program 'user', sexp2
     spool = BytecodeSpool.new bytecodes1 + [[:discard]] + bytecodes2
     spool.queue_run_until 'DONE'
     interpreter = BytecodeInterpreter.new

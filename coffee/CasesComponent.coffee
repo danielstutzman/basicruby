@@ -18,15 +18,26 @@ CasesComponent = React.createClass
   render: ->
     { br, button, div, input, span, table, td, th, tr, textarea } = React.DOM
 
-    hasInputs             = _.some @props.cases, (case_) -> case_.input
-    hasExpectedOutputs    = _.some @props.cases, (case_) ->
-                               case_.expected_output
+    hasCode            = _.some @props.cases, (case_) -> case_.code
+    hasInputs          = _.some @props.cases, (case_) -> case_.input
+    hasExpectedOutputs = _.some @props.cases, (case_) -> case_.expected_output
     hasUnpredictedOutputs = _.some @props.cases, (case_) ->
                                case_.predicted_output == undefined
 
     div { className: 'col-2-of-2' },
       div { className: 'expected' },
-        if hasExpectedOutputs
+        if hasCode
+          table {},
+            tr { key: 'header' },
+              th {}, 'Test code'
+            _.map @props.cases, (_case, case_num) =>
+              tr { key: "case#{case_num}" },
+                td {},
+                  textarea
+                    className: 'expected'
+                    readOnly: true
+                    value: _case.code
+        else if hasExpectedOutputs
           table {},
             tr { key: 'header' },
               if hasInputs

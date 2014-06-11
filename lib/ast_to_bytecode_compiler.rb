@@ -1,19 +1,21 @@
 class AstToBytecodeCompiler
   def initialize
     @next_unique_label = 0
+    @filename = nil
   end
 
   # bytecodes need to have position at the front; the debugger is counting
   # on this to know where to start.
-  def compile_program sexp
+  def compile_program filename, sexp
+    @filename = filename
     if sexp.nil?
       position = [] # because the debugger special-cases this possibility
     elsif sexp[0] == :block
       position = [] # because position will be printed anyway
     elsif sexp.source
-      position = [[:position] + sexp.source]
+      position = [[:position, @filename] + sexp.source]
     elsif sexp[0] == :masgn
-      position = [[:position] + sexp[1][1].source]
+      position = [[:position, @filename] + sexp[1][1].source]
     else
       no 'top s-exp with nil source'
     end
@@ -48,7 +50,12 @@ class AstToBytecodeCompiler
         else
           [[:result, sexp[1]]]
         end
-      when :nil      then [[:token] + sexp.source, [:result, nil]]
+      when :nil
+        if sexp.source
+          [[:token] + sexp.source, [:result, nil]]
+        else
+          [[:result, nil]]
+        end
       when :true     then [[:token] + sexp.source, [:result, true]]
       when :false    then [[:token] + sexp.source, [:result, false]]
       when :array    then compile_array sexp
@@ -82,7 +89,7 @@ class AstToBytecodeCompiler
   end
 
   def unique_label name1, sexp_for_source, name2=nil
-    label = name1 + '_'
+    label = "#{name1}_#{@filename}_"
     if sexp_for_source && source(sexp_for_source)
       label += source(sexp_for_source).join('_')
     else
@@ -117,7 +124,7 @@ class AstToBytecodeCompiler
 
     statements.each_with_index do |statement, i|
       if source(statement)
-        bytecodes.push [:position] + source(statement)
+        bytecodes.push [:position, @filename] + source(statement)
       end
       bytecodes.concat compile(statement)
       if i < statements.size - 1
@@ -204,13 +211,13 @@ class AstToBytecodeCompiler
     label_endif = unique_label 'endif', sexp
     bytecodes.push [:goto_if_not, label_else]
     if then_block && then_block.source
-      bytecodes.push [:position] + then_block.source
+      bytecodes.push [:position, @filename] + then_block.source
     end
     bytecodes.concat compile(then_block)
     bytecodes.push [:goto, label_endif]
     bytecodes.push [:label, label_else]
     if else_block && else_block.source
-      bytecodes.push [:position] + else_block.source
+      bytecodes.push [:position, @filename] + else_block.source
     end
     bytecodes.concat compile(else_block)
     bytecodes.push [:label, label_endif]
@@ -290,7 +297,7 @@ class AstToBytecodeCompiler
         optional_block, var_names, statement)
     end
     if statement && source(statement) && statement[0] != :block
-      bytecodes.push [:position] + source(statement)
+      bytecodes.push [:position, @filename] + source(statement)
     end
     bytecodes.concat compile(statement)
     bytecodes.push [:will_return]

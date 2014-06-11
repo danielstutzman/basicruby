@@ -271,4 +271,11 @@ describe BytecodeInterpreter, '#run' do
     output_of("a = [1, 2, 3]; p a.select! { |x| x < 4 }; p a").should ==
       "nil\n[1, 2, 3]\n"
   end
+
+  it 'runs assert_equal 1, 1' do
+    output_of("assert_equal 1, 1").should == ""
+  end
+  it 'runs assert_equal 1, 2' do
+    expect { output_of("assert_equal 1, 2") }.to raise_exception(RuntimeError)
+  end
 end

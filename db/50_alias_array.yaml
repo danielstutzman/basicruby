@@ -63,6 +63,19 @@ red:
     expected_output: |
       [1, 2, 3, 8]
       [1, 2, 3]
+green:
+- code: |
+    def double(a)
+    end
+  solution: |
+    def double(a)
+      a.concat(a)
+    end
+  cases:
+  - code: |
+      a = [1, 2, 3]
+      double a
+      assert_equal [1, 2, 3, 1, 2, 3], a
 
 #  - given variable, write program that changes existing array?
 #    or doesn't modify it?

@@ -82,7 +82,8 @@ class ExerciseController
     for case_ in @cases
       case_.inputLineNum = 0
       try
-        bytecodes = AstToBytecodeCompiler.compile code
+        combinedCode = code + "\n" + case_.code
+        bytecodes = AstToBytecodeCompiler.compile combinedCode
       catch e
         if e.name == 'SyntaxError'
           case_.actual_output = [['stderr', "SyntaxError: #{e.message}\n"]]
@@ -147,7 +148,9 @@ class ExerciseController
         if @color == 'blue'
           rtrim(join(case_.actual_output)) == rtrim(case_.predicted_output)
         else if @color == 'red' || @color == 'green'
-          rtrim(join(case_.actual_output)) == rtrim(case_.expected_output.toString())
+          if case_.expected_output
+            rtrim(join(case_.actual_output)) ==
+              rtrim(case_.expected_output.toString())
     passed = _.every(@cases, (case_) -> case_.actual_matches_expected)
     changeBackground = (i, selector, popup) =>
       for span in document.querySelectorAll(selector)
