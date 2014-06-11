@@ -73,9 +73,11 @@ green:
     end
   cases:
   - code: |
-      a = [1, 2, 3]
-      double a
-      assert_equal [1, 2, 3, 1, 2, 3], a
+      def test_double
+        a = [1, 2, 3]
+        double a
+        assert_equal [1, 2, 3, 1, 2, 3], a
+      end
 
 #  - given variable, write program that changes existing array?
 #    or doesn't modify it?

@@ -468,7 +468,19 @@ def __array_select! array
 end
 def assert_equal a, b
   if b != a
-    raise "Assertion failed"
+    puts "Expected \#{a.inspect} but got \#{b.inspect}"
+  end
+  b == a
+end
+def __run_tests
+  test_names = methods.select { |m| m.start_with?('test') }
+  test_names.each do |test_name|
+    passed = method(test_name).call
+    if passed
+      puts "\#{test_name} PASSED"
+    else
+      puts "\#{test_name} FAILED"
+    end
   end
 end
 EOF
