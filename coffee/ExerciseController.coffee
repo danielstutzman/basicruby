@@ -91,7 +91,9 @@ class ExerciseController
     for case_ in @cases
       case_.inputLineNum = 0
       try
-        combinedCode = code + "\n" + case_.code + "\n__run_tests"
+        combinedCode = code
+        if case_.code
+          combinedCode += "\n" + case_.code + "\n__run_tests"
         bytecodes = AstToBytecodeCompiler.compile combinedCode
       catch e
         if e.name == 'SyntaxError'
