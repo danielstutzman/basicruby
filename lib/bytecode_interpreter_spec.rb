@@ -300,4 +300,8 @@ describe BytecodeInterpreter, '#run' do
     output_of("2; begin; raise 'x'; p 3; rescue Exception => e; p 4; rescue Exception => e; p 5; end"
       ).should == "4\n"
   end
+
+  it "runs 2; begin raise 'x'; rescue; p 3 end" do
+    output_of("2; begin raise 'x'; rescue; p 3 end").should == "3\n"
+  end
 end

@@ -513,24 +513,30 @@ class AstToBytecodeCompiler
     bytecodes = []
 
     # RuntimeException === $!
-    bytecodes.push [:start_call]
-    bytecodes.concat compile(klass)
-    bytecodes.push [:arg]
-    bytecodes.push [:result, :===]
-    bytecodes.push [:make_symbol]
-    bytecodes.push [:arg]
-    bytecodes.push [:result, nil] # no block
-    bytecodes.push [:arg]
-    bytecodes.push [:from_gvar, :$!]
-    bytecodes.push [:arg]
-    bytecodes.push [:pre_call]
-    bytecodes.push [:call]
+    if klass
+      bytecodes.push [:start_call]
+      bytecodes.concat compile(klass)
+      bytecodes.push [:arg]
+      bytecodes.push [:result, :===]
+      bytecodes.push [:make_symbol]
+      bytecodes.push [:arg]
+      bytecodes.push [:result, nil] # no block
+      bytecodes.push [:arg]
+      bytecodes.push [:from_gvar, :$!]
+      bytecodes.push [:arg]
+      bytecodes.push [:pre_call]
+      bytecodes.push [:call]
+    else
+      bytecodes.push [:result, true]
+    end
 
     # if true, then run body of rescue
     label_endif = unique_label 'endif', sexp
     bytecodes.push [:goto_if_not, label_endif]
-    bytecodes.concat compile(lasgn) # e = $!
-    bytecodes.push [:discard]
+    if lasgn
+      bytecodes.concat compile(lasgn) # e = $!
+      bytecodes.push [:discard]
+    end
     bytecodes.concat compile(body) # body of rescue
     bytecodes.push [:goto, label_end]
     bytecodes.push [:label, label_endif]
