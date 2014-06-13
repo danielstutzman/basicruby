@@ -41,11 +41,13 @@ class BytecodeSpool
         "Can't find label #{gosubbing_label}"
       bytecode = @bytecodes[@counter]
       @counter += 1 # ok to step once past label
+      bytecode
     elsif gotoing_label
       @counter = @label_to_counter[gotoing_label] or raise \
         "Can't find label #{gotoing_label}"
       bytecode = @bytecodes[@counter]
       @counter += 1 # ok to step once past label
+      bytecode
     else
       bytecode = @bytecodes[@counter]
       case bytecode[0]
