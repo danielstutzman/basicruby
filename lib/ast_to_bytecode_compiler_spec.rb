@@ -171,15 +171,20 @@ end
   it 'compiles 2; begin; 3; rescue Exception => e; end' do
     compile('2; begin; 3; rescue Exception => e; end').should == [
       [:position, "test", 1, 0], [:token, 1, 0], [:result, 2], [:discard],
-      [:push_rescue, "rescue_test_1"], [:token, 1, 10], [:result, 3],
-      [:goto, "end_test_2"],
-      [:label, "rescue_test_1"], [:discard], [:start_call], [:token, 1, 20],
-      [:const, :Exception], [:arg], [:result, :===], [:make_symbol], [:arg],
-      [:result, nil], [:arg], [:from_gvar, :$!], [:arg], [:pre_call], [:call],
+      [:push_rescue, "rescue_test_1"],
+      [:token, 1, 10], [:result, 3], [:pop_rescue, "rescue_test_1"],
+      [:goto, "end_rescue_test_2"],
+      [:label, "rescue_test_1"], [:discard],
+      [:start_call], [:token, 1, 20], [:const, :Exception], [:arg],
+        [:result, :===], [:make_symbol], [:arg], [:result, nil], [:arg],
+        [:from_gvar, :$!], [:arg], [:pre_call], [:call],
       [:goto_if_not, "endif_test_3"],
       [:token, 1, 33], [:start_var, :e], [:from_gvar, :$!], [:to_var, :e],
-      [:discard], [:result, nil], [:goto, "end_test_2"],
-      [:label, "endif_test_3"], [:label, "end_test_2"]
+      [:discard], [:result, nil], [:goto, "end_rescue_test_2"],
+      [:label, "endif_test_3"],
+      [:start_call], [:top], [:arg], [:result, :raise], [:make_symbol], [:arg],
+        [:result, nil], [:arg], [:pre_call], [:call],
+      [:label, "end_rescue_test_2"], [:clear_dollar_bang]
     ]
   end
 

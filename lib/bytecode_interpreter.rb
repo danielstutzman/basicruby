@@ -71,7 +71,6 @@ class BytecodeInterpreter
     @gotoing_label = nil
     @last_token_pos = nil
     @rescue_labels = []
-    @global_vars = {}
     @method_stack = [['path', '<main>', nil, nil]] # path, method, line, col
 
     $console_texts = []
@@ -242,17 +241,32 @@ class BytecodeInterpreter
         @gotoing_label = label
       when :push_rescue
         @rescue_labels.push bytecode[1]
+      when :pop_rescue
+        popped = @rescue_labels.pop
+        if popped != bytecode[1]
+          raise "Expected to pop #{bytecode[1]} but was #{popped}"
+        end
       when :to_gvar
         var_name = bytecode[1]
         value = pop_result
-        @global_vars[var_name] = value
+        eval "#{var_name} = value"
         result_is value
       when :from_gvar
         var_name = bytecode[1]
-        out = @global_vars[var_name]
+        if var_name.to_s == '$!'
+          out = $! || $bang
+        else
+          out = eval var_name.to_s
+        end
         result_is out
       when :const
         result_is Module.const_get(bytecode[1])
+      when :clear_dollar_bang
+        # we extend $! so it's accesible from user code's rescue blocks,
+        # even though we rescued the exception in our Opal code.
+        # but don't extend $! forever; it should be nil after the user code's
+        # rescue blocks end.
+        $bang = nil
     end
     nil
   end
@@ -394,7 +408,9 @@ class BytecodeInterpreter
 
     if @rescue_labels.size > 0
       @gotoing_label = @rescue_labels.pop
-      @global_vars[:$!] = e
+      # $! gets set to nil after our rescue ends, but we'll want it defined
+      # until the *user*'s rescue ends
+      $bang = $!
     else
       text = "#{e.class}: #{e.message}\n" + e.backtrace.map { |entry|
         "\t#{entry}" }.join("\n")

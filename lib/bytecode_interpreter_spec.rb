@@ -308,7 +308,7 @@ describe BytecodeInterpreter, '#run' do
     output_of('2; begin raise "x"; rescue; puts $!.backtrace.join(10.chr) end'
       ).should == "path:1:in `<main>'\n"
   end
-  it 'runs 2; def f; begin raise "x"; rescue; puts $!.backtrace.join(10.chr) end; end' do
+  it 'includes f in backtrace' do
     output_of('2
 def f
   begin
@@ -319,5 +319,29 @@ def f
 end
 f'
       ).should == "path:4:in `f'\npath:9:in `<main>'\n"
+  end
+  it 'handles empty body of rescue' do
+    output_of('2
+begin
+rescue
+    p 3
+end
+p 4').should == "4\n"
+  end
+  it 'handles nested rescues' do
+    output_of('2
+begin
+  begin
+    raise "x"
+  rescue ArgumentError => e
+    p 2
+  end
+rescue
+  p 3
+end
+p 4').should == "3\n4\n"
+  end
+  it 'clears out $!' do
+    output_of("begin raise 'x'; rescue; end; p $!").should == "nil\n"
   end
 end

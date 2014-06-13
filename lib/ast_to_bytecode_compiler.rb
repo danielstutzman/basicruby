@@ -488,9 +488,14 @@ class AstToBytecodeCompiler
     label_rescue = unique_label 'rescue', resbodies[0]
     bytecodes.push [:push_rescue, label_rescue]
 
-    bytecodes.concat compile(body)
+    if body.nil? || (body[0] == :block && body.size == 1)
+      bytecodes.push [:result, nil]
+    else
+      bytecodes.concat compile(body)
+    end
 
-    label_end = unique_label 'end', resbodies[0]
+    label_end = unique_label 'end_rescue', resbodies[0]
+    bytecodes.push [:pop_rescue, label_rescue]
     bytecodes.push [:goto, label_end]
 
     bytecodes.push [:label, label_rescue]
@@ -500,7 +505,20 @@ class AstToBytecodeCompiler
       bytecodes.concat _compile_resbody(resbody, label_end)
     end
 
+    # if no resbody matches, raise the exception again
+    bytecodes.push [:start_call]
+    bytecodes.push [:top]
+    bytecodes.push [:arg]
+    bytecodes.push [:result, :raise]
+    bytecodes.push [:make_symbol]
+    bytecodes.push [:arg]
+    bytecodes.push [:result, nil] # no block
+    bytecodes.push [:arg]
+    bytecodes.push [:pre_call]
+    bytecodes.push [:call]
+
     bytecodes.push [:label, label_end]
+    bytecodes.push [:clear_dollar_bang]
 
     bytecodes
   end
@@ -537,7 +555,11 @@ class AstToBytecodeCompiler
       bytecodes.concat compile(lasgn) # e = $!
       bytecodes.push [:discard]
     end
-    bytecodes.concat compile(body) # body of rescue
+    if body
+      bytecodes.concat compile(body) # body of rescue
+    else
+      bytecodes.push [:result, nil]
+    end
     bytecodes.push [:goto, label_end]
     bytecodes.push [:label, label_endif]
 
