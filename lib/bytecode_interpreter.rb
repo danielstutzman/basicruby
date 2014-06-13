@@ -72,6 +72,7 @@ class BytecodeInterpreter
     @last_token_pos = nil
     @rescue_labels = []
     @global_vars = {}
+    @method_stack = [['path', '<main>', nil, nil]] # path, method, line, col
 
     $console_texts = []
   end
@@ -104,7 +105,8 @@ class BytecodeInterpreter
     @gotoing_label = nil
     case bytecode[0]
       when :token
-        @last_token_pos = [bytecode[1], bytecode[2]]
+        @method_stack.last[2] = bytecode[1] # line
+        @method_stack.last[3] = bytecode[2] # col
       when :result
         result_is bytecode[1]
       when :discard
@@ -134,7 +136,9 @@ class BytecodeInterpreter
           @partial_calls.pop
         else
           begin
+            @method_stack.push ['path', call[1], nil, nil]
             result_is do_call *call
+            @method_stack.pop
             @partial_calls.pop
           rescue RedirectMethod => e
             @gosubbing_label = e.message
@@ -146,6 +150,7 @@ class BytecodeInterpreter
       when :will_return
         @partial_calls.pop
         @vars_stack.pop
+        @method_stack.pop
       when :start_var
         @started_var_names.push bytecode[1]
       when :to_var
@@ -377,20 +382,25 @@ class BytecodeInterpreter
   end
 
   def handle_exception e
+    # take off the last entry (which is the backtrace call itself)
+    # then sort with newer calls at top
+    e.instance_variable_set :@backtrace,
+      @method_stack[0...-1].reverse.map { |entry|
+        sprintf("%s:%s:in `%s'", entry[0], entry[2], entry[1])
+      }
+    def e.backtrace
+      @backtrace
+    end
+
     if @rescue_labels.size > 0
       @gotoing_label = @rescue_labels.pop
       @global_vars[:$!] = e
     else
-      text = "#{e.class}: #{e.message}#{error_position}\n"
+      text = "#{e.class}: #{e.message}\n" + e.backtrace.map { |entry|
+        "\t#{entry}" }.join("\n")
       $console_texts = $console_texts.clone + [[:stderr, text]]
       raise ProgramTerminated.new e
     end
-  end
-
-  def error_position
-    return '' if @last_token_pos.nil?
-    " at line #{@last_token_pos[0]}"
-    # " at line #{@last_token_pos[0]} column #{@last_token_pos[1]}"
   end
 
   def pop_result

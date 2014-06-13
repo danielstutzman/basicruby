@@ -304,4 +304,20 @@ describe BytecodeInterpreter, '#run' do
   it "runs 2; begin raise 'x'; rescue; p 3 end" do
     output_of("2; begin raise 'x'; rescue; p 3 end").should == "3\n"
   end
+  it 'runs 2; begin raise "x"; rescue; puts $!.backtrace.join(10.chr) end' do
+    output_of('2; begin raise "x"; rescue; puts $!.backtrace.join(10.chr) end'
+      ).should == "path:1:in `<main>'\n"
+  end
+  it 'runs 2; def f; begin raise "x"; rescue; puts $!.backtrace.join(10.chr) end; end' do
+    output_of('2
+def f
+  begin
+    raise "x"
+  rescue
+    puts $!.backtrace.join(10.chr)
+  end
+end
+f'
+      ).should == "path:4:in `f'\npath:9:in `<main>'\n"
+  end
 end
