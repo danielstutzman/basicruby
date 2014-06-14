@@ -147,11 +147,11 @@ class BytecodeInterpreter
             nil
           end
         end
-      when :will_return
+      when :return
         @partial_calls.pop
         @vars_stack.pop
         @method_stack.pop
-        nil
+        ['RETURN']
       when :start_var
         @started_var_names.push bytecode[1]
         nil

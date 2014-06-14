@@ -43,8 +43,6 @@ class BytecodeSpool
         when :done
           @num_steps_queued = 0
           @is_done = true
-        when :return
-          @counter = @counter_stack.pop - 1
       end
       @counter += 1 # ok to step past label
       bytecode
@@ -65,6 +63,10 @@ class BytecodeSpool
   def gosub label
     @counter_stack.push @counter
     @counter = @label_to_counter[label] or raise "Can't find label #{label}"
+  end
+
+  def return_
+    @counter = @counter_stack.pop
   end
 
   def terminate_early

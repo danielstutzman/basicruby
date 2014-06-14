@@ -47,6 +47,8 @@ class RspecRubyRunner
             spool.rescue spool_command[1], spool_command[2] - 1
           elsif spool_command[0] == 'GOSUB'
             spool.gosub spool_command[1]
+          elsif spool_command[0] == 'RETURN'
+            spool.return_
           end
         end
       end
