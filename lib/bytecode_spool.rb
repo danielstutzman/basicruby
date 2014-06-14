@@ -44,14 +44,6 @@ class BytecodeSpool
         when :done
           @num_steps_queued = 0
           @is_done = true
-        when :goto
-          @counter = @label_to_counter[bytecode[1]] or raise \
-            "Can't find label #{bytecode[1]}"
-        when :goto_if_not
-          if !is_result_truthy
-            @counter = @label_to_counter[bytecode[1]] or raise \
-              "Can't find label #{bytecode[1]}"
-          end
         when :return
           @counter = @counter_stack.pop - 1
       end

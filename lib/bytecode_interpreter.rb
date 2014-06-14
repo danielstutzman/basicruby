@@ -195,8 +195,13 @@ class BytecodeInterpreter
         result = pop_result
         `result.is_symbol = true;` if RUBY_PLATFORM == 'opal'
         result_is result
+      when :goto
+        @gotoing_label = bytecode[1]
       when :goto_if_not
-        pop_result
+        result = pop_result
+        if !result
+          @gotoing_label = bytecode[1]
+        end
       when :args
         _, min_num_args, max_num_args = bytecode
         block = @partial_calls.last[2]
