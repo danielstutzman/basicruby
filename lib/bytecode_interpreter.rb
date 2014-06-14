@@ -53,9 +53,6 @@ class ProgramTerminated < RuntimeError
   end
 end
 
-class RedirectMethod < Exception
-end
-
 class BytecodeInterpreter
   def initialize
     @partial_calls = []
@@ -118,7 +115,7 @@ class BytecodeInterpreter
         result = pop_result
         @partial_calls.last.push result
       when :make_proc
-        result = Proc.new { |*args| raise RedirectMethod, bytecode[1] }
+        result = Proc.new { |*args| ['RedirectMethod', bytecode[1]] }
         result.instance_variable_set '@env', @vars_stack.last
         result_is result
       when :pre_call
@@ -134,12 +131,13 @@ class BytecodeInterpreter
           @accepted_input = nil
           @partial_calls.pop
         else
-          begin
-            result_is do_call *call
-            @partial_calls.pop
-          rescue RedirectMethod => e
-            @gosubbing_label = e.message
+          result = do_call *call
+          if Array === result && result[0] == 'RedirectMethod'
+            @gosubbing_label = result[1]
             # @method_stack.pop will be called by will_return
+          else
+            result_is result
+            @partial_calls.pop
           end
         end
       when :will_return
@@ -380,13 +378,14 @@ class BytecodeInterpreter
         $is_capturing_stdout = false
         result
       end
-      @method_stack.pop
-      @vars_stack.pop
+
+      if Array === result && result[0] == 'RedirectMethod'
+        # don't pop
+      else
+        @method_stack.pop
+        @vars_stack.pop
+      end
       result
-    rescue RedirectMethod => e
-      $is_capturing_stdout = false
-      # don't call @method_stack.pop; will_return will deal with it
-      raise # don't wrap with ProgramTerminated
     rescue Exception => e
       $is_capturing_stdout = false
       # don't call @method_stack.pop; exception handler will deal with it
