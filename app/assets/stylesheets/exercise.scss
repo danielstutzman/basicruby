@@ -220,13 +220,13 @@ div.exercise {
         span.stdin {
           background-color: yellow;
         }
-        span.stdout, span.stderr {
-          display: inline-block; // so text-indent is supported
-          word-wrap: normal;
-          white-space: normal;
-          text-indent: -10px;
-          margin-left: 10px;
-        }
+        //span.stdout, span.stderr {
+        //  display: inline-block; // so text-indent is supported
+        //  word-wrap: normal;
+        //  white-space: normal;
+        //  text-indent: -10px;
+        //  margin-left: 10px;
+        //}
         span.stderr {
           color: red;
         }
