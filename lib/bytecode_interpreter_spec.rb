@@ -275,9 +275,9 @@ describe BytecodeInterpreter, '#run' do
   it 'runs assert_equal 1, 1' do
     output_of("assert_equal 1, 1").should == ""
   end
-#  it 'runs assert_equal 1, 2' do
-#    expect { output_of("assert_equal 1, 2") }.to raise_exception(RuntimeError)
-#  end
+  it 'runs assert_equal 1, 2' do
+    expect { output_of("assert_equal 1, 2") }.to raise_exception(RuntimeError)
+  end
   it 'runs $a = 1; p $a' do
     output_of("$a = 1; p $a").should == "1\n"
   end

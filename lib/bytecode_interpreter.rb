@@ -531,17 +531,17 @@ def __array_select! array
 end
 def assert_equal a, b
   if b != a
-    puts "Expected \#{a.inspect} but got \#{b.inspect}"
+    raise "Expected \#{a.inspect} but got \#{b.inspect}"
   end
-  b == a
 end
 def __run_tests
   test_names = methods.select { |m| m.start_with?('test') }
   test_names.each do |test_name|
-    passed = method(test_name).call
-    if passed
+    begin
+      method(test_name).call
       puts "\#{test_name} PASSED"
-    else
+    rescue RuntimeError => e
+      p e.backtrace
       puts "\#{test_name} FAILED"
     end
   end
