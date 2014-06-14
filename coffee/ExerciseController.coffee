@@ -108,12 +108,24 @@ class ExerciseController
         @spool = new BytecodeSpool bytecodes
         @interpreter = new BytecodeInterpreter()
         @spool.queueRunUntil 'DONE'
-        until @spool.isDone()
+        i = 0
+        until @spool.isDone() || i > 10000
+          i += 1
           bytecode = @spool.getNextBytecode @interpreter.isResultTruthy(),
             @interpreter.gosubbingLabel(), @interpreter.gotoingLabel(),
             @interpreter.stackSize()
           try
             @interpreter.interpret bytecode
+
+            if @interpreter.gotoingLabel()
+              # subtract one because method_stack has an entry for the current
+              # line number; whereas counter_stack only stores an entry once
+              # you've gosubbed, but nothing for the current method.
+              @spool.goto @interpreter.gotoingLabel(),
+                @interpreter.stackSize() - 1
+            else if @interpreter.gosubbingLabel()
+              @spool.gosub @interpreter.gosubbingLabel()
+
           catch e
             if e.name == 'ProgramTerminated'
               @spool.terminateEarly()

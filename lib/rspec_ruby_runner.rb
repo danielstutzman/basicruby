@@ -37,6 +37,15 @@ class RspecRubyRunner
           end
 
           interpreter.interpret bytecode
+
+          if interpreter.gotoing_label
+            # subtract one because method_stack has an entry for the current
+            # line number; whereas counter_stack only stores an entry once
+            # you've gosubbed, but nothing for the current method.
+            spool.goto interpreter.gotoing_label, interpreter.stack_size - 1
+          elsif interpreter.gosubbing_label
+            spool.gosub interpreter.gosubbing_label
+          end
         end
       end
       interpreter.visible_state[:output].map { |pair| pair[1] }.join

@@ -50,4 +50,21 @@ class BytecodeSpool
       console.error e.stack
       throw e
 
+  goto: (label, stackSize) ->
+    label = Opal.NIL if label == null
+    stackSize = Opal.NIL if stackSize == null
+    try
+      @spool['$goto'](label, stackSize)
+    catch e
+      console.error e.stack
+      throw e
+
+  gosub: (label) ->
+    label = Opal.NIL if label == null
+    try
+      @spool['$gosub'](label)
+    catch e
+      console.error e.stack
+      throw e
+
 module.exports = BytecodeSpool
