@@ -49,24 +49,26 @@ class BytecodeSpool
     end
   end
 
-  def goto label
-    @counter = @label_to_counter[label] or raise "Can't find label #{label}"
-  end
-
-  def rescue label, stack_size
-    while @counter_stack.size > stack_size
-      @counter_stack.pop
+  def do_command command, *args
+    case command
+      when 'GOTO'
+        label = args[0]
+        @counter = @label_to_counter[label] or raise "Can't find label #{label}"
+      when 'RESCUE'
+        # subtract one because method_stack has an entry for the current
+        # line number; whereas counter_stack only stores an entry once
+        # you've gosubbed, but nothing for the current method.
+        label, stack_size = args[0], args[1] - 1
+        while @counter_stack.size > stack_size
+          @counter_stack.pop
+        end
+        @counter = @label_to_counter[label] or raise "Can't find label #{label}"
+      when 'GOSUB'
+        label = args[0]
+        @counter_stack.push @counter
+        @counter = @label_to_counter[label] or raise "Can't find label #{label}"      when 'RETURN'
+        @counter = @counter_stack.pop
     end
-    @counter = @label_to_counter[label] or raise "Can't find label #{label}"
-  end
-
-  def gosub label
-    @counter_stack.push @counter
-    @counter = @label_to_counter[label] or raise "Can't find label #{label}"
-  end
-
-  def return_
-    @counter = @counter_stack.pop
   end
 
   def terminate_early

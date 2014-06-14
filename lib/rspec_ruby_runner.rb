@@ -35,21 +35,7 @@ class RspecRubyRunner
           end
 
           spool_command = interpreter.interpret bytecode
-
-          if spool_command == nil
-            # ignore it
-          elsif spool_command[0] == 'GOTO'
-            spool.goto spool_command[1]
-          elsif spool_command[0] == 'RESCUE'
-            # subtract one because method_stack has an entry for the current
-            # line number; whereas counter_stack only stores an entry once
-            # you've gosubbed, but nothing for the current method.
-            spool.rescue spool_command[1], spool_command[2] - 1
-          elsif spool_command[0] == 'GOSUB'
-            spool.gosub spool_command[1]
-          elsif spool_command[0] == 'RETURN'
-            spool.return_
-          end
+          spool.do_command *spool_command if spool_command
         end
       end
       interpreter.visible_state[:output].map { |pair| pair[1] }.join
