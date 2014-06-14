@@ -113,21 +113,10 @@ class ExerciseController
           i += 1
           if i > 10000
             throw "Interpreter seems to be stuck in a loop"
-          bytecode = @spool.getNextBytecode @interpreter.isResultTruthy(),
-            @interpreter.gosubbingLabel(), @interpreter.gotoingLabel(),
-            @interpreter.stackSize()
+          bytecode = @spool.getNextBytecode()
           try
-            @interpreter.interpret bytecode
-
-            if @interpreter.gotoingLabel()
-              # subtract one because method_stack has an entry for the current
-              # line number; whereas counter_stack only stores an entry once
-              # you've gosubbed, but nothing for the current method.
-              @spool.goto @interpreter.gotoingLabel(),
-                @interpreter.stackSize() - 1
-            else if @interpreter.gosubbingLabel()
-              @spool.gosub @interpreter.gosubbingLabel()
-
+            spoolCommand = @interpreter.interpret bytecode
+            @spool.doCommand.apply @spool, spoolCommand
           catch e
             if e.name == 'ProgramTerminated'
               @spool.terminateEarly()

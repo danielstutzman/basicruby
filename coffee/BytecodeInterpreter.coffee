@@ -48,13 +48,6 @@ class BytecodeInterpreter
       console.error e.stack
       throw e
 
-  isResultTruthy: ->
-    try
-      @interpreter['$is_result_truthy?']()
-    catch e
-      console.error e.stack
-      throw e
-
   getStdout: ->
     try
       @interpreter['$get_stdout']()
@@ -72,27 +65,6 @@ class BytecodeInterpreter
   getStdoutAndStderr: ->
     try
       @interpreter['$get_stdout_and_stderr']()
-    catch e
-      console.error e.stack
-      throw e
-
-  gosubbingLabel: ->
-    try
-      @_nilToNull @interpreter['$gosubbing_label']()
-    catch e
-      console.error e.stack
-      throw e
-
-  gotoingLabel: ->
-    try
-      @_nilToNull @interpreter['$gotoing_label']()
-    catch e
-      console.error e.stack
-      throw e
-
-  stackSize: ->
-    try
-      @_nilToNull @interpreter['$stack_size']()
     catch e
       console.error e.stack
       throw e

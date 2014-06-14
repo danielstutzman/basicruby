@@ -102,8 +102,10 @@ class DebuggerController
     if @spool
       # run step until the first position
       @spool.queueRunUntil 'NEXT_POSITION'
-      bytecode = @spool.getNextBytecode false, Opal.nil, Opal.nil
+      bytecode = @spool.getNextBytecode()
       @highlighter.interpret bytecode
+      spoolCommand = @interpreter.interpret bytecode
+      @spool.doCommand.apply @spool, spoolCommand
     @render()
 
   handleClickNextPosition: ->
@@ -116,14 +118,13 @@ class DebuggerController
 
   handleNextBytecode: ->
     if @spool && @highlighter && @interpreter && !@interpreter.isAcceptingInput()
-      bytecode = @spool.getNextBytecode @interpreter.isResultTruthy(),
-        @interpreter.gosubbingLabel(), @interpreter.gotoingLabel(),
-        @interpreter.stackSize()
+      bytecode = @spool.getNextBytecode()
       if bytecode
         @highlighter.interpret bytecode
 
         try
-          @interpreter.interpret bytecode
+          spoolCommand = @interpreter.interpret bytecode
+          @spool.doCommand.apply @spool, spoolCommand
         catch e
           if e.name == 'ProgramTerminated'
             @spool.terminateEarly()
