@@ -50,8 +50,9 @@ class RubyCodeHighlighter
             @highlightedRange = [startLine, startCol, endLine, endCol]
   
       when 'position'
-        @currentLine = parseInt bytecode[1]
-        @currentCol = parseInt bytecode[2]
+        # currently just ignore bytecode[1], which is the path
+        @currentLine = parseInt bytecode[2]
+        @currentCol = parseInt bytecode[3]
         @justChangedPosition = true
 
       when 'done'
