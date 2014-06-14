@@ -64,7 +64,6 @@ class BytecodeInterpreter
       `Opal.top` : TOPLEVEL_BINDING.eval('self')
     @accepting_input = false
     @accepted_input = nil
-    @last_token_pos = nil
     @rescue_labels = [] # list of [label, stack.size] tuples
     @method_stack = [['path', '<main>', nil, nil]] # path, method, line, col
 
