@@ -90,8 +90,7 @@ end
       [:goto, "after_return_test_1_9"],
       [:label, "start_test_1_9"],
       [:args, 0, 0], [:vars_from_env_except], [:to_vars, nil, nil], [:discard],
-      [:position, "test", 1, 9], [:token, 1, 9], [:result, 4],
-      [:will_return], [:return],
+      [:position, "test", 1, 9], [:token, 1, 9], [:result, 4], [:return],
       [:label, "after_return_test_1_9"], [:make_proc, "start_test_1_9"], [:arg],
       [:pre_call], [:call]
     ]
@@ -125,7 +124,7 @@ end
           [:token, 1, 8], [:start_var, :x], [:token, 1, 10],
           [:result, 1], [:to_var, :x], [:discard],
         [:label, "param_defaults_test_4_1"],
-      [:result, nil], [:will_return], [:return],
+      [:result, nil], [:return],
       [:label, "after_return_test_1"],
       [:make_proc, "start_test_2"],
       [:arg], [:pre_call], [:call]
@@ -138,7 +137,7 @@ end
       [:label, "start_test_1_0"],
       [:args, 0, 0], [:vars_from_env_except], [:to_vars, nil, nil], [:discard],
       [:position, "test", 1, 7], [:token, 1, 7], [:result, 3],
-      [:will_return], [:return], [:label, "after_return_test_1_0"],
+      [:return], [:label, "after_return_test_1_0"],
       [:start_call], [:top], [:arg], [:result, :define_method], [:arg],
       [:make_proc, "start_test_1_0"], [:arg], [:result, :f], [:arg],
       [:pre_call], [:call]
@@ -151,7 +150,7 @@ end
       [:token, 1, 0], [:result, :lambda], [:make_symbol], [:arg],
       [:goto, "after_return_test_1"], [:label, "start_test_2"], [:args, 0, 0],
       [:vars_from_env_except, :b], [:to_vars, nil, 0, :b], [:discard],
-      [:result, nil], [:will_return], [:return],
+      [:result, nil], [:return],
       [:label, "after_return_test_1"], [:make_proc, "start_test_2"],
       [:arg], [:pre_call], [:call]
     ]

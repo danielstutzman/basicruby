@@ -305,7 +305,6 @@ class AstToBytecodeCompiler
       bytecodes.push [:position, @filename] + source(statement)
     end
     bytecodes.concat compile(statement)
-    bytecodes.push [:will_return]
     bytecodes.push [:return]
 
     bytecodes
@@ -386,7 +385,6 @@ class AstToBytecodeCompiler
     end
     bytecodes.concat compile(block)
 
-    bytecodes.push [:will_return]
     bytecodes.push [:return]
     bytecodes.push [:label, label_after_return]
 
