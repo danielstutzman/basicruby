@@ -109,8 +109,10 @@ class ExerciseController
         @interpreter = new BytecodeInterpreter()
         @spool.queueRunUntil 'DONE'
         i = 0
-        until @spool.isDone() || i > 10000
+        until @spool.isDone()
           i += 1
+          if i > 10000
+            throw "Interpreter seems to be stuck in a loop"
           bytecode = @spool.getNextBytecode @interpreter.isResultTruthy(),
             @interpreter.gosubbingLabel(), @interpreter.gotoingLabel(),
             @interpreter.stackSize()
