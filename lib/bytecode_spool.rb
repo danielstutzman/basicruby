@@ -28,8 +28,7 @@ class BytecodeSpool
     end
   end
 
-  def get_next_bytecode is_result_truthy, gosubbing_label, gotoing_label,
-      stack_size
+  def get_next_bytecode
     if @is_done
       nil
     elsif @counter >= @bytecodes.size
@@ -52,18 +51,20 @@ class BytecodeSpool
     end
   end
 
-  def goto gotoing_label, stack_size
+  def goto label
+    @counter = @label_to_counter[label] or raise "Can't find label #{label}"
+  end
+
+  def rescue label, stack_size
     while @counter_stack.size > stack_size
       @counter_stack.pop
     end
-    @counter = @label_to_counter[gotoing_label] or raise \
-      "Can't find label #{gotoing_label}"
+    @counter = @label_to_counter[label] or raise "Can't find label #{label}"
   end
 
-  def gosub gosubbing_label
+  def gosub label
     @counter_stack.push @counter
-    @counter = @label_to_counter[gosubbing_label] or raise \
-      "Can't find label #{gosubbing_label}"
+    @counter = @label_to_counter[label] or raise "Can't find label #{label}"
   end
 
   def terminate_early

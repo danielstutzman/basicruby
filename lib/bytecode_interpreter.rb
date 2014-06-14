@@ -64,8 +64,6 @@ class BytecodeInterpreter
       `Opal.top` : TOPLEVEL_BINDING.eval('self')
     @accepting_input = false
     @accepted_input = nil
-    @gosubbing_label = nil
-    @gotoing_label = nil
     @last_token_pos = nil
     @rescue_labels = [] # list of [label, stack.size] tuples
     @method_stack = [['path', '<main>', nil, nil]] # path, method, line, col
@@ -88,41 +86,43 @@ class BytecodeInterpreter
     }
   end
 
-  def is_result_truthy?
-    @result[0] && !!@result[0]
-  end
-
   def is_accepting_input?
     @accepting_input
   end
 
   def interpret bytecode #, speed, stdin
-    @gosubbing_label = nil
-    @gotoing_label = nil
     case bytecode[0]
       when :token
         @method_stack.last[2] = bytecode[1] # line
         @method_stack.last[3] = bytecode[2] # col
+        nil
       when :result
         result_is bytecode[1]
+        nil
       when :discard
         pop_result
+        nil
       when :start_call
         @partial_calls.push []
+        nil
       when :top
         result_is @main
+        nil
       when :arg
         result = pop_result
         @partial_calls.last.push result
+        nil
       when :make_proc
         result = Proc.new { |*args| ['RedirectMethod', bytecode[1]] }
         result.instance_variable_set '@env', @vars_stack.last
         result_is result
+        nil
       when :pre_call
         @num_partial_call_executing = @partial_calls.size - 1
         if @partial_calls.last == [@main, :gets, nil]
           @accepting_input = true
         end
+        nil
       when :call
         @num_partial_call_executing = nil
         call = @partial_calls.last
@@ -130,22 +130,31 @@ class BytecodeInterpreter
           result_is @accepted_input
           @accepted_input = nil
           @partial_calls.pop
+          nil
         else
           result = do_call *call
           if Array === result && result[0] == 'RedirectMethod'
-            @gosubbing_label = result[1]
+            ['GOSUB', result[1]]
+            # @method_stack.pop will be called by will_return
+          elsif Array === result && result[0] == 'RESCUE'
+            result_is nil
+            @partial_calls.pop
+            result
             # @method_stack.pop will be called by will_return
           else
             result_is result
             @partial_calls.pop
+            nil
           end
         end
       when :will_return
         @partial_calls.pop
         @vars_stack.pop
         @method_stack.pop
+        nil
       when :start_var
         @started_var_names.push bytecode[1]
+        nil
       when :to_var
         var_name = bytecode[1]
         @started_var_names = @started_var_names - [var_name]
@@ -157,6 +166,7 @@ class BytecodeInterpreter
           @vars_stack.last[var_name] = [value]
         end
         result_is value
+        nil
       when :to_vars
         _, splat_num, block_num, *var_names = bytecode
         array = pop_result
@@ -183,6 +193,7 @@ class BytecodeInterpreter
           end
         end
         result_is old_array
+        nil
       when :from_var
         var_name = bytecode[1]
         if @vars_stack.last.has_key? var_name
@@ -191,16 +202,20 @@ class BytecodeInterpreter
         else
           raise "Looking up unset variable #{var_name}"
         end
+        nil
       when :make_symbol
         result = pop_result
         `result.is_symbol = true;` if RUBY_PLATFORM == 'opal'
         result_is result
+        nil
       when :goto
-        @gotoing_label = bytecode[1]
+        ['GOTO', bytecode[1]]
       when :goto_if_not
         result = pop_result
         if !result
-          @gotoing_label = bytecode[1]
+          ['GOTO', bytecode[1]]
+        else
+          nil
         end
       when :args
         _, min_num_args, max_num_args = bytecode
@@ -219,6 +234,7 @@ class BytecodeInterpreter
             "wrong number of arguments (#{args.size} for #{num_expected})"
           raise_exception { raise ArgumentError.new(message) }
         end
+        nil
       when :vars_from_env_except
         var_names = bytecode[1..-1]
         if Proc === @partial_calls.last[0]
@@ -231,6 +247,7 @@ class BytecodeInterpreter
         else
           new_vars = {}
         end
+        nil
       when :goto_param_defaults
         num_args = @partial_calls.last.size - 3
         if 1 + num_args >= bytecode.size
@@ -238,20 +255,23 @@ class BytecodeInterpreter
         else
           label = bytecode[1 + (num_args)]
         end
-        @gotoing_label = label
+        ['GOTO', label]
       when :push_rescue
         # save the stack size so we can easily remove any additional methods
         @rescue_labels.push [bytecode[1], @method_stack.size]
+        nil
       when :pop_rescue
         label, _ = @rescue_labels.pop
         if label != bytecode[1]
           raise "Expected to pop #{bytecode[1]} but was #{label}"
         end
+        nil
       when :to_gvar
         var_name = bytecode[1]
         value = pop_result
         eval "#{var_name} = value"
         result_is value
+        nil
       when :from_gvar
         var_name = bytecode[1]
         if var_name.to_s == '$!'
@@ -260,16 +280,18 @@ class BytecodeInterpreter
           out = eval var_name.to_s
         end
         result_is out
+        nil
       when :const
         result_is Module.const_get(bytecode[1])
+        nil
       when :clear_dollar_bang
         # we extend $! so it's accesible from user code's rescue blocks,
         # even though we rescued the exception in our Opal code.
         # but don't extend $! forever; it should be nil after the user code's
         # rescue blocks end.
         $bang = nil
+        nil
     end
-    nil
   end
 
   def set_input text
@@ -292,18 +314,6 @@ class BytecodeInterpreter
 
   def get_stdout_and_stderr
     $console_texts.select { |pair| pair[0] == :stdout || pair[0] == :stderr }
-  end
-
-  def gosubbing_label
-    @gosubbing_label
-  end
-
-  def gotoing_label
-    @gotoing_label
-  end
-
-  def stack_size
-    @method_stack.size
   end
 
   private
@@ -428,7 +438,7 @@ class BytecodeInterpreter
     end
 
     if @rescue_labels.size > 0
-      @gotoing_label, target_stack_size = @rescue_labels.pop
+      label, target_stack_size = @rescue_labels.pop
       while @method_stack.size > target_stack_size
         @method_stack.pop
         @vars_stack.pop
@@ -436,6 +446,7 @@ class BytecodeInterpreter
       # $! gets set to nil after our rescue ends, but we'll want it defined
       # until the *user*'s rescue ends
       $bang = $!
+      ['RESCUE', label, target_stack_size]
     else
       text = "#{e.class}: #{e.message}\n" + e.backtrace.map { |entry|
         "\t#{entry}" }.join("\n")

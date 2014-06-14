@@ -28,23 +28,25 @@ class RspecRubyRunner
     begin
       File.open 'trace.txt', 'w' do |file|
         while true
-        bytecode = spool.get_next_bytecode interpreter.is_result_truthy?,
-            interpreter.gosubbing_label, interpreter.gotoing_label,
-            interpreter.stack_size
+          bytecode = spool.get_next_bytecode
           break if bytecode.nil?
           if LOG
             file.write bytecode.join(' ') + "\n"
           end
 
-          interpreter.interpret bytecode
+          spool_command = interpreter.interpret bytecode
 
-          if interpreter.gotoing_label
+          if spool_command == nil
+            # ignore it
+          elsif spool_command[0] == 'GOTO'
+            spool.goto spool_command[1]
+          elsif spool_command[0] == 'RESCUE'
             # subtract one because method_stack has an entry for the current
             # line number; whereas counter_stack only stores an entry once
             # you've gosubbed, but nothing for the current method.
-            spool.goto interpreter.gotoing_label, interpreter.stack_size - 1
-          elsif interpreter.gosubbing_label
-            spool.gosub interpreter.gosubbing_label
+            spool.rescue spool_command[1], spool_command[2] - 1
+          elsif spool_command[0] == 'GOSUB'
+            spool.gosub spool_command[1]
           end
         end
       end
