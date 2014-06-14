@@ -28,7 +28,8 @@ class BytecodeSpool
     end
   end
 
-  def get_next_bytecode is_result_truthy, gosubbing_label, gotoing_label
+  def get_next_bytecode is_result_truthy, gosubbing_label, gotoing_label,
+      stack_size
     if @is_done
       nil
     elsif @counter >= @bytecodes.size
@@ -65,6 +66,9 @@ class BytecodeSpool
               "Can't find label #{bytecode[1]}"
           end
         when :return
+          while @counter_stack.size > stack_size
+            @counter_stack.pop
+          end
           @counter = @counter_stack.pop - 1
       end
       @counter += 1 # ok to step past label

@@ -117,7 +117,8 @@ class DebuggerController
   handleNextBytecode: ->
     if @spool && @highlighter && @interpreter && !@interpreter.isAcceptingInput()
       bytecode = @spool.getNextBytecode @interpreter.isResultTruthy(),
-        @interpreter.gosubbingLabel(), @interpreter.gotoingLabel()
+        @interpreter.gosubbingLabel(), @interpreter.gotoingLabel(),
+        @interpreter.stackSize()
       if bytecode
         @highlighter.interpret bytecode
 

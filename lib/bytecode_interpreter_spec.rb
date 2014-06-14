@@ -344,4 +344,21 @@ p 4').should == "3\n4\n"
   it 'clears out $!' do
     output_of("begin raise 'x'; rescue; end; p $!").should == "nil\n"
   end
+  it 'can run tests' do
+    output_of("
+    def f
+      raise 'x'
+    end
+    def run_tests
+      [1, 2].each do |i|
+        begin
+          f
+        rescue RuntimeError => e
+          p e
+        end
+      end
+    end
+    run_tests
+").should == "#<RuntimeError: x>\n#<RuntimeError: x>\n"
+  end
 end

@@ -70,7 +70,7 @@ class BytecodeInterpreter
     @gosubbing_label = nil
     @gotoing_label = nil
     @last_token_pos = nil
-    @rescue_labels = []
+    @rescue_labels = [] # list of [label, stack.size] tuples
     @method_stack = [['path', '<main>', nil, nil]] # path, method, line, col
 
     $console_texts = []
@@ -135,15 +135,11 @@ class BytecodeInterpreter
           @partial_calls.pop
         else
           begin
-            @method_stack.push ['path', call[1], nil, nil]
             result_is do_call *call
-            @method_stack.pop
             @partial_calls.pop
           rescue RedirectMethod => e
             @gosubbing_label = e.message
-          rescue => e
-            result_is nil
-            raise
+            # @method_stack.pop will be called by will_return
           end
         end
       when :will_return
@@ -224,13 +220,14 @@ class BytecodeInterpreter
         var_names = bytecode[1..-1]
         if Proc === @partial_calls.last[0]
           env = @partial_calls.last[0].instance_variable_get '@env'
-          new_vars = env.reject do |var_name|
-            var_names.include?(var_name)
+          env.keys.each do |var_name|
+            if !var_names.include?(var_name)
+              @vars_stack.last[var_name] = env[var_name]
+            end
           end
         else
           new_vars = {}
         end
-        @vars_stack.push new_vars
       when :goto_param_defaults
         num_args = @partial_calls.last.size - 3
         if 1 + num_args >= bytecode.size
@@ -240,11 +237,12 @@ class BytecodeInterpreter
         end
         @gotoing_label = label
       when :push_rescue
-        @rescue_labels.push bytecode[1]
+        # save the stack size so we can easily remove any additional methods
+        @rescue_labels.push [bytecode[1], @method_stack.size]
       when :pop_rescue
-        popped = @rescue_labels.pop
-        if popped != bytecode[1]
-          raise "Expected to pop #{bytecode[1]} but was #{popped}"
+        label, _ = @rescue_labels.pop
+        if label != bytecode[1]
+          raise "Expected to pop #{bytecode[1]} but was #{label}"
         end
       when :to_gvar
         var_name = bytecode[1]
@@ -301,6 +299,10 @@ class BytecodeInterpreter
     @gotoing_label
   end
 
+  def stack_size
+    @method_stack.size
+  end
+
   private
 
   def result_is new_result
@@ -330,7 +332,10 @@ class BytecodeInterpreter
   end
 
   def do_call receiver, method_name, proc_, *args
+    @method_stack.push ['path', method_name, nil, nil]
+    @vars_stack.push({})
     begin
+      result = \
       if Array === receiver && %w[collect each each_index keep_if map map!
           reject select select!].include?(method_name.to_s)
         new_method_name = case method_name
@@ -375,11 +380,16 @@ class BytecodeInterpreter
         $is_capturing_stdout = false
         result
       end
+      @method_stack.pop
+      @vars_stack.pop
+      result
     rescue RedirectMethod => e
       $is_capturing_stdout = false
+      # don't call @method_stack.pop; will_return will deal with it
       raise # don't wrap with ProgramTerminated
     rescue Exception => e
       $is_capturing_stdout = false
+      # don't call @method_stack.pop; exception handler will deal with it
 
       # It's necessary to write "return" here because of an Opal bug where
       # only the first rescue gets return like it should.
@@ -407,7 +417,11 @@ class BytecodeInterpreter
     end
 
     if @rescue_labels.size > 0
-      @gotoing_label = @rescue_labels.pop
+      @gotoing_label, target_stack_size = @rescue_labels.pop
+      while @method_stack.size > target_stack_size
+        @method_stack.pop
+        @vars_stack.pop
+      end
       # $! gets set to nil after our rescue ends, but we'll want it defined
       # until the *user*'s rescue ends
       $bang = $!

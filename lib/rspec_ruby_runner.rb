@@ -17,9 +17,10 @@ class RspecRubyRunner
     begin
       while true
         bytecode = spool.get_next_bytecode interpreter.is_result_truthy?,
-          interpreter.gosubbing_label, interpreter.gotoing_label
         break if bytecode.nil?
         interpreter.interpret bytecode
+          interpreter.gosubbing_label, interpreter.gotoing_label,
+          interpreter.stack_size
       end
       interpreter.visible_state[:output].map { |pair| pair[1] }.join
     rescue ProgramTerminated => e

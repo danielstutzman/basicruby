@@ -90,4 +90,11 @@ class BytecodeInterpreter
       console.error e.stack
       throw e
 
+  stackSize: ->
+    try
+      @_nilToNull @interpreter['$stack_size']()
+    catch e
+      console.error e.stack
+      throw e
+
 module.exports = BytecodeInterpreter

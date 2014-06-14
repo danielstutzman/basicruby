@@ -24,12 +24,13 @@ class BytecodeSpool
       console.error e.stack
       throw e
 
-  getNextBytecode: (isResultTruthy, gosubbingLabel, gotoingLabel) ->
+  getNextBytecode: (isResultTruthy, gosubbingLabel, gotoingLabel, stackSize) ->
     gosubbingLabel = Opal.NIL if gosubbingLabel == null
     gotoingLabel   = Opal.NIL if gotoingLabel == null
+    stackSize      = Opal.NIL if stackSize == null
     try
       result = @spool.$get_next_bytecode isResultTruthy,
-        gosubbingLabel, gotoingLabel
+        gosubbingLabel, gotoingLabel, stackSize
       if result == Opal.NIL then null else result
     catch e
       console.error e.stack
