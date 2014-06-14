@@ -357,6 +357,13 @@ class BytecodeInterpreter
           result = @main.send method_name, *args, &proc_
         end
 
+      elsif receiver == @main && method_name == :raise && args.size == 0 &&
+            $! == nil
+        # Work around for Opal bug: calling raise with no arguments when
+        # $! is nil raises an uncatchable exception :-/
+        args = [RuntimeError, '']
+        result = @main.send method_name, *args, &proc_
+
       elsif receiver == @main
         begin
           $is_capturing_stdout = true
