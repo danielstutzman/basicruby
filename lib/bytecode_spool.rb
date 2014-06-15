@@ -9,6 +9,10 @@ class BytecodeSpool
     @counter_stack = []
   end
 
+  def counter # just for debugging prompt
+    @counter
+  end
+
   def visible_state
     { breakpoint: @breakpoint,
       num_steps_queued: @num_steps_queued,
@@ -37,6 +41,7 @@ class BytecodeSpool
       nil
     else
       bytecode = @bytecodes[@counter]
+      @num_steps_queued -= 1 if @breakpoint == 'NEXT_BYTECODE'
       case bytecode[0]
         when :position
           @num_steps_queued -= 1 if @breakpoint == 'NEXT_POSITION'
@@ -74,6 +79,10 @@ class BytecodeSpool
   def terminate_early
     @is_done = true       # so it's not possible to continue
     @num_steps_queued = 0 # so buttons aren't glowing
+  end
+
+  def stop_early
+    @num_steps_queued = 0
   end
 
   private
