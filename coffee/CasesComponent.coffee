@@ -28,15 +28,15 @@ CasesComponent = React.createClass
       div { className: 'expected' },
         if hasCode
           table {},
-            tr { key: 'header' },
+            tr {},
               th {}, 'Test code'
-            _.map @props.cases, (_case, case_num) =>
-              tr { key: "case#{case_num}" },
-                td {},
-                  textarea
-                    className: 'expected'
-                    readOnly: true
-                    value: _case.code
+            tr {},
+              td {},
+                textarea
+                  className: 'expected'
+                  readOnly: true
+                  value: _.map(@props.cases, (_case) => _case.code).join('')
+
         else if hasExpectedOutputs
           table {},
             tr { key: 'header' },
