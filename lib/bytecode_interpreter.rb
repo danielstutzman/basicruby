@@ -68,6 +68,7 @@ class BytecodeInterpreter
     @method_stack = [['path', '<main>', nil, nil]] # path, method, line, col
 
     $console_texts = []
+    begin raise ''; rescue; end # set $! to RuntimeError.new('')
   end
 
   def visible_state
@@ -376,13 +377,6 @@ class BytecodeInterpreter
         else
           result = @main.send method_name, *args, &proc_
         end
-
-      elsif receiver == @main && method_name == :raise && args.size == 0 &&
-            $! == nil
-        # Work around for Opal bug: calling raise with no arguments when
-        # $! is nil raises an uncatchable exception :-/
-        args = [RuntimeError, '']
-        result = @main.send method_name, *args, &proc_
 
       elsif method_name == :send
         new_method_name = args.shift
