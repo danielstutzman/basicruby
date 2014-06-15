@@ -361,4 +361,12 @@ p 4').should == "3\n4\n"
     run_tests
 ").should == "#<RuntimeError: x>\n#<RuntimeError: x>\n"
   end
+  it 'can call send' do
+    output_of("
+    def f
+      3
+    end
+    p send(:f)
+    ").should == "3\n"
+  end
 end

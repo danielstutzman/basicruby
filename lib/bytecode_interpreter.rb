@@ -337,10 +337,12 @@ class BytecodeInterpreter
   # since :args bytecode looks at partial_calls to determine what the
   # args were, it's not enough just to call the right method; we have
   # to setup partial_calls with arguments that the runtime expects.
-  def simulate_call_to method_name, *args, &proc_
+  def simulate_call_to receiver, new_method_name, *args, &proc_
+    @method_stack.pop
+    @method_stack.push ['path', new_method_name, nil, nil]
     @partial_calls.pop
-    @partial_calls.push [@main, :__array_each, proc_, *args]
-    @main.public_send method_name, *args
+    @partial_calls.push [receiver, new_method_name, proc_, *args]
+    receiver.public_send new_method_name, *args
   end
 
   def do_call receiver, method_name, proc_, *args
@@ -361,7 +363,7 @@ class BytecodeInterpreter
           when :select     then :__array_select
           when :select!    then :__array_select!
         end
-        simulate_call_to new_method_name, @partial_calls.last[0], &proc_
+        simulate_call_to @main, new_method_name, @partial_calls.last[0], &proc_
 
       elsif method_name == :define_method
         if RUBY_PLATFORM == 'opal'
@@ -377,6 +379,10 @@ class BytecodeInterpreter
         # $! is nil raises an uncatchable exception :-/
         args = [RuntimeError, '']
         result = @main.send method_name, *args, &proc_
+
+      elsif method_name == :send
+        new_method_name = args.shift
+        result = simulate_call_to receiver, new_method_name, *args, &proc_
 
       elsif receiver == @main
         begin
