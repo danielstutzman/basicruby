@@ -79,6 +79,7 @@ class AstToBytecodeCompiler
       when :gvar     then compile_gvar sexp
       when :gasgn    then compile_gasgn sexp
       when :const    then compile_const sexp
+      when :sym      then compile_sym sexp
       else no "s-exp with head #{sexp[0]}"
     end
   end
@@ -588,6 +589,15 @@ class AstToBytecodeCompiler
       [[:token] + sexp.source, [:const, const_name]]
     else
       [[:const, const_name]]
+    end
+  end
+
+  def compile_sym sexp
+    _, string = sexp
+    if sexp.source
+      [[:token] + sexp.source, [:result, string], [:make_symbol]]
+    else
+      [[:result, string.to_s], [:make_symbol]]
     end
   end
 end

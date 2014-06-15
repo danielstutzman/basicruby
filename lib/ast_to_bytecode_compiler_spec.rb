@@ -198,4 +198,9 @@ end
         [:result, 1], [:to_gvar, :$a]
     ]
   end
+  it 'compiles :a' do
+    compile(':a').should == [
+      [:position, "test", 1, 1], [:token, 1, 1], [:result, :a], [:make_symbol]
+    ]
+  end
 end
