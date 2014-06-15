@@ -96,7 +96,11 @@ class BytecodeInterpreter
         @method_stack.last[3] = bytecode[2] # col
         nil
       when :result
-        result_is bytecode[1]
+        case bytecode[1]
+          when Array then result_is bytecode[1].clone
+          when Hash  then result_is bytecode[1].clone
+          else result_is bytecode[1]
+        end
         nil
       when :discard
         pop_result

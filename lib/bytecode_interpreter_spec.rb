@@ -369,4 +369,8 @@ p 4').should == "3\n4\n"
     p send(:f)
     ").should == "3\n"
   end
+  it "doesn't reuse [] literals" do
+    output_of("[1, 2].each { |x| out = []; out.push 3; p out }").should ==
+      "[3]\n[3]\n"
+  end
 end
