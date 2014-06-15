@@ -567,7 +567,7 @@ def assert_equal a, b
 end
 def __run_test test_name
   begin
-    method(test_name).call
+    send test_name
     puts "\#{test_name} PASSED"
   rescue RuntimeError => e
     puts "\#{test_name} FAILED"
