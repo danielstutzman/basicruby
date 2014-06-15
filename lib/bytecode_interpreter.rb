@@ -555,15 +555,15 @@ def assert_equal a, b
     raise "Expected \#{a.inspect} but got \#{b.inspect}"
   end
 end
-def __run_tests
-  test_names = methods.select { |m| m.start_with?('test') }
-  test_names.each do |test_name|
-    begin
-      method(test_name).call
-      puts "\#{test_name} PASSED"
-    rescue RuntimeError => e
-      p e.backtrace
-      puts "\#{test_name} FAILED"
+def __run_test test_name
+  begin
+    method(test_name).call
+    puts "\#{test_name} PASSED"
+  rescue RuntimeError => e
+    puts "\#{test_name} FAILED"
+    puts e
+    e.backtrace.each do |line|
+      puts "  \#{line}"
     end
   end
 end

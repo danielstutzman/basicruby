@@ -93,7 +93,10 @@ class ExerciseController
       try
         combinedCode = code
         if case_.code
-          combinedCode += "\n" + case_.code + "\n__run_tests"
+          match = /^def (test_[a-zA-Z0-9_]*)\n/.exec case_.code
+          throw "Case doesn't start with def test_" if match == null
+          test_name = match[1]
+          combinedCode += "\n" + case_.code + "\n__run_test(:#{test_name})"
         bytecodes = AstToBytecodeCompiler.compile combinedCode
       catch e
         if e.name == 'SyntaxError'
