@@ -374,4 +374,7 @@ p 4').should == "3\n4\n"
     output_of("[1, 2].each { |x| out = []; out.push 3; p out }").should ==
       "[3]\n[3]\n"
   end
+  it "can print ranges" do
+    output_of("p 1..3, 4...6").should == "1..3\n4...6\n"
+  end
 end

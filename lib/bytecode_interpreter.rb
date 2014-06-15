@@ -573,10 +573,7 @@ def __run_test test_name
   rescue RuntimeError => e
     puts "\#{test_name} FAILED"
     puts e
-    bt = e.backtrace.clone
-    bt.pop # remove test:1:in `<main>'
-    bt.pop # remove runtime:97:in `__run_test`
-    bt.each do |line|
+    e.backtrace[0...-2].each do |line|
       puts "  \#{line}"
     end
   end

@@ -80,6 +80,8 @@ class AstToBytecodeCompiler
       when :gasgn    then compile_gasgn sexp
       when :const    then compile_const sexp
       when :sym      then compile_sym sexp
+      when :irange   then compile_range sexp, false
+      when :erange   then compile_range sexp, true
       else no "s-exp with head #{sexp[0]}"
     end
   end
@@ -599,5 +601,28 @@ class AstToBytecodeCompiler
     else
       [[:result, string.to_s], [:make_symbol]]
     end
+  end
+
+  # exclusive = false means inclusive range, for example: 1..3
+  # exclusive = true  means exclusive range, for example: 1...3
+  def compile_range sexp, exclusive
+    _, from, to = sexp
+    bytecodes = []
+    bytecodes.push [:start_call]
+    bytecodes.push [:const, 'Range']
+    bytecodes.push [:arg]
+    bytecodes.push [:result, :new]
+    bytecodes.push [:arg]
+    bytecodes.push [:result, nil]
+    bytecodes.push [:arg] # no block
+    bytecodes.concat compile(from)
+    bytecodes.push [:arg]
+    bytecodes.concat compile(to)
+    bytecodes.push [:arg]
+    bytecodes.push [:result, exclusive]
+    bytecodes.push [:arg]
+    bytecodes.push [:pre_call]
+    bytecodes.push [:call]
+    bytecodes
   end
 end
