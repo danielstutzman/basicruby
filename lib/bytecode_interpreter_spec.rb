@@ -4,9 +4,10 @@ require './bytecode_interpreter'
 require './rspec_ruby_runner'
 
 $main = self
+$runner = RspecRubyRunner.new
 
 def output_of ruby_code
-  RspecRubyRunner.new.output_from ruby_code
+  $runner.output_from ruby_code
 end
 
 describe BytecodeInterpreter, '#run' do
@@ -306,7 +307,7 @@ describe BytecodeInterpreter, '#run' do
   end
   it 'runs 2; begin raise "x"; rescue; puts $!.backtrace.join(10.chr) end' do
     output_of('2; begin raise "x"; rescue; puts $!.backtrace.join(10.chr) end'
-      ).should == "path:1:in `<main>'\n"
+      ).should == "TestCode:1:in `<main>'\n"
   end
   it 'includes f in backtrace' do
     output_of('2
@@ -318,7 +319,7 @@ def f
   end
 end
 f'
-      ).should == "path:4:in `f'\npath:9:in `<main>'\n"
+      ).should == "TestCode:4:in `f'\nTestCode:9:in `<main>'\n"
   end
   it 'handles empty body of rescue' do
     output_of('2

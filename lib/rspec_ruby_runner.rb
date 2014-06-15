@@ -5,15 +5,19 @@ require 'opal'
 LOG = false
 
 class RspecRubyRunner
+  def initialize
+    parser = Opal::Parser.new
+    sexp1 = parser.parse BytecodeInterpreter.RUNTIME_PRELUDE
+    compiler = AstToBytecodeCompiler.new
+    @bytecodes1 = compiler.compile_program 'Runtime', sexp1
+    @bytecodes1.reject! { |bytecode| [:position, :token].include?(bytecode[0]) }
+  end
   def output_from ruby_code
     parser = Opal::Parser.new
     compiler = AstToBytecodeCompiler.new
-    sexp1 = parser.parse BytecodeInterpreter.RUNTIME_PRELUDE
-    bytecodes1 = compiler.compile_program 'runtime', sexp1
-    bytecodes1.reject! { |bytecode| [:position, :token].include?(bytecode[0]) }
     sexp2 = parser.parse ruby_code
-    bytecodes2 = compiler.compile_program 'user', sexp2
-    spool = BytecodeSpool.new bytecodes1 + [[:discard]] + bytecodes2
+    bytecodes2 = compiler.compile_program 'TestCode', sexp2
+    spool = BytecodeSpool.new @bytecodes1 + [[:discard]] + bytecodes2
 
     if LOG
       File.open 'bytecodes.txt', 'w' do |file|

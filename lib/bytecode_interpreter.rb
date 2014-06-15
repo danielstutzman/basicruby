@@ -65,7 +65,7 @@ class BytecodeInterpreter
     @accepting_input = false
     @accepted_input = nil
     @rescue_labels = [] # list of [label, stack.size] tuples
-    @method_stack = [['path', '<main>', nil, nil]] # path, method, line, col
+    @method_stack = [['Runtime', '<main>', nil, nil]] # path, method, line, col
 
     $console_texts = []
     begin raise ''; rescue; end # set $! to RuntimeError.new('')
@@ -92,6 +92,11 @@ class BytecodeInterpreter
 
   def interpret bytecode #, speed, stdin
     case bytecode[0]
+      when :position
+        @method_stack.last[0] = bytecode[1] # path
+        @method_stack.last[2] = bytecode[2] # line
+        @method_stack.last[3] = bytecode[3] # col
+        nil
       when :token
         @method_stack.last[2] = bytecode[1] # line
         @method_stack.last[3] = bytecode[2] # col
@@ -343,15 +348,16 @@ class BytecodeInterpreter
   # args were, it's not enough just to call the right method; we have
   # to setup partial_calls with arguments that the runtime expects.
   def simulate_call_to receiver, new_method_name, *args, &proc_
-    @method_stack.pop
-    @method_stack.push ['path', new_method_name, nil, nil]
+    entry = @method_stack.pop
+    @method_stack.push [entry[0], new_method_name, nil, nil]
     @partial_calls.pop
     @partial_calls.push [receiver, new_method_name, proc_, *args]
     receiver.public_send new_method_name, *args
   end
 
   def do_call receiver, method_name, proc_, *args
-    @method_stack.push ['path', method_name, nil, nil]
+    path = @method_stack.last[0]
+    @method_stack.push [path, method_name, nil, nil]
     @vars_stack.push({})
     begin
       result = \

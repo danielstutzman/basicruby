@@ -88,16 +88,21 @@ class ExerciseController
 
   handleRun: ->
     code = @retrieveNewCode()
+    allTestCode = _.map(@cases, (case_) -> case_.code || '').join('')
     for case_ in @cases
       case_.inputLineNum = 0
       try
-        combinedCode = code
         if case_.code
           match = /^def (test_[a-zA-Z0-9_]*)\n/.exec case_.code
           throw "Case doesn't start with def test_" if match == null
           test_name = match[1]
-          combinedCode += "\n" + case_.code + "\n__run_test(:#{test_name})"
-        bytecodes = AstToBytecodeCompiler.compile combinedCode
+          bytecodes = AstToBytecodeCompiler.compile [
+            ['YourCode', code],
+            ['TestCode', allTestCode],
+            ['Main', "__run_test(:#{test_name})"]
+          ]
+        else
+          bytecodes = AstToBytecodeCompiler.compile [['YourCode', code]]
       catch e
         if e.name == 'SyntaxError'
           case_.actual_output = [['stderr', "SyntaxError: #{e.message}\n"]]

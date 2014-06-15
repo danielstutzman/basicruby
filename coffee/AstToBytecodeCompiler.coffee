@@ -11,21 +11,24 @@ dump = (sexp, level) ->
     if child.array
       dump child, level + 1
 
-compile = (ruby_code) ->
-  parser = Opal.Opal._scope.Parser.$new()
-  sexp1 = parser.$parse Opal.BytecodeInterpreter.$RUNTIME_PRELUDE()
-  sexp2 = parser.$parse ruby_code
-  #dump sexp2, 0
+parser = Opal.Opal._scope.Parser.$new()
+sexpRuntime = parser.$parse Opal.BytecodeInterpreter.$RUNTIME_PRELUDE()
+compiler = Opal.AstToBytecodeCompiler.$new Opal.top
+bytecodesRuntime = compiler.$compile_program 'Runtime', sexpRuntime
+bytecodesRuntime = _.reject bytecodesRuntime, (bytecode) ->
+  bytecode[0] == 'token'
 
-  main = Opal.top
-  compiler = Opal.AstToBytecodeCompiler.$new main
-  bytecodes1 = compiler.$compile_program 'runtime', sexp1
-  bytecodes1 = _.reject bytecodes1, (bytecode) ->
-    bytecode[0] == 'position' || bytecode[0] == 'token'
-  bytecodes2 = compiler.$compile_program 'user', sexp2
-  #for bytecode in bytecodes2
-  #  console.log bytecode.join(' ')
-  bytecodes = bytecodes1.concat [['discard']], bytecodes2
+compile = (pairs) ->
+  bytecodes = []
+  bytecodes = bytecodes.concat bytecodesRuntime, [['discard']]
+  for pair in pairs
+    [sectionName, code] = pair
+    sexp = parser.$parse code
+    #dump sexp, 0
+    bytecodesNew = compiler.$compile_program sectionName, sexp
+    #for bytecode in bytecodesNew
+    #  console.log bytecode.join(' ')
+    bytecodes = bytecodes.concat bytecodesNew, [['discard']]
   bytecodes
 
 module.exports =
