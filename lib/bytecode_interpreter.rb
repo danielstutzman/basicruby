@@ -452,7 +452,7 @@ class BytecodeInterpreter
       ['RESCUE', label, target_stack_size]
     else
       text = "#{e.class}: #{e.message}\n" + e.backtrace.map { |entry|
-        "\t#{entry}" }.join("\n")
+        "  #{entry}" }.join("\n")
       $console_texts = $console_texts.clone + [[:stderr, text]]
       raise ProgramTerminated.new e
     end
