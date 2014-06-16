@@ -127,6 +127,7 @@ class BytecodeInterpreter
         result = Proc.new { |*args| ['RedirectMethod', bytecode[1]] }
         result.instance_variable_set '@env', @vars_stack.last
         result.instance_variable_set '@defined_in', @method_stack.last
+        result.instance_variable_set '@is_yield', false
         result_is result
         nil
       when :pre_call
@@ -211,9 +212,13 @@ class BytecodeInterpreter
         if @vars_stack.last[UNNAMED_BLOCK]
           # clone the block so we can tell the difference between yield
           # (translated to __block__.call) and b.call, if param is named &b
-          block = @vars_stack.last[UNNAMED_BLOCK][0].clone
-          block.instance_variable_set '@is_yield', true
-          @vars_stack.last[UNNAMED_BLOCK][0] = block
+          old = @vars_stack.last[UNNAMED_BLOCK][0]
+          new = Proc.new { |*args| old.call *args }
+          new.instance_variable_set '@env', old.instance_variable_get('@env')
+          new.instance_variable_set '@defined_in',
+            old.instance_variable_get('@defined_in')
+          new.instance_variable_set '@is_yield', true
+          @vars_stack.last[UNNAMED_BLOCK][0] = new
         end
         result_is old_array
         nil
@@ -405,7 +410,7 @@ class BytecodeInterpreter
         result = simulate_call_to receiver, new_method_name, *args, &proc_
 
       elsif Proc === receiver && method_name == :call
-        is_yield = !!receiver.instance_variable_get('@is_yield')
+        is_yield = receiver.instance_variable_get('@is_yield')
         if is_yield
           # discard the .call stack entry, because the user didn't write that
           @method_stack.pop
