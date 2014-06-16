@@ -157,13 +157,13 @@ end
   end
 
   # nil at the beginning to avoid nil source
-  it 'compiles nil; while false; 3; end' do
-    compile('nil; while false; 3; end').should == [
-      [:position, "test", 1, 0], [:token, 1, 0], [:result, nil], [:discard],
-      [:label, "start_test_1_11"], [:token, 1, 11], [:result, false],
-      [:goto_if_not, "end_test_1_11"],
-      [:token, 1, 18], [:result, 3], [:discard],
-      [:goto, "start_test_1_11"], [:label, "end_test_1_11"], [:result, nil]
+  it 'compiles while false; 3; end' do
+    compile('while false; 3; end').should == [
+      [:position, "test", 1, 0], [:token, 1, 0],
+      [:label, "start_test_1_6"],
+      [:token, 1, 6], [:result, false], [:goto_if_not, "end_test_1_6"],
+      [:token, 1, 13], [:result, 3], [:discard],
+      [:goto, "start_test_1_6"], [:label, "end_test_1_6"], [:result, nil]
     ]
   end
 

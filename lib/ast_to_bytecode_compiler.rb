@@ -449,6 +449,7 @@ class AstToBytecodeCompiler
   def compile_while sexp
     _, condition, block = sexp
     bytecodes = []
+    bytecodes.push [:token] + sexp.source
     label_start = unique_label 'start', condition
     label_end = unique_label 'end', condition
     bytecodes.push [:label, label_start]
