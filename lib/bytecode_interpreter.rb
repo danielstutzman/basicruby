@@ -126,6 +126,7 @@ class BytecodeInterpreter
       when :make_proc
         result = Proc.new { |*args| ['RedirectMethod', bytecode[1]] }
         result.instance_variable_set '@env', @vars_stack.last
+        result.instance_variable_set '@defined_in', @method_stack.last
         result_is result
         nil
       when :pre_call
@@ -397,7 +398,7 @@ class BytecodeInterpreter
         result = simulate_call_to receiver, new_method_name, *args, &proc_
 
       elsif Proc === receiver && method_name == :call
-        path, method = @method_stack[-2]
+        path, method = receiver.instance_variable_get('@defined_in')
         @method_stack.push [path, "block in #{method}", nil, nil, true]
         @vars_stack.push({})
         result = receiver.public_send method_name, *args, &proc_
