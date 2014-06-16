@@ -71,7 +71,11 @@ while true
     begin
       spool_command = interpreter.interpret bytecode
     rescue ProgramTerminated => e
+      puts "At counter #{spool.counter}:"
       raise e.cause
+    rescue Exception => e
+      puts "At counter #{spool.counter}:"
+      raise
     end
     spool.do_command *spool_command if spool_command
     if breakpoints.include? spool.counter
