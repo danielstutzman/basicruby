@@ -389,4 +389,28 @@ rescue
 end
 ").should == %Q{["TestCode:4:in `block in <main>'", "TestCode:6:in `call'", "TestCode:6:in `<main>'"]\n}
   end
+  it "includes .call in backtrace" do
+    output_of("
+def f(&b)
+  b.call
+end
+begin
+  f { raise 'x' }
+rescue
+  p $!.backtrace
+end
+").should == %Q{["TestCode:6:in `block in <main>'", "TestCode:3:in `call'", "TestCode:3:in `f'", "TestCode:6:in `<main>'"]\n}
+  end
+  it "includes .call in backtrace, unless .call was from a yield" do
+    output_of("
+def f(&b)
+  yield
+end
+begin
+  f { raise 'x' }
+rescue
+  p $!.backtrace
+end
+").should == %Q{["TestCode:6:in `block in <main>'", "TestCode:3:in `f'", "TestCode:6:in `<main>'"]\n}
+  end
 end

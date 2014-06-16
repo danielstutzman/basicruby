@@ -429,6 +429,7 @@ class AstToBytecodeCompiler
   def compile_yield sexp
     _, *args = sexp
     bytecodes = []
+    bytecodes.push [:token] + sexp.source
     bytecodes.push [:start_call]
     bytecodes.push [:from_var, '__block__']
     bytecodes.push [:arg]

@@ -208,6 +208,13 @@ class BytecodeInterpreter
             @vars_stack.last[var_name] = [value]
           end
         end
+        if @vars_stack.last[UNNAMED_BLOCK]
+          # clone the block so we can tell the difference between yield
+          # (translated to __block__.call) and b.call, if param is named &b
+          block = @vars_stack.last[UNNAMED_BLOCK][0].clone
+          block.instance_variable_set '@is_yield', true
+          @vars_stack.last[UNNAMED_BLOCK][0] = block
+        end
         result_is old_array
         nil
       when :from_var
@@ -398,8 +405,14 @@ class BytecodeInterpreter
         result = simulate_call_to receiver, new_method_name, *args, &proc_
 
       elsif Proc === receiver && method_name == :call
+        is_yield = !!receiver.instance_variable_get('@is_yield')
+        if is_yield
+          # discard the .call stack entry, because the user didn't write that
+          @method_stack.pop
+          @vars_stack.pop
+        end
         path, method = receiver.instance_variable_get('@defined_in')
-        @method_stack.push [path, "block in #{method}", nil, nil, true]
+        @method_stack.push [path, "block in #{method}", nil, nil, !is_yield]
         @vars_stack.push({})
         result = receiver.public_send method_name, *args, &proc_
 
