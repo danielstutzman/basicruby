@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/danielstutzman/opal.git
-  revision: d96b9c9694e72058b238ee851d935a02ce8330e4
+  revision: e961d23a85f751bdb9d89c21e672d4fb8ba94344
   branch: line-num-for-syntax-error
   specs:
     opal (0.7.0.dev)

@@ -282,31 +282,31 @@ describe BytecodeInterpreter, '#run' do
   it 'runs $a = 1; p $a' do
     output_of("$a = 1; p $a").should == "1\n"
   end
-  it 'runs 2; begin; p 3; rescue Exception => e; p 4; end' do
-    output_of("2; begin; p 3; rescue Exception => e; p 4; end").should == "3\n"
+  it 'runs begin; p 3; rescue Exception => e; p 4; end' do
+    output_of("begin; p 3; rescue Exception => e; p 4; end").should == "3\n"
   end
-  it "runs 2; begin; raise 'x'; p 3; rescue Exception => e; p e; end" do
-    output_of("2; begin; raise 'x'; p 3; rescue Exception => e; p e; end"
+  it "runs begin; raise 'x'; p 3; rescue Exception => e; p e; end" do
+    output_of("begin; raise 'x'; p 3; rescue Exception => e; p e; end"
       ).should == "#<RuntimeError: x>\n"
   end
-  it "runs 2; begin; raise 'x'; p 3; rescue ArgumentError => e; p 4; p e; rescue Exception => f; p 5; p f; end" do
-    output_of("2; begin; raise 'x'; p 3; rescue ArgumentError => f; p 4; p e; rescue Exception => f; p 5; p f; end"
+  it "runs begin; raise 'x'; p 3; rescue ArgumentError => e; p 4; p e; rescue Exception => f; p 5; p f; end" do
+    output_of("begin; raise 'x'; p 3; rescue ArgumentError => f; p 4; p e; rescue Exception => f; p 5; p f; end"
       ).should == "5\n#<RuntimeError: x>\n"
   end
-  it "runs 2; begin; raise 'x'; p 3; rescue Exception => f; p 5; p f; rescue ArgumentError => e; p 4; p e; end" do
-    output_of("2; begin; raise 'x'; p 3; rescue Exception => f; p 5; p f; rescue ArgumentError => f; p 4; p e; end"
+  it "runs begin; raise 'x'; p 3; rescue Exception => f; p 5; p f; rescue ArgumentError => e; p 4; p e; end" do
+    output_of("begin; raise 'x'; p 3; rescue Exception => f; p 5; p f; rescue ArgumentError => f; p 4; p e; end"
       ).should == "5\n#<RuntimeError: x>\n"
   end
-  it "runs 2; begin; raise 'x'; p 3; rescue Exception => e; p 4; rescue Exception => e; p 5; end" do
-    output_of("2; begin; raise 'x'; p 3; rescue Exception => e; p 4; rescue Exception => e; p 5; end"
+  it "runs begin; raise 'x'; p 3; rescue Exception => e; p 4; rescue Exception => e; p 5; end" do
+    output_of("begin; raise 'x'; p 3; rescue Exception => e; p 4; rescue Exception => e; p 5; end"
       ).should == "4\n"
   end
 
-  it "runs 2; begin raise 'x'; rescue; p 3 end" do
-    output_of("2; begin raise 'x'; rescue; p 3 end").should == "3\n"
+  it "runs begin raise 'x'; rescue; p 3 end" do
+    output_of("begin raise 'x'; rescue; p 3 end").should == "3\n"
   end
-  it 'runs 2; begin raise "x"; rescue; puts $!.backtrace.join(10.chr) end' do
-    output_of('2; begin raise "x"; rescue; puts $!.backtrace.join(10.chr) end'
+  it 'runs begin raise "x"; rescue; puts $!.backtrace.join(10.chr) end' do
+    output_of('begin raise "x"; rescue; puts $!.backtrace.join(10.chr) end'
       ).should == "TestCode:1:in `<main>'\n"
   end
   it 'includes f in backtrace' do
@@ -322,16 +322,14 @@ f'
       ).should == "TestCode:4:in `f'\nTestCode:9:in `<main>'\n"
   end
   it 'handles empty body of rescue' do
-    output_of('2
-begin
+    output_of('begin
 rescue
     p 3
 end
 p 4').should == "4\n"
   end
   it 'handles nested rescues' do
-    output_of('2
-begin
+    output_of('begin
   begin
     raise "x"
   rescue ArgumentError => e
@@ -378,8 +376,7 @@ p 4').should == "3\n4\n"
     output_of("p 1..3, 4...6").should == "1..3\n4...6\n"
   end
   it "includes block in backtrace" do
-    output_of("2
-begin
+    output_of("begin
   f = lambda do
     raise 'x'
   end
@@ -387,7 +384,7 @@ begin
 rescue
   p $!.backtrace
 end
-").should == %Q{["TestCode:4:in `block in <main>'", "TestCode:6:in `call'", "TestCode:6:in `<main>'"]\n}
+").should == %Q{["TestCode:3:in `block in <main>'", "TestCode:5:in `call'", "TestCode:5:in `<main>'"]\n}
   end
   it "includes .call in backtrace" do
     output_of("
