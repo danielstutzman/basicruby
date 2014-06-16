@@ -1,2 +1,3 @@
 #!/bin/bash
-rspec *_spec.rb --format nested
+bundle exec rspec *_spec.rb
+#--format nested
