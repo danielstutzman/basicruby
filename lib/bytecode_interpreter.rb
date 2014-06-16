@@ -64,9 +64,11 @@ class BytecodeInterpreter
       `Opal.top` : TOPLEVEL_BINDING.eval('self')
     @accepting_input = false
     @accepted_input = nil
-    @rescue_labels = [] # list of [label, stack.size] tuples
-    @method_stack = [['Runtime', '<main>', nil, nil]] # path, method, line, col
-
+    @rescue_labels = [] # list of [label, stack_size1, stack_size2] tuples
+      # stack_size1 is with counting pop_next_one_too_on_return
+      # stack_size2 is when you don't count pop_next_one_too_on_return
+    # path, method, line, col, pop_next_one_too_on_return
+    @method_stack = [['Runtime', '<main>', nil, nil, false]]
     $console_texts = []
     begin raise ''; rescue; end # set $! to RuntimeError.new('')
   end
@@ -159,7 +161,11 @@ class BytecodeInterpreter
       when :return
         @partial_calls.pop
         @vars_stack.pop
-        @method_stack.pop
+        _, _, _, _, pop_next_method_too = @method_stack.pop
+        if pop_next_method_too
+          @vars_stack.pop
+          @method_stack.pop
+        end
         ['RETURN']
       when :start_var
         @started_var_names.push bytecode[1]
@@ -267,7 +273,9 @@ class BytecodeInterpreter
         ['GOTO', label]
       when :push_rescue
         # save the stack size so we can easily remove any additional methods
-        @rescue_labels.push [bytecode[1], @method_stack.size]
+        stack_size1 = @method_stack.size
+        stack_size2 = @method_stack.count { |m| !m[4] }
+        @rescue_labels.push [bytecode[1], stack_size1, stack_size2]
         nil
       when :pop_rescue
         label, _ = @rescue_labels.pop
@@ -349,15 +357,15 @@ class BytecodeInterpreter
   # to setup partial_calls with arguments that the runtime expects.
   def simulate_call_to receiver, new_method_name, *args, &proc_
     entry = @method_stack.pop
-    @method_stack.push [entry[0], new_method_name, nil, nil]
+    @method_stack.push [entry[0], new_method_name, nil, nil, false]
     @partial_calls.pop
     @partial_calls.push [receiver, new_method_name, proc_, *args]
     receiver.public_send new_method_name, *args
   end
 
   def do_call receiver, method_name, proc_, *args
-    path = @method_stack.last[0]
-    @method_stack.push [path, method_name, nil, nil]
+    path, _, line_num = @method_stack.last
+    @method_stack.push [path, method_name, line_num, nil, false]
     @vars_stack.push({})
     begin
       result = \
@@ -387,6 +395,12 @@ class BytecodeInterpreter
       elsif method_name == :send
         new_method_name = args.shift
         result = simulate_call_to receiver, new_method_name, *args, &proc_
+
+      elsif Proc === receiver && method_name == :call
+        path, method = @method_stack[-2]
+        @method_stack.push [path, "block in #{method}", nil, nil, true]
+        @vars_stack.push({})
+        result = receiver.public_send method_name, *args, &proc_
 
       elsif receiver == @main
         begin
@@ -448,15 +462,15 @@ class BytecodeInterpreter
     end
 
     if @rescue_labels.size > 0
-      label, target_stack_size = @rescue_labels.pop
-      while @method_stack.size > target_stack_size
+      label, target_stack_size1, target_stack_size2 = @rescue_labels.pop
+      while @method_stack.size > target_stack_size1
         @method_stack.pop
         @vars_stack.pop
       end
       # $! gets set to nil after our rescue ends, but we'll want it defined
       # until the *user*'s rescue ends
       $bang = $!
-      ['RESCUE', label, target_stack_size]
+      ['RESCUE', label, target_stack_size2]
     else
       text = "#{e.class}: #{e.message}\n" + e.backtrace.map { |entry|
         "  #{entry}" }.join("\n")

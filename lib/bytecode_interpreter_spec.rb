@@ -377,4 +377,16 @@ p 4').should == "3\n4\n"
   it "can print ranges" do
     output_of("p 1..3, 4...6").should == "1..3\n4...6\n"
   end
+  it "includes block in backtrace" do
+    output_of("2
+begin
+  f = lambda do
+    raise 'x'
+  end
+  f.call
+rescue
+  p $!.backtrace
+end
+").should == %Q{["TestCode:4:in `block in <main>'", "TestCode:6:in `call'", "TestCode:6:in `<main>'"]\n}
+  end
 end
