@@ -10,7 +10,6 @@ class RspecRubyRunner
     sexp1 = parser.parse BytecodeInterpreter.RUNTIME_PRELUDE
     compiler = AstToBytecodeCompiler.new
     @bytecodes1 = compiler.compile_program 'Runtime', sexp1
-    @bytecodes1.reject! { |bytecode| [:position, :token].include?(bytecode[0]) }
   end
   def output_from ruby_code
     parser = Opal::Parser.new
