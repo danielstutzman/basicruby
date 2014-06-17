@@ -616,7 +616,7 @@ def __run_test test_name
     send test_name
     puts "\#{test_name} PASSED"
   rescue RuntimeError => e
-    puts "\#{test_name} FAILED"
+    $stderr.write "\#{test_name} FAILED\\n"
     $stderr.write "\#{e}\\n"
     e.backtrace[0...-2].each do |line|
       $stderr.puts "  \#{line}\\n"
