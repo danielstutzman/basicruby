@@ -369,8 +369,6 @@ class BytecodeInterpreter
         new_result = new Number(new_result);
       } else if (typeof(new_result) === 'string') {
         new_result = new String(new_result);
-      } else if (typeof(new_result) === 'boolean') {
-        new_result = new Boolean(new_result);
       }`
     end
     @result.push new_result
