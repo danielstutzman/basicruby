@@ -44,7 +44,9 @@ class BytecodeSpool
       @num_steps_queued -= 1 if @breakpoint == 'NEXT_BYTECODE'
       case bytecode[0]
         when :position
-          @num_steps_queued -= 1 if @breakpoint == 'NEXT_POSITION'
+          if @breakpoint == 'NEXT_POSITION' && bytecode[1] == 'YourCode'
+            @num_steps_queued -= 1
+          end
         when :done
           @num_steps_queued = 0
           @is_done = true
