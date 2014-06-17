@@ -167,14 +167,17 @@ class ExerciseController
     join = (outputs) ->
       _.map(outputs, ((output) -> output[1])).join('')
     for case_, case_num in @cases
-      case_.actual_matches_expected =
+      case_.passed =
         if @color == 'blue'
           rtrim(join(case_.actual_output)) == rtrim(case_.predicted_output)
         else if @color == 'red' || @color == 'green'
           if case_.expected_output
             rtrim(join(case_.actual_output)) ==
               rtrim(case_.expected_output.toString())
-    passed = _.every(@cases, (case_) -> case_.actual_matches_expected)
+          else if case_.code && case_.actual_output.length > 0
+            firstLine = case_.actual_output[0][1]
+            /^test[a-zA-Z0-9_]+ PASSED\n/.exec(firstLine)
+    passed = _.every(@cases, (case_) -> case_.passed)
     changeBackground = (i, selector, popup) =>
       for span in document.querySelectorAll(selector)
         span.style.opacity = if (i % 2 == 0) then '1.0' else '0.0'
