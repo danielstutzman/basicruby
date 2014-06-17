@@ -131,7 +131,10 @@ CasesComponent = React.createClass
                 td {},
                   _.map _case.actual_output, (pair, i) ->
                     [color, line] = pair
-                    span { className: color, key: "line#{i}" }, line
+                    if /^test([a-zA-Z0-9_]+) PASSED\n/.exec(line)
+                      span { className: 'passed', key: "line#{i}" }, line
+                    else
+                      span { className: color, key: "line#{i}" }, line
               if hasExpectedOutputs && @props.cases.length > 1
                 if @props.color == 'blue'
                   if _case.actual_output == undefined
