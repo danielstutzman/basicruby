@@ -410,4 +410,36 @@ rescue
 end
 ").should == %Q{["TestCode:6:in `block in <main>'", "TestCode:3:in `f'", "TestCode:6:in `<main>'"]\n}
   end
+
+  # Adapted from http://www.ruby-doc.org/core-2.0.0/Proc.html
+  it 'ignores extra args for procs' do
+    output_of('p proc {|a,b| [a,b] }.call(1,2,3)').should == "[1, 2]\n"
+  end
+  it 'sets missing args to nil for procs' do
+    output_of('p proc {|a,b| [a,b] }.call(1)').should == "[1, nil]\n"
+  end
+  it 'expands a single array arg for procs' do
+    output_of('p proc {|a,b| [a,b] }.call([1,2])').should == "[1, 2]\n"
+  end
+  it "doesn't ignore extra args for lambdas" do
+    expect { output_of('p lambda {|a,b| [a,b] }.call(1,2,3)')
+      }.to raise_exception(ArgumentError)
+  end
+  it "doesn't sets missing args to nil for lambdas" do
+    expect { output_of('p lambda {|a,b| [a,b] }.call(1)')
+      }.to raise_exception(ArgumentError)
+  end
+  it "doesn't expands a single array arg for lambdas" do
+    expect { output_of('p lambda {|a,b| [a,b] }.call([1,2])')
+      }.to raise_exception(ArgumentError)
+  end
+  it 'sets lambda? correctly for lambdas' do
+    output_of('p lambda {}.lambda?').should == "true\n"
+  end
+  it 'sets lambda? correctly for procs' do
+    output_of('p proc {}.lambda?').should == "false\n"
+  end
+  it 'sets lambda? correctly for Proc.new' do
+    output_of('p Proc.new {}.lambda?').should == "false\n"
+  end
 end
