@@ -84,7 +84,7 @@ class DebuggerController
   handleTurnPowerOn: ->
     code = @code
     try
-      bytecodes = AstToBytecodeCompiler.compile code
+      bytecodes = AstToBytecodeCompiler.compile [['YourCode', code]]
     catch e
       if e.name == 'SyntaxError'
         @interpreter = visibleState: ->
