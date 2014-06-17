@@ -28,12 +28,24 @@ if RUBY_PLATFORM == 'opal'
 end
 
 $console_texts = []
-$is_capturing_stdout = false
+$is_capturing_output = false
 class <<$stdout
   alias :old_write :write
   def write *args
-    if $is_capturing_stdout
-      $console_texts = $console_texts.clone + args.map { |arg| [:stdout, "#{arg}"] }
+    if $is_capturing_output
+      $console_texts = $console_texts.clone +
+        args.map { |arg| [:stdout, "#{arg}"] }
+    else
+      old_write *args
+    end
+  end
+end
+class <<$stderr
+  alias :old_write :write
+  def write *args
+    if $is_capturing_output
+      $console_texts = $console_texts.clone +
+        args.map { |arg| [:stderr, "#{arg}"] }
     else
       old_write *args
     end
@@ -423,9 +435,9 @@ class BytecodeInterpreter
 
       elsif receiver == @main
         begin
-          $is_capturing_stdout = true
+          $is_capturing_output = true
           result = @main.send method_name, *args, &proc_
-          $is_capturing_stdout = false
+          $is_capturing_output = false
           result
         rescue NoMethodError => e
           if args.size == 0 &&
@@ -438,9 +450,9 @@ class BytecodeInterpreter
         end
 
       else
-        $is_capturing_stdout = true
+        $is_capturing_output = true
         result = receiver.public_send method_name, *args, &proc_
-        $is_capturing_stdout = false
+        $is_capturing_output = false
         result
       end
 
@@ -452,7 +464,7 @@ class BytecodeInterpreter
       end
       result
     rescue Exception => e
-      $is_capturing_stdout = false
+      $is_capturing_output = false
       # don't call @method_stack.pop; exception handler will deal with it
 
       # It's necessary to write "return" here because of an Opal bug where
