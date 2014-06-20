@@ -64,13 +64,14 @@ class DebuggerController
     else if @countOutputChars(props.interpreter?.output) >= props.numCharsToOutput
       @numCharsToOutput += 1
       window.setTimeout (=> @render()), MILLIS_FOR_OUTPUT_CHAR
-    else if currentLine && currentLine != props.currentScrollTop
-      delta =
-        if currentLine > @currentScrollTop
-          _.max [0.125, (currentLine - @currentScrollTop) / 2]
-        else
-          _.min [0.125, (currentLine - @currentScrollTop) / 2]
-      @currentScrollTop += delta
+    else if currentLine && currentLine != @currentScrollTop
+      difference = currentLine - @currentScrollTop
+      if currentLine > @currentScrollTop
+        @currentScrollTop += _.max [0.125, difference / 3]
+        @currentScrollTop = currentLine if @currentScrollTop > currentLine
+      else
+        @currentScrollTop += _.min [-0.125, difference / 3]
+        @currentScrollTop = currentLine if @currentScrollTop < currentLine
       window.setTimeout (=> @render()), MILLIS_FOR_SCROLL_INSTRUCTIONS
     else if @features.showPartialCalls && props.numPartialCallExecuting != null &&
        props.numPartialCallExecuting != @prevProps.numPartialCallExecuting
