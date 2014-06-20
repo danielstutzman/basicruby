@@ -411,17 +411,23 @@ class BytecodeInterpreter
     @vars_stack.push __method_name: ["in '#{method_name}'"]
     begin
       result = \
-      if Array === receiver && %w[collect each each_index keep_if map map!
-          reject select select!].include?(method_name.to_s) && proc_
+      if receiver.respond_to?(method_name) && proc_ && %w[
+        collect each each_index map reject select].include?(method_name.to_s)
         new_method_name = case method_name
-          when :collect    then :__array_map # same as map
-          when :each       then :__array_each
-          when :each_index then :__array_each_index
+          when :collect    then :__map # collect is aliased to map
+          when :each       then :__each
+          when :each_index then :__each_index
+          when :map        then :__map
+          when :reject     then :__reject
+          when :select     then :__select
+        end
+        simulate_call_to @main, new_method_name, @partial_calls.last[0], &proc_
+
+      elsif Array === receiver && proc_ &&
+          %w[keep_if map! select!].include?(method_name.to_s)
+        new_method_name = case method_name
           when :keep_if    then :__array_keep_if
-          when :map        then :__array_map
           when :map!       then :__array_map!
-          when :reject     then :__array_reject
-          when :select     then :__array_select
           when :select!    then :__array_select!
         end
         simulate_call_to @main, new_method_name, @partial_calls.last[0], &proc_
@@ -552,7 +558,7 @@ class BytecodeInterpreter
 
   def self.RUNTIME_PRELUDE
     <<EOF
-def __array_each __input
+def __each __input
   __enumerator = __input.each
   begin
     while true
@@ -562,14 +568,15 @@ def __array_each __input
   end
   __input
 end
-def __array_each_index array
-  i = 0
-  n = array.size
-  while i < n
-    yield i
-    i += 1
+def __each_index __input
+  __enumerator = __input.each_index
+  begin
+    while true
+      yield __enumerator.next
+    end
+  rescue StopIteration
   end
-  array
+  __input
 end
 def __array_keep_if array
   i = 0
@@ -584,14 +591,16 @@ def __array_keep_if array
   end
   array
 end
-def __array_map __input
-  i = 0
-  result = []
-  while i < __input.size
-    result.push yield __input[i]
-    i += 1
+def __map __input
+  __enumerator = __input.each
+  __output = []
+  begin
+    while true
+      __output.push yield __enumerator.next
+    end
+  rescue StopIteration
   end
-  result
+  __output
 end
 def __array_map! array
   i = 0
@@ -602,29 +611,29 @@ def __array_map! array
   end
   array
 end
-def __array_reject array
-  i = 0
-  n = array.size
-  out = []
-  while i < n
-    if !(yield array[i])
-      out.push array[i]
+def __reject __input
+  __enumerator = __input.each
+  __output = []
+  begin
+    while true
+      __element = __enumerator.next
+      __output.push(__element) unless yield(__element)
     end
-    i += 1
+  rescue StopIteration
   end
-  out
+  __output
 end
-def __array_select array
-  i = 0
-  n = array.size
-  out = []
-  while i < n
-    if yield array[i]
-      out.push array[i]
+def __select __input
+  __enumerator = __input.each
+  __output = []
+  begin
+    while true
+      __element = __enumerator.next
+      __output.push(__element) if yield(__element)
     end
-    i += 1
+  rescue StopIteration
   end
-  out
+  __output
 end
 def __array_select! array
   i = 0
