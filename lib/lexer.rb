@@ -41,6 +41,7 @@ class Lexer
 
     last_start_pos = nil
     last_end_pos = nil
+    directly_after_do = false
     while true
       token_symbol, value = parser.next_token
 
@@ -51,6 +52,19 @@ class Lexer
           last_end_pos = nil
         end
         break
+      elsif token_symbol == :kDO || token_symbol == :tLCURLY
+        if last_start_pos && last_end_pos
+          line_start_pos_to_end_pos[last_start_pos] = last_end_pos
+          last_start_pos = nil
+          last_end_pos = nil
+        end
+        directly_after_do = true
+        next
+      elsif directly_after_do && token_symbol == :tPIPE
+        parser.next_token
+        parser.next_token
+        next
+        directly_after_do = false
       elsif token_symbol == :tINTEGER ||
          token_symbol == :tFLOAT
         excerpt = lexer.scanner.matched
@@ -64,6 +78,7 @@ class Lexer
       else
         excerpt = value[0]
       end
+      directly_after_do = false
       last_start_pos = value[1] if last_start_pos.nil?
       end_pos = value[1].clone
       end_pos[1] += excerpt.length
@@ -76,5 +91,9 @@ end
 if __FILE__ == $0
   send :require, 'opal'
   p Lexer.new.build_start_pos_to_end_pos("puts 3\nputs 4")
-  p Lexer.new.build_line_start_pos_to_end_pos("puts 3,\n5234")
+  p Lexer.new.build_line_start_pos_to_end_pos("[1, 2].each do |x|
+  p x
+  p x
+end")
+  p Lexer.new.build_line_start_pos_to_end_pos("{} & a.map { |x| x * 2 }")
 end
