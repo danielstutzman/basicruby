@@ -1,4 +1,4 @@
-UNNAMED_BLOCK = '__block__'
+UNNAMED_BLOCK = '__unnamed_block'
 
 if RUBY_PLATFORM == 'opal'
   def gets
@@ -86,13 +86,19 @@ class BytecodeInterpreter
   end
 
   def visible_state
+    used_object_ids = [] # show closure variables only once
     {
       partial_calls: @partial_calls.map { |call| call.clone },
       started_var_names: @started_var_names,
-      vars: @vars_stack.last.inject({}) { |accum, pair|
-        key, value = pair
-        accum[key] = value[0] # undo the array wrapping
-        accum
+      vars_stack: @vars_stack.map { |vars|
+        vars.inject({}) { |accum, pair|
+          key, value = pair
+          unless used_object_ids.include?(value.object_id)
+            accum[key] = value[0] # undo the array wrapping
+            used_object_ids.push value.object_id
+          end
+          accum
+        }
       },
       output: $console_texts,
       num_partial_call_executing: @num_partial_call_executing,
@@ -223,7 +229,8 @@ class BytecodeInterpreter
         end
         if @vars_stack.last[UNNAMED_BLOCK]
           # clone the block so we can tell the difference between yield
-          # (translated to __block__.call) and b.call, if param is named &b
+          # (translated to __unnamed_block.call) vs. b.call (assuming a block
+          # param that's named &b)
           old = @vars_stack.last[UNNAMED_BLOCK][0]
           new = Proc.new { |*args| old.call *args }
           new.instance_variable_set '@env', old.instance_variable_get('@env')
@@ -398,7 +405,7 @@ class BytecodeInterpreter
   def do_call receiver, method_name, proc_, *args
     path, _, line_num = @method_stack.last
     @method_stack.push [path, method_name, line_num, nil, false]
-    @vars_stack.push({})
+    @vars_stack.push __method_name: ["in '#{method_name}'"]
     begin
       result = \
       if Array === receiver && %w[collect each each_index keep_if map map!
@@ -437,7 +444,8 @@ class BytecodeInterpreter
         end
         path, method = receiver.instance_variable_get('@defined_in')
         @method_stack.push [path, "block in #{method}", nil, nil, !is_yield]
-        @vars_stack.push({})
+        @vars_stack.push __method_name:
+          (method == '<main>') ? ["in block"] : ["in block in '#{method}'"]
         result = receiver.public_send method_name, *args, &proc_
 
       elsif receiver == @main && method_name == :lambda
@@ -536,14 +544,13 @@ class BytecodeInterpreter
 
   def self.RUNTIME_PRELUDE
     <<EOF
-def __array_each array
+def __array_each __input
   i = 0
-  n = array.size
-  while i < n
-    yield array[i]
+  while i < __input.size
+    yield __input[i]
     i += 1
   end
-  array
+  __input
 end
 def __array_each_index array
   i = 0
@@ -567,15 +574,14 @@ def __array_keep_if array
   end
   array
 end
-def __array_map array
+def __array_map __input
   i = 0
-  n = array.size
-  out = []
-  while i < n
-    out.push yield array[i]
+  result = []
+  while i < __input.size
+    result.push yield __input[i]
     i += 1
   end
-  out
+  result
 end
 def __array_map! array
   i = 0

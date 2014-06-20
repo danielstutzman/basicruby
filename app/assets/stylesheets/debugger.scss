@@ -165,6 +165,15 @@ $label-height: 30px;
 
     tr {
       vertical-align: top;
+      &.method {
+        background-color: #040;
+        color: black;
+        font-size: 16pt;
+        border-top: 10px black solid;
+        .code {
+          font-family: monospace;
+        }
+      }
     }
     th {
       font-weight: normal;
@@ -179,6 +188,9 @@ $label-height: 30px;
       padding-right: 15px;
       &.future {
         color: #080;
+      }
+      &.name {
+        padding-left: 10px;
       }
     }
   }
@@ -411,6 +423,7 @@ $label-height: 30px;
       font-family: sans-serif;
       font-size: 12pt;
       color: #040;
+      padding-left: 2px;
     }
   }
 } // end .debugger

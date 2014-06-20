@@ -23,7 +23,7 @@ class BytecodeInterpreter
       map = @interpreter.$visible_state().map
       partialCalls: map.partial_calls
       numPartialCallExecuting: @_nilToNull map.num_partial_call_executing
-      vars: map.vars
+      varsStack: map.vars_stack
       startedVarNames: _.map map.started_var_names, (x) -> x.$to_s()
       output: map.output
       acceptingInput: map.accepting_input

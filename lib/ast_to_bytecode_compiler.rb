@@ -431,7 +431,7 @@ class AstToBytecodeCompiler
     bytecodes = []
     bytecodes.push [:token] + sexp.source
     bytecodes.push [:start_call]
-    bytecodes.push [:from_var, '__block__']
+    bytecodes.push [:from_var, '__unnamed_block']
     bytecodes.push [:arg]
     bytecodes.push [:result, :call]
     bytecodes.push [:arg]
