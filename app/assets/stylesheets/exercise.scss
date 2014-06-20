@@ -37,13 +37,14 @@ body.exercise {
   }
 
   .video-script {
-    font-family: serif;
-    float: right;
-    width: 900px;
+    position: absolute;
+    top: 500px;
+    height: 500px;
+    white-space: pre;
+    width: 100%;
     font-size: 24pt;
-    line-height: 2;
-    padding-top: 50px;
-    padding-right: 200px;
+    line-height: 1.5;
+    overflow: scroll;
   }
 }
 div.exercise {
