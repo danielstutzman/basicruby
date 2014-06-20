@@ -442,4 +442,11 @@ end
   it 'sets lambda? correctly for Proc.new' do
     output_of('p Proc.new {}.lambda?').should == "false\n"
   end
+
+  it 'supports for loops' do
+    output_of('for n in 1..3; p n; end').should == "1\n2\n3\n"
+  end
+  it 'keeps for loop var in same scope' do
+    output_of('for n in 1..3; end; p n').should == "3\n"
+  end
 end

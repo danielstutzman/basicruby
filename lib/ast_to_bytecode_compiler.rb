@@ -82,6 +82,7 @@ class AstToBytecodeCompiler
       when :sym      then compile_sym sexp
       when :irange   then compile_range sexp, false
       when :erange   then compile_range sexp, true
+      when :for      then compile_for sexp
       else no "s-exp with head #{sexp[0]}"
     end
   end
@@ -627,4 +628,42 @@ class AstToBytecodeCompiler
     bytecodes.push [:call]
     bytecodes
   end
+
+  def compile_for sexp
+    _, array, lasgn, body = sexp
+
+    # Simulate as if the following code were written:
+    #   __enumerator = ARRAY.each
+    #   begin
+    #     while true
+    #       LOOPVAR = __enumerator.next
+    #       BODY
+    #     end
+    #   rescue StopIteration
+    #   end
+    compile(
+      s(:block,
+        s(:lasgn, :__enumerator, s(:call, array, :each, s(:arglist))),
+        s(:rescue,
+          s(:while, s(:true),
+            s(:block,
+              s(:lasgn, lasgn[1],
+                s(:call, s(:lvar, :__enumerator), :next, s(:arglist))
+              ),
+              body || s(:nil)
+            )
+          ),
+          s(:resbody, s(:array, s(:const, :StopIteration)), nil)
+        )
+      )
+    ).reject { |bytecode| bytecode == [:token, -1, -1] }
+  end
+
+  def s(*args)
+    def args.source
+      [-1, -1]
+    end
+    args
+  end
+
 end

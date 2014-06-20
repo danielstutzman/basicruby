@@ -409,7 +409,7 @@ class BytecodeInterpreter
     begin
       result = \
       if Array === receiver && %w[collect each each_index keep_if map map!
-          reject select select!].include?(method_name.to_s)
+          reject select select!].include?(method_name.to_s) && proc_
         new_method_name = case method_name
           when :collect    then :__array_map # same as map
           when :each       then :__array_each
