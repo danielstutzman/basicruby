@@ -390,6 +390,8 @@ $label-height: 30px;
     }
     table.array {
       display: inline-block;
+      border-collapse: collapse;
+
       td {
         border: 1px #040 solid;
         padding-right: 2px;
