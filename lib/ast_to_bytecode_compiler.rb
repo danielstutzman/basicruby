@@ -630,13 +630,22 @@ class AstToBytecodeCompiler
   end
 
   def compile_for sexp
-    _, array, lasgn, body = sexp
+    _, array, lasgn_or_array, body = sexp
 
-    # Simulate as if the following code were written:
+    e_dot_next = s(:call, s(:lvar, :__enumerator), :next, s(:arglist))
+    if lasgn_or_array[0] == :lasgn
+      assigns = s(:lasgn, lasgn_or_array[1], e_dot_next)
+    elsif lasgn_or_array[0] == :array
+      assigns = s(:masgn, lasgn_or_array, e_dot_next)
+    else
+      no 'assignments in for s-exp except lasgn or array'
+    end
+
+    # Simulate the following code:
     #   __enumerator = ARRAY.each
     #   begin
     #     while true
-    #       LOOPVAR = __enumerator.next
+    #       ASSIGNS = __enumerator.next
     #       BODY
     #     end
     #   rescue StopIteration
@@ -646,12 +655,7 @@ class AstToBytecodeCompiler
         s(:lasgn, :__enumerator, s(:call, array, :each, s(:arglist))),
         s(:rescue,
           s(:while, s(:true),
-            s(:block,
-              s(:lasgn, lasgn[1],
-                s(:call, s(:lvar, :__enumerator), :next, s(:arglist))
-              ),
-              body || s(:nil)
-            )
+            s(:block, assigns, body || s(:nil))
           ),
           s(:resbody, s(:array, s(:const, :StopIteration)), nil)
         )

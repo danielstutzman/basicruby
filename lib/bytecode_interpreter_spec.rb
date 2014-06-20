@@ -449,4 +449,8 @@ end
   it 'keeps for loop var in same scope' do
     output_of('for n in 1..3; end; p n').should == "3\n"
   end
+  it 'supports for loops with multiple vars' do
+    output_of('for a, b in [[1, 2], [3, 4]]; p [a, b]; end; p [a, b]'
+      ).should == "[1, 2]\n[3, 4]\n[3, 4]\n"
+  end
 end
