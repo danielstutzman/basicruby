@@ -24,7 +24,6 @@ class BytecodeInterpreter
       partialCalls: map.partial_calls
       numPartialCallExecuting: @_nilToNull map.num_partial_call_executing
       varsStack: map.vars_stack
-      startedVarNames: _.map map.started_var_names, (x) -> x.$to_s()
       output: map.output
       acceptingInput: map.accepting_input
     catch e

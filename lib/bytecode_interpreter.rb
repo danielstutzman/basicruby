@@ -71,16 +71,17 @@ class BytecodeInterpreter
     @num_partial_call_executing = nil
     @result = [] # a stack with 0 or 1 items in it
     @vars_stack = [{}]
-    @started_var_names = []
     @main = (RUBY_PLATFORM == 'opal') ?
       `Opal.top` : TOPLEVEL_BINDING.eval('self')
     @accepting_input = false
     @accepted_input = nil
     @rescue_labels = []
-      # list of [label, stack_size1, stack_size2, pc_size] tuples:
-        # stack_size1 is with counting pop_next_one_too_on_return
-        # stack_size2 is when you don't count pop_next_one_too_on_return
-        # pc_size means partial_calls
+      # list of tuples:
+        # [0] label
+        # [1] stack_size1 is with counting pop_next_one_too_on_return
+        # [2] stack_size2 is when you don't count pop_next_one_too_on_return
+        # [3] pc_size means partial_calls
+        # [4] pending_var_names: so pending vars from start_vars get reset
     # path, method, line, col, pop_next_one_too_on_return
     @method_stack = [['Runtime', '<main>', nil, nil, false]]
     $console_texts = []
@@ -91,17 +92,16 @@ class BytecodeInterpreter
     used_object_ids = [] # show closure variables only once
     {
       partial_calls: @partial_calls.map { |call| call.clone },
-      started_var_names: @started_var_names,
-      vars_stack: @vars_stack.map { |vars|
-        vars.inject({}) { |accum, pair|
-          key, value = pair
-          unless used_object_ids.include?(value.object_id)
-            accum[key] = value[0] # undo the array wrapping
-            used_object_ids.push value.object_id
+      vars_stack: @vars_stack.map do |vars|
+        vars.reject do |name, tuple|
+          if used_object_ids.include? tuple.object_id
+            true
+          else
+            used_object_ids.push tuple.object_id
+            false
           end
-          accum
-        }
-      },
+        end
+      end,
       output: $console_texts,
       num_partial_call_executing: @num_partial_call_executing,
       accepting_input: @accepting_input,
@@ -189,19 +189,22 @@ class BytecodeInterpreter
           @method_stack.pop
         end
         ['RETURN']
-      when :start_var
-        @started_var_names.push bytecode[1]
+      when :start_vars
+        bytecode[1..-1].each do |var_name|
+          if @vars_stack.last.has_key? var_name
+            @vars_stack.last[var_name][0] = true
+          else
+            @vars_stack.last[var_name] = [true]
+          end
+        end
         nil
       when :to_var
         var_name = bytecode[1]
-        @started_var_names = @started_var_names - [var_name]
         value = pop_result
         # store vars in arrays, so closures can modify their values
-        if @vars_stack.last.has_key? var_name
-          @vars_stack.last[var_name][0] = value
-        else
-          @vars_stack.last[var_name] = [value]
-        end
+        # also array[0] stores whether array is awaiting a value or not
+        @vars_stack.last[var_name][0] = false
+        @vars_stack.last[var_name][1] = value
         result_is value
         nil
       when :to_vars
@@ -209,44 +212,40 @@ class BytecodeInterpreter
         array = pop_result
         old_array = array.clone
 
-        @started_var_names = @started_var_names - var_names
-
         if Proc === array.last
-          @vars_stack.last[UNNAMED_BLOCK] = [array.pop]
+          @vars_stack.last[UNNAMED_BLOCK] = [false, array.pop]
         end
         var_names.each_with_index do |var_name, i|
           if i == splat_num
             value = array
           elsif i == block_num
-            value = @vars_stack.last[UNNAMED_BLOCK][0]
+            value = @vars_stack.last[UNNAMED_BLOCK][1]
           else
             value = array.shift
           end
           # store vars in arrays, so closures can modify their values
-          if @vars_stack.last.has_key? var_name
-            @vars_stack.last[var_name][0] = value
-          else
-            @vars_stack.last[var_name] = [value]
-          end
+          # also array[0] stores whether array is awaiting a value or not
+          @vars_stack.last[var_name][0] = false
+          @vars_stack.last[var_name][1] = value
         end
         if @vars_stack.last[UNNAMED_BLOCK]
           # clone the block so we can tell the difference between yield
           # (translated to __unnamed_block.call) vs. b.call (assuming a block
           # param that's named &b)
-          old = @vars_stack.last[UNNAMED_BLOCK][0]
+          old = @vars_stack.last[UNNAMED_BLOCK][1]
           new = Proc.new { |*args| old.call *args }
           new.instance_variable_set '@env', old.instance_variable_get('@env')
           new.instance_variable_set '@defined_in',
             old.instance_variable_get('@defined_in')
           new.instance_variable_set '@is_yield', true
-          @vars_stack.last[UNNAMED_BLOCK][0] = new
+          @vars_stack.last[UNNAMED_BLOCK][1] = new
         end
         result_is old_array
         nil
       when :from_var
         var_name = bytecode[1]
         if @vars_stack.last.has_key? var_name
-          out = @vars_stack.last[var_name][0] # in array so closures can modify
+          out = @vars_stack.last[var_name][1] # in array so closures can modify
           result_is out
         else
           raise "Looking up unset variable #{var_name}"
@@ -318,8 +317,10 @@ class BytecodeInterpreter
         # save the stack size so we can easily remove any additional methods
         stack_size1 = @method_stack.size
         stack_size2 = @method_stack.count { |m| !m[4] }
+        pending_var_names = @vars_stack.last.select { |var_name, tuple|
+          tuple[0] }.values.map { |tuple| tuple[1] }
         @rescue_labels.push [bytecode[1], stack_size1, stack_size2,
-          @partial_calls.size]
+          @partial_calls.size, pending_var_names]
         nil
       when :pop_rescue
         label, *_ = @rescue_labels.pop
@@ -408,7 +409,7 @@ class BytecodeInterpreter
   def do_call receiver, method_name, proc_, *args
     path, _, line_num = @method_stack.last
     @method_stack.push [path, method_name, line_num, nil, false]
-    @vars_stack.push __method_name: ["in '#{method_name}'"]
+    @vars_stack.push __method_name: [false, "in '#{method_name}'"]
     begin
       result = \
       if receiver.respond_to?(method_name) && proc_ && %w[
@@ -453,8 +454,8 @@ class BytecodeInterpreter
         end
         path, method = receiver.instance_variable_get('@defined_in')
         @method_stack.push [path, "block in #{method}", nil, nil, !is_yield]
-        @vars_stack.push __method_name:
-          (method == '<main>') ? ["in block"] : ["in block in '#{method}'"]
+        @vars_stack.push __method_name: (method == '<main>') ?
+          [false, "in block"] : [false, "in block in '#{method}'"]
         result = receiver.public_send method_name, *args, &proc_
 
       elsif receiver == @main && method_name == :lambda
@@ -529,14 +530,19 @@ class BytecodeInterpreter
     end
 
     if @rescue_labels.size > 0
-      label, target_stack_size1, target_stack_size2, partial_calls_size =
-        @rescue_labels.pop
+      label, target_stack_size1, target_stack_size2, partial_calls_size,
+        pending_var_names = @rescue_labels.pop
       while @method_stack.size > target_stack_size1
         @method_stack.pop
         @vars_stack.pop
       end
       while @partial_calls.size > partial_calls_size + 1
         @partial_calls.pop
+      end
+      @vars_stack.last.each do |var_name, tuple|
+        if !pending_var_names.include?(var_name)
+          tuple[0] = false # mark non-pending
+        end
       end
       # don't do the last pop; something else will
       # $! gets set to nil after our rescue ends, but we'll want it defined

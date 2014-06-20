@@ -201,7 +201,7 @@ class AstToBytecodeCompiler
     _, var_name, expression = sexp
     bytecodes = []
     bytecodes.push [:token] + sexp.source
-    bytecodes.push [:start_var, var_name]
+    bytecodes.push [:start_vars, var_name]
     bytecodes.concat compile(expression)
     bytecodes.push [:to_var, var_name]
     bytecodes
@@ -299,6 +299,7 @@ class AstToBytecodeCompiler
     end
     bytecodes.push [:args, min_num_args, max_num_args]
     bytecodes.push [:vars_from_env_except] + var_names
+    bytecodes.push [:start_vars] + var_names if var_names.size > 0
     bytecodes.push [:to_vars, splat_num, block_num] + var_names
     bytecodes.push [:discard] # since result of multi-assign is ignored
     if optional_block
@@ -324,11 +325,11 @@ class AstToBytecodeCompiler
         i += 1
         if lasgn[0] == :lasgn
           bytecodes.push [:token] + lasgn.source
-          bytecodes.push [:start_var, lasgn[1]]
+          bytecodes.push [:start_vars, lasgn[1]]
           lasgn[1]
         elsif lasgn[0] == :splat && lasgn[1][0] == :lasgn
           bytecodes.push [:token] + lasgn[1].source
-          bytecodes.push [:start_var, lasgn[1][1]]
+          bytecodes.push [:start_vars, lasgn[1][1]]
           splat_num = i
           lasgn[1][1]
         else
@@ -380,6 +381,7 @@ class AstToBytecodeCompiler
         var_names.push part
       end
     end
+    bytecodes.push [:start_vars] + var_names if var_names.size > 0
     bytecodes.push [:args, min_num_args, max_num_args]
     bytecodes.push [:vars_from_env_except] + var_names
     bytecodes.push [:to_vars, splat_num, block_num] + var_names
