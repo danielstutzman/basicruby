@@ -660,7 +660,10 @@ class AstToBytecodeCompiler
           s(:resbody, s(:array, s(:const, :StopIteration)), nil)
         )
       )
-    ).reject { |bytecode| bytecode == [:token, -1, -1] }
+    ).reject { |bytecode|
+      bytecode == [:token, -1, -1] ||
+      bytecode[0] == :position && bytecode[2] == -1 && bytecode[3] == -1
+    }
   end
 
   def s(*args)
