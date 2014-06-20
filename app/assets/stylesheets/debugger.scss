@@ -152,6 +152,7 @@ $label-height: 30px;
   }
 
   .variables-scroller {
+    width: 100%;
     overflow: scroll;
   }
 
@@ -159,6 +160,8 @@ $label-height: 30px;
     color: #0f0;
     font-size: 20pt;
     padding-left: 15px;
+    border-collapse: collapse;
+    width: 100%;
 
     tr {
       vertical-align: top;
