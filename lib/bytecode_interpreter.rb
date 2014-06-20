@@ -76,9 +76,11 @@ class BytecodeInterpreter
       `Opal.top` : TOPLEVEL_BINDING.eval('self')
     @accepting_input = false
     @accepted_input = nil
-    @rescue_labels = [] # list of [label, stack_size1, stack_size2] tuples
-      # stack_size1 is with counting pop_next_one_too_on_return
-      # stack_size2 is when you don't count pop_next_one_too_on_return
+    @rescue_labels = []
+      # list of [label, stack_size1, stack_size2, pc_size] tuples:
+        # stack_size1 is with counting pop_next_one_too_on_return
+        # stack_size2 is when you don't count pop_next_one_too_on_return
+        # pc_size means partial_calls
     # path, method, line, col, pop_next_one_too_on_return
     @method_stack = [['Runtime', '<main>', nil, nil, false]]
     $console_texts = []
@@ -316,10 +318,11 @@ class BytecodeInterpreter
         # save the stack size so we can easily remove any additional methods
         stack_size1 = @method_stack.size
         stack_size2 = @method_stack.count { |m| !m[4] }
-        @rescue_labels.push [bytecode[1], stack_size1, stack_size2]
+        @rescue_labels.push [bytecode[1], stack_size1, stack_size2,
+          @partial_calls.size]
         nil
       when :pop_rescue
-        label, _ = @rescue_labels.pop
+        label, *_ = @rescue_labels.pop
         if label != bytecode[1]
           raise "Expected to pop #{bytecode[1]} but was #{label}"
         end
@@ -520,11 +523,16 @@ class BytecodeInterpreter
     end
 
     if @rescue_labels.size > 0
-      label, target_stack_size1, target_stack_size2 = @rescue_labels.pop
+      label, target_stack_size1, target_stack_size2, partial_calls_size =
+        @rescue_labels.pop
       while @method_stack.size > target_stack_size1
         @method_stack.pop
         @vars_stack.pop
       end
+      while @partial_calls.size > partial_calls_size + 1
+        @partial_calls.pop
+      end
+      # don't do the last pop; something else will
       # $! gets set to nil after our rescue ends, but we'll want it defined
       # until the *user*'s rescue ends
       $bang = $!
@@ -545,10 +553,12 @@ class BytecodeInterpreter
   def self.RUNTIME_PRELUDE
     <<EOF
 def __array_each __input
-  i = 0
-  while i < __input.size
-    yield __input[i]
-    i += 1
+  __enumerator = __input.each
+  begin
+    while true
+      yield __enumerator.next
+    end
+  rescue StopIteration
   end
   __input
 end
