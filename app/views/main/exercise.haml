@@ -20,7 +20,7 @@
   .title{ class: @exercise.color }
     %a(href='/' class='logo-link')
     &mdash;
-    = "#{@exercise.topic.num}. #{@exercise.topic.title}"
+    = "#{@exercise.topic.num}. #{@exercise.topic.title_text}"
 
   - if @exercise.color == 'purple' && @exercise.json_loaded['youtube_id']
     .exercise.purple
