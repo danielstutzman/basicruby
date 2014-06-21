@@ -7,6 +7,7 @@ class BytecodeSpool
     @num_steps_queued = 0
     @is_done = false
     @counter_stack = []
+    @last_yourcode_position = []
   end
 
   def counter # just for debugging prompt
@@ -44,8 +45,14 @@ class BytecodeSpool
       @num_steps_queued -= 1 if @breakpoint == 'NEXT_BYTECODE'
       case bytecode[0]
         when :position
-          if @breakpoint == 'NEXT_POSITION' && bytecode[1] == 'YourCode'
-            @num_steps_queued -= 1
+          if bytecode[1] == 'YourCode'
+            if @breakpoint == 'NEXT_POSITION'
+              @num_steps_queued -= 1
+            elsif @breakpoint == 'NEXT_LINE' &&
+                bytecode[1] != @last_yourcode_position[1]
+              @num_steps_queued -= 1
+            end
+            @last_yourcode_position = bytecode
           end
         when :done
           @num_steps_queued = 0

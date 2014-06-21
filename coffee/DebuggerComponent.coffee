@@ -45,9 +45,9 @@ DebuggerComponent = React.createClass
         if @props.features.showStepButton
           button
             className: 'step ' + (if @props.buttons?.breakpoint ==
-              'NEXT_POSITION' && @props.buttons?.numStepsQueued >
+              'NEXT_LINE' && @props.buttons?.numStepsQueued >
               0 then 'active ' else '')
-            onClick: => @props.doCommand.nextPosition()
+            onClick: => @props.doCommand.nextLine()
             disabled: @props.buttons?.isDone
             "#{RIGHT_TRIANGLE} Step"
         if @props.features.showRunButton

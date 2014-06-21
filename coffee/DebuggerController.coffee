@@ -47,6 +47,7 @@ class DebuggerController
         close:         => @$div.parentNode.removeChild @$div
         nextExercise:  @exerciseDoCommand.nextExercise
         nextRep:       @exerciseDoCommand.nextRep
+        nextLine:      => @handleClickNextLine.apply this, []
         nextPosition:  => @handleClickNextPosition.apply this, []
         run:           => @handleClickRun.apply          this, []
         doChangeInput: (newText) => @pendingStdin = newText; @render()
@@ -111,6 +112,10 @@ class DebuggerController
       @highlighter.interpret bytecode
       spoolCommand = @interpreter.interpret bytecode
       @spool.doCommand.apply @spool, spoolCommand
+    @render()
+
+  handleClickNextLine: ->
+    @spool.queueRunUntil 'NEXT_LINE'
     @render()
 
   handleClickNextPosition: ->
