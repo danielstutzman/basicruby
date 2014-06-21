@@ -52,6 +52,9 @@
   - %w[beginner intermediate].each do |level|
     %tr
       %th.title
+        - if level == 'intermediate'
+          = image_tag 'under_construction.png', style: 'float: left',
+            title: 'Under construction'
         %h2= level.humanize
       %td.purple
       %td.yellow
