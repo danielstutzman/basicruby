@@ -89,7 +89,7 @@ end
       [:token, 1, 0], [:result, :lambda], [:make_symbol], [:arg],
       [:goto, "after_return_test_1_9"],
       [:label, "start_test_1_9"],
-      [:args, 0, 0], [:vars_from_env_except], [:to_vars, nil, nil], [:discard],
+      [:args, 0, 0], [:to_vars, nil, nil], [:discard],
       [:position, "test", 1, 9], [:token, 1, 9], [:result, 4], [:return],
       [:label, "after_return_test_1_9"], [:make_proc, "start_test_1_9"], [:arg],
       [:pre_call], [:call]
@@ -115,9 +115,7 @@ end
       [:top], [:arg],
       [:token, 1, 0], [:result, :lambda], [:make_symbol], [:arg],
       [:goto, "after_return_test_1"], [:label, "start_test_2"],
-      [:args, 0, 1], [:vars_from_env_except, :x],
-      [:start_vars, :x],
-      [:to_vars, nil, nil, :x],
+      [:args, 0, 1, :x], [:to_vars, nil, nil, :x],
       [:discard],
       [:goto_param_defaults,
         "param_defaults_test_3_0", "param_defaults_test_4_1"],
@@ -136,7 +134,7 @@ end
     compile('def f; 3; end').should == [
       [:position, "test", 1, 0], [:goto, "after_return_test_1_0"],
       [:label, "start_test_1_0"],
-      [:args, 0, 0], [:vars_from_env_except], [:to_vars, nil, nil], [:discard],
+      [:args, 0, 0], [:to_vars, nil, nil], [:discard],
       [:position, "test", 1, 7], [:token, 1, 7], [:result, 3],
       [:return], [:label, "after_return_test_1_0"],
       [:start_call], [:top], [:arg], [:result, :define_method], [:arg],
@@ -149,9 +147,8 @@ end
     compile('lambda{|&b|}').should == [
       [:position, "test", 1, 0], [:start_call], [:top], [:arg],
       [:token, 1, 0], [:result, :lambda], [:make_symbol], [:arg],
-      [:goto, "after_return_test_1"], [:label, "start_test_2"], [:args, 0, 0],
-      [:vars_from_env_except, :b], [:start_vars, :b],
-      [:to_vars, nil, 0, :b], [:discard],
+      [:goto, "after_return_test_1"], [:label, "start_test_2"],
+      [:args, 0, 0, :b], [:to_vars, nil, 0, :b], [:discard],
       [:result, nil], [:return],
       [:label, "after_return_test_1"], [:make_proc, "start_test_2"],
       [:arg], [:pre_call], [:call]

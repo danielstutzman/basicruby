@@ -297,9 +297,7 @@ class AstToBytecodeCompiler
     else
       no 'assignments other than :lasgn and :masgn'
     end
-    bytecodes.push [:args, min_num_args, max_num_args]
-    bytecodes.push [:vars_from_env_except] + var_names
-    bytecodes.push [:start_vars] + var_names if var_names.size > 0
+    bytecodes.push [:args, min_num_args, max_num_args] + var_names
     bytecodes.push [:to_vars, splat_num, block_num] + var_names
     bytecodes.push [:discard] # since result of multi-assign is ignored
     if optional_block
@@ -381,9 +379,7 @@ class AstToBytecodeCompiler
         var_names.push part
       end
     end
-    bytecodes.push [:start_vars] + var_names if var_names.size > 0
-    bytecodes.push [:args, min_num_args, max_num_args]
-    bytecodes.push [:vars_from_env_except] + var_names
+    bytecodes.push [:args, min_num_args, max_num_args] + var_names
     bytecodes.push [:to_vars, splat_num, block_num] + var_names
     bytecodes.push [:discard] # since result of multi-assign is ignored
     if optional_block

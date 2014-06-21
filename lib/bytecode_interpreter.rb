@@ -267,7 +267,7 @@ class BytecodeInterpreter
           nil
         end
       when :args
-        _, min_num_args, max_num_args = bytecode
+        _, min_num_args, max_num_args, *var_names = bytecode
         receiver, method_name, block_arg, *args = @partial_calls.last
         result_is args + (block_arg ? [block_arg] : [])
 
@@ -292,9 +292,7 @@ class BytecodeInterpreter
             "wrong number of arguments (#{args.size} for #{num_expected})"
           raise_exception { raise ArgumentError.new(message) }
         end
-        nil
-      when :vars_from_env_except
-        var_names = bytecode[1..-1]
+
         if Proc === @partial_calls.last[0]
           env = @partial_calls.last[0].instance_variable_get '@env'
           env.keys.each do |var_name|
@@ -302,9 +300,15 @@ class BytecodeInterpreter
               @vars_stack.last[var_name] = env[var_name]
             end
           end
-        else
-          new_vars = {}
         end
+
+        # mark vars as pending (until :to_vars runs)
+        var_names.each do |var_name|
+          unless @vars_stack.last.has_key? var_name
+            @vars_stack.last[var_name] = [true]
+          end
+        end
+
         nil
       when :goto_param_defaults
         num_args = @partial_calls.last.size - 3
