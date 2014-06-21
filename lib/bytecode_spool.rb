@@ -46,10 +46,11 @@ class BytecodeSpool
       case bytecode[0]
         when :position
           if bytecode[1] == 'YourCode'
+            line0, col0 = @last_yourcode_position[2..3]
+            line1, col1 = [bytecode[2], bytecode[3]]
             if @breakpoint == 'NEXT_POSITION'
               @num_steps_queued -= 1
-            elsif @breakpoint == 'NEXT_LINE' &&
-                bytecode[1] != @last_yourcode_position[1]
+            elsif @breakpoint == 'NEXT_LINE' && line1 != line0
               @num_steps_queued -= 1
             end
             @last_yourcode_position = bytecode
