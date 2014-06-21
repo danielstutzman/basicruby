@@ -1,4 +1,4 @@
-UNNAMED_BLOCK = '__unnamed_block'
+UNNAMED_BLOCK = :__unnamed_block
 
 if RUBY_PLATFORM == 'opal'
   def gets
@@ -125,11 +125,13 @@ class BytecodeInterpreter
         @method_stack.last[3] = bytecode[2] # col
         nil
       when :result
-        case bytecode[1]
-          when Array then result_is bytecode[1].clone
-          when Hash  then result_is bytecode[1].clone
-          else result_is bytecode[1]
-        end
+        result_is bytecode[1]
+        nil
+      when :result_nil
+        result_is nil
+        nil
+      when :result_array
+        result_is []
         nil
       when :discard
         pop_result
@@ -191,7 +193,9 @@ class BytecodeInterpreter
         end
         ['RETURN']
       when :start_vars
-        bytecode[1..-1].each do |var_name|
+        _, *var_names = bytecode
+        var_names.map! { |var_name| var_name.intern }
+        var_names.each do |var_name|
           if @vars_stack.last.has_key? var_name
             @vars_stack.last[var_name][0] = true
           else
@@ -200,7 +204,7 @@ class BytecodeInterpreter
         end
         nil
       when :to_var
-        var_name = bytecode[1]
+        var_name = bytecode[1].intern
         value = pop_result
         # store vars in arrays, so closures can modify their values
         # also array[0] stores whether array is awaiting a value or not
@@ -210,6 +214,7 @@ class BytecodeInterpreter
         nil
       when :to_vars
         _, splat_num, block_num, *var_names = bytecode
+        var_names.map! { |var_name| var_name.intern }
         array = pop_result
         old_array = array.clone
 
@@ -241,7 +246,7 @@ class BytecodeInterpreter
         result_is old_array
         nil
       when :from_var
-        var_name = bytecode[1]
+        var_name = bytecode[1].intern
         if @vars_stack.last.has_key? var_name
           out = @vars_stack.last[var_name][1] # in array so closures can modify
           result_is out
@@ -250,7 +255,7 @@ class BytecodeInterpreter
         end
         nil
       when :make_symbol
-        result = pop_result
+        result = pop_result.intern
         `result.is_symbol = true;` if RUBY_PLATFORM == 'opal'
         result_is result
         nil
@@ -265,6 +270,7 @@ class BytecodeInterpreter
         end
       when :args
         _, min_num_args, max_num_args, *var_names = bytecode
+        var_names.map! { |var_name| var_name.intern }
 
         # Copy args from partial_calls to result
         receiver, method_name, block_arg, *args = @partial_calls.last
@@ -338,13 +344,13 @@ class BytecodeInterpreter
         end
         nil
       when :to_gvar
-        var_name = bytecode[1]
+        var_name = bytecode[1].intern
         value = pop_result
         eval "#{var_name} = value"
         result_is value
         nil
       when :from_gvar
-        var_name = bytecode[1]
+        var_name = bytecode[1].intern
         if var_name.to_s == '$!'
           out = $! || $bang
         else
@@ -353,7 +359,7 @@ class BytecodeInterpreter
         result_is out
         nil
       when :const
-        result_is Module.const_get(bytecode[1])
+        result_is Module.const_get(bytecode[1].intern)
         nil
       when :clear_dollar_bang
         # we extend $! so it's accesible from user code's rescue blocks,
@@ -416,6 +422,7 @@ class BytecodeInterpreter
   end
 
   def do_call receiver, method_name, proc_, *args
+    raise "Expected symbol for method_name" if !(Symbol === method_name)
     path, _, line_num = @method_stack.last
     @method_stack.push [path, method_name, line_num, nil, false]
     @vars_stack.push __method_name: [false, "in '#{method_name}'"]

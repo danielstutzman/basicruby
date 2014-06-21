@@ -41,7 +41,7 @@ class AstToBytecodeCompiler
   end
 
   def compile sexp
-    return [[:result, nil]] if sexp.nil?
+    return [[:result_nil]] if sexp.nil?
     case sexp[0]
       when :int      then [[:token] + sexp.source, [:result, sexp[1]]]
       when :float    then [[:token] + sexp.source, [:result, sexp[1]]]
@@ -53,9 +53,9 @@ class AstToBytecodeCompiler
         end
       when :nil
         if sexp.source
-          [[:token] + sexp.source, [:result, nil]]
+          [[:token] + sexp.source, [:result_nil]]
         else
-          [[:result, nil]]
+          [[:result_nil]]
         end
       when :true     then [[:token] + sexp.source, [:result, true]]
       when :false    then [[:token] + sexp.source, [:result, false]]
@@ -118,11 +118,12 @@ class AstToBytecodeCompiler
     _, *elements = sexp
     bytecodes = []
     bytecodes.push [:start_call]
-    bytecodes.push [:result, []]
+    bytecodes.push [:result_array]
     bytecodes.push [:arg]
-    bytecodes.push [:result, :push]
+    bytecodes.push [:result, 'push']
+    bytecodes.push [:make_symbol]
     bytecodes.push [:arg]
-    bytecodes.push [:result, nil]
+    bytecodes.push [:result_nil]
     bytecodes.push [:arg] # no block
     elements.each do |element|
       bytecodes.concat compile(element)
@@ -163,7 +164,7 @@ class AstToBytecodeCompiler
     bytecodes.push [:arg]
 
     bytecodes.push [:token] + sexp.source
-    bytecodes.push [:result, method_name]
+    bytecodes.push [:result, method_name.to_s]
     bytecodes.push [:make_symbol]
     bytecodes.push [:arg]
     
@@ -180,7 +181,7 @@ class AstToBytecodeCompiler
 
       bytecodes.push [:make_proc, start_label]
     else
-      bytecodes.push [:result, nil] # no block arg
+      bytecodes.push [:result_nil] # no block arg
     end
     bytecodes.push [:arg]
 
@@ -207,15 +208,15 @@ class AstToBytecodeCompiler
     _, var_name, expression = sexp
     bytecodes = []
     bytecodes.push [:token] + sexp.source
-    bytecodes.push [:start_vars, var_name]
+    bytecodes.push [:start_vars, var_name.to_s]
     bytecodes.concat compile(expression)
-    bytecodes.push [:to_var, var_name]
+    bytecodes.push [:to_var, var_name.to_s]
     bytecodes
   end
 
   def compile_lvar sexp
     _, var_name = sexp
-    [[:token] + sexp.source, [:from_var, var_name]]
+    [[:token] + sexp.source, [:from_var, var_name.to_s]]
   end
 
   def compile_if sexp
@@ -245,9 +246,10 @@ class AstToBytecodeCompiler
     bytecodes.push [:start_call]
     bytecodes.push [:result, str]
     bytecodes.push [:arg]
-    bytecodes.push [:result, :<<]
+    bytecodes.push [:result, '<<']
+    bytecodes.push [:make_symbol]
     bytecodes.push [:arg]
-    bytecodes.push [:result, nil]
+    bytecodes.push [:result_nil]
     bytecodes.push [:arg] # no block
     strs_or_evstrs.each do |str_or_evstr|
       bytecodes.concat compile(str_or_evstr)
@@ -262,15 +264,15 @@ class AstToBytecodeCompiler
     _, assignments, statement = sexp
     bytecodes = []
 
-    splat_num = nil
-    block_num = nil
+    splat_num = -1
+    block_num = -1
     optional_block = nil
     min_num_args = max_num_args = 0
     if assignments.nil?
       var_names = []
     elsif assignments[0] == :lasgn
       min_num_args = max_num_args = 1
-      var_names = [assignments[1]]
+      var_names = [assignments[1].to_s]
     elsif assignments[0] == :masgn
       if assignments[1][0] == :array
         i = -1
@@ -279,14 +281,14 @@ class AstToBytecodeCompiler
           if part[0] == :lasgn
             min_num_args += 1
             max_num_args += 1
-            part[1]
+            part[1].to_s
           elsif part[0] == :splat && part[1][0] == :lasgn
             max_num_args = nil # no maximum
             splat_num = i
-            part[1][1]
+            part[1][1].to_s
           elsif part[0] == :block_pass && part[1][0] == :lasgn
             block_num = i
-            part[1][1]
+            part[1][1].to_s
           elsif part[0] == :block
             min_num_args -= (part.size - 1)
             optional_block = part
@@ -322,20 +324,20 @@ class AstToBytecodeCompiler
   def compile_masgn sexp
     _, to_array, from_expression = sexp
     bytecodes = []
-    splat_num = nil
+    splat_num = -1
     if to_array[0] == :array
       i = -1
       var_names = to_array[1..-1].map do |lasgn|
         i += 1
         if lasgn[0] == :lasgn
           bytecodes.push [:token] + lasgn.source
-          bytecodes.push [:start_vars, lasgn[1]]
-          lasgn[1]
+          bytecodes.push [:start_vars, lasgn[1].to_s]
+          lasgn[1].to_s
         elsif lasgn[0] == :splat && lasgn[1][0] == :lasgn
           bytecodes.push [:token] + lasgn[1].source
-          bytecodes.push [:start_vars, lasgn[1][1]]
+          bytecodes.push [:start_vars, lasgn[1][1].to_s]
           splat_num = i
-          lasgn[1][1]
+          lasgn[1][1].to_s
         else
           no "contents of :masgn's :array except :lasgn or :splat :lasgn"
         end
@@ -345,7 +347,7 @@ class AstToBytecodeCompiler
     end
 
     bytecodes.concat compile(from_expression)
-    bytecodes.push [:to_vars, splat_num, nil] + var_names
+    bytecodes.push [:to_vars, splat_num, -1] + var_names
     bytecodes
   end
 
@@ -361,8 +363,8 @@ class AstToBytecodeCompiler
     bytecodes.push [:label, start_label]
 
     i = -1
-    splat_num = nil
-    block_num = nil
+    splat_num = -1
+    block_num = -1
     min_num_args = 0
     max_num_args = 0
     optional_block = nil
@@ -375,14 +377,14 @@ class AstToBytecodeCompiler
       elsif part.to_s.start_with?('*')
         splat_num = i
         max_num_args = nil
-        var_names.push part[1..-1].intern
+        var_names.push part[1..-1].to_s
       elsif part.to_s.start_with?('&')
         block_num = i
-        var_names.push part[1..-1].intern
+        var_names.push part[1..-1].to_s
       else
         min_num_args += 1
         max_num_args += 1
-        var_names.push part
+        var_names.push part.to_s
       end
     end
     bytecodes.push [:args, min_num_args, max_num_args] + var_names
@@ -403,11 +405,13 @@ class AstToBytecodeCompiler
       bytecodes.push [:top]
     end
     bytecodes.push [:arg]
-    bytecodes.push [:result, :define_method]
+    bytecodes.push [:result, 'define_method']
+    bytecodes.push [:make_symbol]
     bytecodes.push [:arg]
     bytecodes.push [:make_proc, start_label]
     bytecodes.push [:arg]
-    bytecodes.push [:result, method_name]
+    bytecodes.push [:result, method_name.to_s]
+    bytecodes.push [:make_symbol]
     bytecodes.push [:arg]
     bytecodes.push [:pre_call]
     bytecodes.push [:call]
@@ -438,9 +442,10 @@ class AstToBytecodeCompiler
     bytecodes.push [:start_call]
     bytecodes.push [:from_var, '__unnamed_block']
     bytecodes.push [:arg]
-    bytecodes.push [:result, :call]
+    bytecodes.push [:result, 'call']
+    bytecodes.push [:make_symbol]
     bytecodes.push [:arg]
-    bytecodes.push [:result, nil]
+    bytecodes.push [:result_nil]
     bytecodes.push [:arg]
     args.each do |arg|
       bytecodes.concat compile(arg)
@@ -464,7 +469,7 @@ class AstToBytecodeCompiler
     bytecodes.push [:discard]
     bytecodes.push [:goto, label_start]
     bytecodes.push [:label, label_end]
-    bytecodes.push [:result, nil] # so there's something to discard
+    bytecodes.push [:result_nil] # so there's something to discard
     bytecodes
   end
 
@@ -475,8 +480,9 @@ class AstToBytecodeCompiler
     bytecodes.concat compile(receiver)
     bytecodes.push [:arg]
     bytecodes.push [:result, method_name]
+    bytecodes.push [:make_symbol]
     bytecodes.push [:arg]
-    bytecodes.push [:result, nil] # no block
+    bytecodes.push [:result_nil] # no block
     bytecodes.push [:arg]
     bytecodes.concat compile(arglist)
     bytecodes.push [:pre_call]
@@ -497,7 +503,7 @@ class AstToBytecodeCompiler
     bytecodes.push [:push_rescue, label_rescue]
 
     if body.nil? || (body[0] == :block && body.size == 1)
-      bytecodes.push [:result, nil]
+      bytecodes.push [:result_nil]
     else
       bytecodes.concat compile(body)
     end
@@ -517,10 +523,10 @@ class AstToBytecodeCompiler
     bytecodes.push [:start_call]
     bytecodes.push [:top]
     bytecodes.push [:arg]
-    bytecodes.push [:result, :raise]
+    bytecodes.push [:result, 'raise']
     bytecodes.push [:make_symbol]
     bytecodes.push [:arg]
-    bytecodes.push [:result, nil] # no block
+    bytecodes.push [:result_nil] # no block
     bytecodes.push [:arg]
     bytecodes.push [:pre_call]
     bytecodes.push [:call]
@@ -543,12 +549,12 @@ class AstToBytecodeCompiler
       bytecodes.push [:start_call]
       bytecodes.concat compile(klass)
       bytecodes.push [:arg]
-      bytecodes.push [:result, :===]
+      bytecodes.push [:result, '===']
       bytecodes.push [:make_symbol]
       bytecodes.push [:arg]
-      bytecodes.push [:result, nil] # no block
+      bytecodes.push [:result_nil] # no block
       bytecodes.push [:arg]
-      bytecodes.push [:from_gvar, :$!]
+      bytecodes.push [:from_gvar, '$!']
       bytecodes.push [:arg]
       bytecodes.push [:pre_call]
       bytecodes.push [:call]
@@ -566,7 +572,7 @@ class AstToBytecodeCompiler
     if body
       bytecodes.concat compile(body) # body of rescue
     else
-      bytecodes.push [:result, nil]
+      bytecodes.push [:result_nil]
     end
     bytecodes.push [:goto, label_end]
     bytecodes.push [:label, label_endif]
@@ -577,9 +583,9 @@ class AstToBytecodeCompiler
   def compile_gvar sexp
     _, var_name = sexp
     if sexp.source
-      [[:token] + sexp.source, [:from_gvar, var_name]]
+      [[:token] + sexp.source, [:from_gvar, var_name.to_s]]
     else
-      [[:from_gvar, var_name]]
+      [[:from_gvar, var_name.to_s]]
     end
   end
 
@@ -588,23 +594,23 @@ class AstToBytecodeCompiler
     bytecodes = []
     bytecodes.push [:token] + sexp.source
     bytecodes.concat compile(expression)
-    bytecodes.push [:to_gvar, var_name]
+    bytecodes.push [:to_gvar, var_name.to_s]
     bytecodes
   end
 
   def compile_const sexp
     _, const_name = sexp
     if sexp.source
-      [[:token] + sexp.source, [:const, const_name]]
+      [[:token] + sexp.source, [:const, const_name.to_s]]
     else
-      [[:const, const_name]]
+      [[:const, const_name.to_s]]
     end
   end
 
   def compile_sym sexp
     _, string = sexp
     if sexp.source
-      [[:token] + sexp.source, [:result, string], [:make_symbol]]
+      [[:token] + sexp.source, [:result, string.to_s], [:make_symbol]]
     else
       [[:result, string.to_s], [:make_symbol]]
     end
@@ -618,9 +624,10 @@ class AstToBytecodeCompiler
     bytecodes.push [:start_call]
     bytecodes.push [:const, 'Range']
     bytecodes.push [:arg]
-    bytecodes.push [:result, :new]
+    bytecodes.push [:result, 'new']
+    bytecodes.push [:make_symbol]
     bytecodes.push [:arg]
-    bytecodes.push [:result, nil]
+    bytecodes.push [:result_nil]
     bytecodes.push [:arg] # no block
     bytecodes.concat compile(from)
     bytecodes.push [:arg]

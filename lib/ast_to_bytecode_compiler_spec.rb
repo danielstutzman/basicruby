@@ -10,7 +10,7 @@ end
 
 describe AstToBytecodeCompiler, '#compile' do
   it 'compiles blank' do
-    compile('').should == [[:result, nil]]
+    compile('').should == [[:result_nil]]
   end
   it 'compiles 3' do
     compile('3').should == [[:position, "test", 1, 0], [:token, 1, 0], [:result, 3]]
@@ -18,8 +18,8 @@ describe AstToBytecodeCompiler, '#compile' do
   it 'compiles puts 3' do
     compile('puts 3').should == [
       [:position, "test", 1, 0], [:start_call], [:top], [:arg],
-      [:token, 1, 0], [:result, :puts], [:make_symbol], [:arg],
-      [:result, nil], [:arg],
+      [:token, 1, 0], [:result, 'puts'], [:make_symbol], [:arg],
+      [:result_nil], [:arg],
       [:token, 1, 5], [:result, 3], [:arg],
       [:pre_call], [:call],
     ]
@@ -36,30 +36,30 @@ describe AstToBytecodeCompiler, '#compile' do
   it 'compiles x = 3' do
     compile('x = 3').should == [
       [:position, "test", 1, 0],
-      [:token, 1, 0], [:start_vars, :x],
+      [:token, 1, 0], [:start_vars, 'x'],
       [:token, 1, 4], [:result, 3],
-      [:to_var, :x],
+      [:to_var, 'x'],
     ]
   end
   it 'compiles x = 3; x' do
     compile('x = 3; x').should == [
-      [:position, "test", 1, 0], [:token, 1, 0], [:start_vars, :x],
-      [:token, 1, 4], [:result, 3], [:to_var, :x], [:discard],
-      [:position, "test", 1, 7], [:token, 1, 7], [:from_var, :x],
+      [:position, "test", 1, 0], [:token, 1, 0], [:start_vars, 'x'],
+      [:token, 1, 4], [:result, 3], [:to_var, 'x'], [:discard],
+      [:position, "test", 1, 7], [:token, 1, 7], [:from_var, 'x'],
     ]
   end
   it 'compiles x = if true then 3 end' do
     compile('x = if true then 3 end').should == [
-      [:position, "test", 1, 0], [:token, 1, 0], [:start_vars, :x],
+      [:position, "test", 1, 0], [:token, 1, 0], [:start_vars, 'x'],
       [:token, 1, 7], [:result, true],
       [:goto_if_not, "else_test_1_4"],
       [:position, "test", 1, 17],
       [:token, 1, 17], [:result, 3],
       [:goto, "endif_test_1_4"],
       [:label, "else_test_1_4"],
-      [:result, nil],
+      [:result_nil],
       [:label, "endif_test_1_4"],
-      [:to_var, :x],
+      [:to_var, 'x'],
     ]
   end
 if false
@@ -67,7 +67,7 @@ if false
     compile('"1#{2}3"').should == [
       [:position, "test", 1, 1],
       [:start_call], [:result, "1"], [:arg],
-      [:result, :<<], [:arg],
+      [:result, '<<'], [:make_symbol], [:arg],
       [:token, 1, 4], [:result, 2], [:arg],
       [:token, 1, 6], [:result, "3"], [:arg],
       [:pre_call], [:call],
@@ -77,8 +77,8 @@ end
   it 'compiles puts ""' do
     compile('puts ""').should == [
       [:position, "test", 1, 0], [:start_call], [:top], [:arg],
-      [:token, 1, 0], [:result, :puts], [:make_symbol], [:arg],
-      [:result, nil], [:arg],
+      [:token, 1, 0], [:result, 'puts'], [:make_symbol], [:arg],
+      [:result_nil], [:arg],
       [:result, ""], [:arg], [:pre_call], [:call]
     ]
   end
@@ -86,10 +86,10 @@ end
   it 'compiles lambda { 4 }' do
     compile('lambda { 4 }').should == [
       [:position, "test", 1, 0], [:start_call], [:top], [:arg],
-      [:token, 1, 0], [:result, :lambda], [:make_symbol], [:arg],
+      [:token, 1, 0], [:result, 'lambda'], [:make_symbol], [:arg],
       [:goto, "after_return_test_1_9"],
       [:label, "start_test_1_9"],
-      [:args, 0, 0], [:to_vars, nil, nil], [:discard],
+      [:args, 0, 0], [:to_vars, -1, -1], [:discard],
       [:position, "test", 1, 9], [:token, 1, 9], [:result, 4], [:return],
       [:label, "after_return_test_1_9"], [:make_proc, "start_test_1_9"], [:arg],
       [:pre_call], [:call]
@@ -98,14 +98,14 @@ end
 
   it 'compiles x,y=3,4' do
     compile('x,y=3,4').should == [
-      [:position, "test", 1, 0], [:token, 1, 0], [:start_vars, :x],
-      [:token, 1, 2], [:start_vars, :y],
-      [:start_call], [:result, []], [:arg], [:result, :push],
-      [:arg], [:result, nil],
+      [:position, "test", 1, 0], [:token, 1, 0], [:start_vars, 'x'],
+      [:token, 1, 2], [:start_vars, 'y'],
+      [:start_call], [:result_array], [:arg], [:result, 'push'], [:make_symbol],
+      [:arg], [:result_nil],
       [:arg], [:token, 1, 4], [:result, 3],
       [:arg], [:token, 1, 6], [:result, 4],
       [:arg], [:pre_call], [:call],
-      [:to_vars, nil, nil, :x, :y]
+      [:to_vars, -1, -1, 'x', 'y']
     ]
   end
 
@@ -113,17 +113,17 @@ end
     compile('lambda{|x=1|}').should == [
       [:position, "test", 1, 0], [:start_call],
       [:top], [:arg],
-      [:token, 1, 0], [:result, :lambda], [:make_symbol], [:arg],
+      [:token, 1, 0], [:result, 'lambda'], [:make_symbol], [:arg],
       [:goto, "after_return_test_1"], [:label, "start_test_2"],
-      [:args, 0, 1, :x], [:to_vars, nil, nil, :x],
+      [:args, 0, 1, 'x'], [:to_vars, -1, -1, 'x'],
       [:discard],
       [:goto_param_defaults,
         "param_defaults_test_3_0", "param_defaults_test_4_1"],
         [:label, "param_defaults_test_3_0"],
-          [:token, 1, 8], [:start_vars, :x], [:token, 1, 10],
-          [:result, 1], [:to_var, :x], [:discard],
+          [:token, 1, 8], [:start_vars, 'x'], [:token, 1, 10],
+          [:result, 1], [:to_var, 'x'], [:discard],
         [:label, "param_defaults_test_4_1"],
-      [:result, nil], [:return],
+      [:result_nil], [:return],
       [:label, "after_return_test_1"],
       [:make_proc, "start_test_2"],
       [:arg], [:pre_call], [:call]
@@ -134,11 +134,13 @@ end
     compile('def f; 3; end').should == [
       [:position, "test", 1, 0], [:goto, "after_return_test_1_0"],
       [:label, "start_test_1_0"],
-      [:args, 0, 0], [:to_vars, nil, nil], [:discard],
+      [:args, 0, 0], [:to_vars, -1, -1], [:discard],
       [:position, "test", 1, 7], [:token, 1, 7], [:result, 3],
       [:return], [:label, "after_return_test_1_0"],
-      [:start_call], [:top], [:arg], [:result, :define_method], [:arg],
-      [:make_proc, "start_test_1_0"], [:arg], [:result, :f], [:arg],
+      [:start_call], [:top], [:arg],
+      [:result, 'define_method'], [:make_symbol], [:arg],
+      [:make_proc, "start_test_1_0"], [:arg],
+      [:result, 'f'], [:make_symbol], [:arg],
       [:pre_call], [:call]
     ]
   end
@@ -146,10 +148,10 @@ end
   it 'compiles lambda{|&b|}' do
     compile('lambda{|&b|}').should == [
       [:position, "test", 1, 0], [:start_call], [:top], [:arg],
-      [:token, 1, 0], [:result, :lambda], [:make_symbol], [:arg],
+      [:token, 1, 0], [:result, 'lambda'], [:make_symbol], [:arg],
       [:goto, "after_return_test_1"], [:label, "start_test_2"],
-      [:args, 0, 0, :b], [:to_vars, nil, 0, :b], [:discard],
-      [:result, nil], [:return],
+      [:args, 0, 0, 'b'], [:to_vars, -1, 0, 'b'], [:discard],
+      [:result_nil], [:return],
       [:label, "after_return_test_1"], [:make_proc, "start_test_2"],
       [:arg], [:pre_call], [:call]
     ]
@@ -162,7 +164,7 @@ end
       [:label, "start_test_1_6"],
       [:token, 1, 6], [:result, false], [:goto_if_not, "end_test_1_6"],
       [:token, 1, 13], [:result, 3], [:discard],
-      [:goto, "start_test_1_6"], [:label, "end_test_1_6"], [:result, nil]
+      [:goto, "start_test_1_6"], [:label, "end_test_1_6"], [:result_nil]
     ]
   end
 
@@ -171,33 +173,33 @@ end
       [:position, "test", 1, 0], [:push_rescue, "rescue_test_1"],
       [:token, 1, 7], [:result, 3], [:pop_rescue, "rescue_test_1"],
       [:goto, "end_rescue_test_2"], [:label, "rescue_test_1"], [:discard],
-      [:start_call], [:token, 1, 17], [:const, :Exception], [:arg],
-        [:result, :===], [:make_symbol], [:arg], [:result, nil], [:arg],
-        [:from_gvar, :$!], [:arg], [:pre_call], [:call],
+      [:start_call], [:token, 1, 17], [:const, 'Exception'], [:arg],
+        [:result, '==='], [:make_symbol], [:arg], [:result_nil], [:arg],
+        [:from_gvar, '$!'], [:arg], [:pre_call], [:call],
       [:goto_if_not, "endif_test_3"],
-      [:token, 1, 30], [:start_vars, :e], [:from_gvar, :$!], [:to_var, :e],
-      [:discard], [:result, nil], [:goto, "end_rescue_test_2"],
+      [:token, 1, 30], [:start_vars, 'e'], [:from_gvar, '$!'], [:to_var, 'e'],
+      [:discard], [:result_nil], [:goto, "end_rescue_test_2"],
       [:label, "endif_test_3"],
-      [:start_call], [:top], [:arg], [:result, :raise], [:make_symbol], [:arg],
-        [:result, nil], [:arg], [:pre_call], [:call],
+      [:start_call], [:top], [:arg], [:result, 'raise'], [:make_symbol], [:arg],
+        [:result_nil], [:arg], [:pre_call], [:call],
         [:label, "end_rescue_test_2"], [:clear_dollar_bang]
     ]
   end
 
   it 'compiles $a' do
     compile('$a').should == [
-      [:position, "test", 1, 0], [:token, 1, 0], [:from_gvar, :$a]
+      [:position, "test", 1, 0], [:token, 1, 0], [:from_gvar, '$a']
     ]
   end
   it 'compiles $a = 1' do
     compile('$a = 1').should == [
       [:position, "test", 1, 0], [:token, 1, 0], [:token, 1, 5],
-        [:result, 1], [:to_gvar, :$a]
+        [:result, 1], [:to_gvar, '$a']
     ]
   end
   it 'compiles :a' do
     compile(':a').should == [
-      [:position, "test", 1, 1], [:token, 1, 1], [:result, :a], [:make_symbol]
+      [:position, "test", 1, 1], [:token, 1, 1], [:result, 'a'], [:make_symbol]
     ]
   end
 end

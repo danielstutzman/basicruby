@@ -17,6 +17,13 @@ compiler = Opal.AstToBytecodeCompiler.$new Opal.top
 bytecodesRuntime = compiler.$compile_program 'Runtime', sexpRuntime
 bytecodesRuntime = _.reject bytecodesRuntime, (bytecode) ->
   bytecode[0] == 'token'
+_.each bytecodesRuntime, (bytecode) ->
+  _.each bytecode, (part) ->
+    type = typeof(part)
+    if type != 'string' && type != 'number' && type != 'boolean'
+      console.error bytecode
+      throw "Bytecode should return only
+        arrays of strings, numbers, and booleans, not #{bytecode.$inspect()}"
 
 compile = (pairs) ->
   newCompiler = Opal.AstToBytecodeCompiler.$new Opal.top
