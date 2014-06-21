@@ -127,6 +127,7 @@ class ExerciseController
             @spool.doCommand.apply @spool, spoolCommand
           catch e
             if e.name == 'ProgramTerminated'
+              @interpreter.undefineMethods()
               @spool.terminateEarly()
             else
               throw e

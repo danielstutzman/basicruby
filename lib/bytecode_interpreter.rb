@@ -84,8 +84,20 @@ class BytecodeInterpreter
         # [4] pending_var_names: so pending vars from start_vars get reset
     # path, method, line, col, pop_next_one_too_on_return
     @method_stack = [['Runtime', '<main>', nil, nil, false]]
+    @methods_to_restore = {}
     $console_texts = []
     begin raise ''; rescue; end # set $! to RuntimeError.new('')
+  end
+
+  def undefine_methods!
+    @methods_to_restore.reverse_each do |pair, method|
+      receiver, method_name = pair
+      if method
+        receiver.singleton_class.send :define_method, method.name, &method
+      else
+        receiver.singleton_class.send :remove_method, method_name
+      end
+    end
   end
 
   def visible_state
@@ -368,6 +380,9 @@ class BytecodeInterpreter
         # rescue blocks end.
         $bang = nil
         nil
+      when :done
+        undefine_methods!
+        nil
     end
   end
 
@@ -427,6 +442,18 @@ class BytecodeInterpreter
     @method_stack.push [path, method_name, line_num, nil, false]
     @vars_stack.push __method_name: [false, "in '#{method_name}'"]
     begin
+      if method_name == :define_method
+        begin
+          old_method = receiver.method(args[0])
+        rescue NameError
+          old_method = nil
+        end
+        key = [receiver, args[0]]
+        unless @methods_to_restore.has_key? key
+          @methods_to_restore[key] = old_method
+        end
+      end
+
       result = \
       if receiver.respond_to?(method_name) && proc_ && %w[
         collect each each_index map reject select].include?(method_name.to_s)
@@ -450,12 +477,8 @@ class BytecodeInterpreter
         simulate_call_to @main, new_method_name, @partial_calls.last[0], &proc_
 
       elsif method_name == :define_method
-        if RUBY_PLATFORM == 'opal'
-          `Opal.defs(receiver, '$' + args[0], proc_);`
-          result = nil
-        else
-          result = @main.send method_name, *args, &proc_
-        end
+        receiver.singleton_class.send :define_method, *args, &proc_
+        result = nil
 
       elsif method_name == :send
         new_method_name = args.shift

@@ -471,4 +471,15 @@ for x in [1, 2, 3]
   p 9
 end").should == "8\n8\n8\n9\n9\n9\n"
   end
+  it 'can redefine a user method' do
+    output_of('def f; 3; end; def f; 4; end; p f').should == "4\n"
+  end
+  it 'undefines methods after interpreter finishes' do
+    output_of('def f; 3; end; p f').should == "3\n"
+    expect { output_of('p f') }.to raise_exception(NameError)
+  end
+  it 'can redefine a system method' do
+    output_of('def p *args; puts 3; end; p 4').should == "3\n"
+    output_of('p 4').should == "4\n"
+  end
 end

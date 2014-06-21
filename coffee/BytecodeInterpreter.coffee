@@ -68,4 +68,11 @@ class BytecodeInterpreter
       console.error e.stack
       throw e
 
+  undefineMethods: ->
+    try
+      @interpreter['$undefine_methods!']()
+    catch e
+      console.error e.stack
+      throw e
+
 module.exports = BytecodeInterpreter
