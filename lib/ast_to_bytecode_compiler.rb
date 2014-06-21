@@ -2,6 +2,7 @@ class AstToBytecodeCompiler
   def initialize
     @next_unique_label = 0
     @filename = nil
+    @labels_so_far = {} # this is a set; the value is always 'true'
   end
 
   # bytecodes need to have position at the front; the debugger is counting
@@ -99,12 +100,17 @@ class AstToBytecodeCompiler
 
   def unique_label name1, sexp_for_source, name2=nil
     label = "#{name1}_#{@filename}_"
-    if sexp_for_source && source(sexp_for_source)
+    if sexp_for_source && source(sexp_for_source) &&
+        source(sexp_for_source) != [-1, -1]
       label += source(sexp_for_source).join('_')
     else
       label += (@next_unique_label += 1).to_s
     end
     label += "_#{name2}" if name2
+
+    raise "Non-unique label #{label}" if @labels_so_far[label]
+    @labels_so_far[label] = true
+
     label
   end
 

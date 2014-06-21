@@ -461,4 +461,14 @@ end
 f = lambda { |x| x + 1 }
 g(f)").should =~ /^#<Proc:.*>\n$/
   end
+  it 'can run two for loops' do
+    output_of("
+for x in [1, 2, 3]
+  p 8
+end
+
+for x in [1, 2, 3]
+  p 9
+end").should == "8\n8\n8\n9\n9\n9\n"
+  end
 end
