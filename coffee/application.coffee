@@ -6,6 +6,10 @@ SetupResizeHandler = require('./setup_resize_handler.coffee')
 $one = (selector) -> document.querySelector(selector)
 $all = (selector) -> document.querySelectorAll(selector)
 
+if window.location.hostname == 'localhost'
+  window.onerror = (message, url, lineNumber) ->
+    window.alert "See console: #{message} at #{url}:#{lineNumber}"
+
 document.addEventListener 'DOMContentLoaded', ->
   if $one('body.exercise') && !$one('div.exercise.purple')
     new ExerciseController($one('div.exercise'), featuresJson, exerciseJson,
