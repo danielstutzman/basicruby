@@ -19,13 +19,14 @@ bytecodesRuntime = _.reject bytecodesRuntime, (bytecode) ->
   bytecode[0] == 'token'
 
 compile = (pairs) ->
+  newCompiler = Opal.AstToBytecodeCompiler.$new Opal.top
   bytecodes = []
   bytecodes = bytecodes.concat bytecodesRuntime, [['discard']]
   for pair in pairs
     [sectionName, code] = pair
     sexp = parser.$parse code
     #dump sexp, 0
-    bytecodesNew = compiler.$compile_program sectionName, sexp
+    bytecodesNew = newCompiler.$compile_program sectionName, sexp
     #for bytecode in bytecodesNew
     #  console.log bytecode.join(' ')
     bytecodes = bytecodes.concat bytecodesNew, [['discard']]
