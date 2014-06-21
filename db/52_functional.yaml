@@ -1,0 +1,65 @@
+title: Functional programming
+level: intermediate
+features: run step instructions console vars
+purple:
+- youtube_id: __0qJ47Pal8
+  video_script: |
+    Hi everyone :-)
+    In this lesson, I'll demonstrate how a method can take another
+      method as an argument, and why you'd want that.
+    We'll start by looking at some code that takes in an array,
+      and adds one to each element.
+
+    Okay, now imagine you were asked to change this code,
+      so it can either add 1, or 2, to the array.
+    The most obvious thing to do -
+      is change the 1 here to the variable n (change),
+      which now is a new parameter (change),
+      that I have to pass in when I call add_1.
+      And we'd want to rename add_1, to avoid confusion.
+
+    So: nothing new so far...  so let's go back...
+    And now imagine you were asked to change this code,
+      so it can either add 1, or multiply by 2, to the array.
+    Now the problem is - we need to somehow have a variable that
+      contains either x + 1 or x * 2.
+      Can we do that?  Can we just pass in x + 1 or x * 2 like this?
+    Well no, that doesn't work because x isn't defined outside the method.
+      Also the adding or multiplying is happening only once here,
+      and we want it to happen three times, once for each number.
+
+    We can get closer to the solution by making a new method,
+      with just x + 1 inside it, call it plus1.
+    Let's test it... okay it works.
+
+    So now, how can we pass in this plus1 method, so that we can call it later?
+      Can we just write plus1 here, and then call f here?  Almost.
+    The problem is - just by mentioning the name plus1, we're calling it.
+    Even if we leave off the parens, we still get an ArgumentError.
+    We're stuck.
+
+    So. There is a way to mention a method without immediately calling it,
+      which is to call the "method" method, like this.  Now the variable f
+      contains a Proc object, which we can call with the "call" method,
+      like this.
+
+    So let's rename add_1 to something more generic,
+      since it's not only adding anymore; how about "repeat."
+    Add we'll create a times2 method, and test it.
+
+    Again, the repeat method here is taking a Proc object, and calling it,
+      and that's an example of functional programming.
+    
+  code: |
+    def add_1(a)
+      b = []
+      for x in a
+        b.push x + 1
+      end
+      b
+    end
+
+    a = [3, 2, 1]
+    p add_1(a)
+yellow:
+
