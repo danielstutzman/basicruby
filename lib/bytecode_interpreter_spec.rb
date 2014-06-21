@@ -453,4 +453,12 @@ end
     output_of('for a, b in [[1, 2], [3, 4]]; p [a, b]; end; p [a, b]'
       ).should == "[1, 2]\n[3, 4]\n[3, 4]\n"
   end
+
+  it 'can pass a proc as a non-block param' do
+    output_of("def g(f)
+  p f
+end
+f = lambda { |x| x + 1 }
+g(f)").should =~ /^#<Proc:.*>\n$/
+  end
 end

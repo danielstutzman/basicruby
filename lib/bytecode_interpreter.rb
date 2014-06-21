@@ -213,9 +213,6 @@ class BytecodeInterpreter
         array = pop_result
         old_array = array.clone
 
-        if Proc === array.last
-          @vars_stack.last[UNNAMED_BLOCK] = [false, array.pop]
-        end
         var_names.each_with_index do |var_name, i|
           if i == splat_num
             value = array
@@ -268,9 +265,12 @@ class BytecodeInterpreter
         end
       when :args
         _, min_num_args, max_num_args, *var_names = bytecode
-        receiver, method_name, block_arg, *args = @partial_calls.last
-        result_is args + (block_arg ? [block_arg] : [])
 
+        # Copy args from partial_calls to result
+        receiver, method_name, block_arg, *args = @partial_calls.last
+        result_is args
+
+        # Complain if number of args is incorrect.
         # See http://www.ruby-doc.org/core-2.0.0/Proc.html for definition
         # of "tricks" -- mostly it means there's more flexibility
         # with the number of arguments allowed.
@@ -279,7 +279,7 @@ class BytecodeInterpreter
         if tricks
           if args.size == 1 && Array === args[0]
             pop_result
-            result_is args[0] + (block_arg ? [block_arg] : [])
+            result_is args[0]
           end
         elsif (min_num_args && args.size < min_num_args) ||
                 (max_num_args && args.size > max_num_args)
@@ -293,6 +293,7 @@ class BytecodeInterpreter
           raise_exception { raise ArgumentError.new(message) }
         end
 
+        # If this call is from proc.call, copy env vars over
         if Proc === @partial_calls.last[0]
           env = @partial_calls.last[0].instance_variable_get '@env'
           env.keys.each do |var_name|
@@ -302,12 +303,15 @@ class BytecodeInterpreter
           end
         end
 
-        # mark vars as pending (until :to_vars runs)
+        # Mark all non-env vars as pending (until :to_vars runs)
         var_names.each do |var_name|
           unless @vars_stack.last.has_key? var_name
             @vars_stack.last[var_name] = [true]
           end
         end
+
+        # Always assign block_arg to __unnamed_block
+        @vars_stack.last[UNNAMED_BLOCK] = [false, block_arg]
 
         nil
       when :goto_param_defaults
