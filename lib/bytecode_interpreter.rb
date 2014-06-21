@@ -105,6 +105,7 @@ class BytecodeInterpreter
       output: $console_texts,
       num_partial_call_executing: @num_partial_call_executing,
       accepting_input: @accepting_input,
+      result: @result,
     }
   end
 
