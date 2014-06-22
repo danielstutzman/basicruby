@@ -86,12 +86,12 @@ CasesComponent = React.createClass
                 if @props.color == 'blue'
                   if case0.actual_output == undefined
                     ''
-                  else if case0.actual_matches_expected
+                  else if case0.passed
                     span { className: 'passed' }, '=Predicted'
                   else
                     span { className: 'failed' }, "#{NOT_EQUALS}Predicted"
                 else
-                  if case0.actual_matches_expected
+                  if case0.passed
                     span { className: 'passed' }, ' = Expected'
                   else
                     span { className: 'failed' }, " #{NOT_EQUALS} Expected"
@@ -139,14 +139,14 @@ CasesComponent = React.createClass
                 if @props.color == 'blue'
                   if _case.actual_output == undefined
                     null
-                  else if _case.actual_matches_expected
+                  else if _case.passed
                     td {},
                       span { className: 'passed' }, '='
                   else
                     td {},
                       span { className: 'failed' }, NOT_EQUALS
                 else
-                  if _case.actual_matches_expected
+                  if _case.passed
                     td {},
                       span { className: 'passed' }, '='
                   else
