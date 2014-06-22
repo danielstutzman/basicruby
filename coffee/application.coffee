@@ -12,8 +12,8 @@ if window.location.hostname == 'localhost'
 
 document.addEventListener 'DOMContentLoaded', ->
   if $one('body.exercise') && !$one('div.exercise.purple')
-    new ExerciseController($one('div.exercise'), featuresJson, exerciseJson,
-      exerciseColor, pathForNextExercise, pathForNextRep).setup()
+    new ExerciseController($one('div.exercise'), featuresJson, exerciseId,
+      exerciseJson, exerciseColor, pathForNextExercise, pathForNextRep).setup()
 
   # Fix bug where Mobile Safari landscape mode scrolls too far down the page
   window.addEventListener 'orientationchange', ->

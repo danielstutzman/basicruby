@@ -29,7 +29,11 @@ class Exercise < ActiveRecord::Base
   end
 
   def path
-    [self.topic_num.to_s,  self.color[0].upcase].join
+    if self.rep_num == 1
+      ['/', self.topic_num.to_s, self.color[0].upcase].join
+    else
+      ['/', self.topic_num.to_s, self.color[0].upcase, '/', self.rep_num].join
+    end
   end
   def path_for_next_exercise
     next_color =
@@ -38,18 +42,18 @@ class Exercise < ActiveRecord::Base
       when 'yellow' then 'blue'
       when 'blue'   then 'red'
       when 'red'    then 'green'
-      when 'green'  then 'purple'
+      when 'green'  then nil
       end
-    next_topic_num = self.topic_num + ((self.color == 'green') ? 1 : 0)
-    "/#{next_topic_num}#{next_color[0].upcase}"
+    if next_color
+      "/#{self.topic_num}#{next_color[0].upcase}"
+    else
+      '/'
+    end
   end
   def path_for_next_rep
-    if Exercise.find_by topic_num: self.topic_num, color: self.color,
-        rep_num: self.rep_num + 1
-      "/#{self.topic_num}#{self.color[0].upcase}/#{self.rep_num + 1}"
-    else
-      nil
-    end
+    next_rep = Exercise.find_by topic_num: self.topic_num, color: self.color,
+      rep_num: self.rep_num + 1
+    next_rep ? next_rep.path : nil
   end
 
   def title

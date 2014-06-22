@@ -1,11 +1,12 @@
 - content_for :title, document_title(@exercise)
 
 :javascript
-  var featuresJson = #{@exercise.topic.features.split(' ').to_json.html_safe};
-  var exerciseJson = #{@exercise.json.html_safe};
-  var exerciseColor = "#{@exercise.color}";
+  var featuresJson        = #{@exercise.topic.features.split(' ').to_json.html_safe};
+  var exerciseId          = "#{@exercise.id}";
+  var exerciseJson        = #{@exercise.json.html_safe};
+  var exerciseColor       = "#{@exercise.color}";
   var pathForNextExercise = "#{@exercise.path_for_next_exercise}";
-  var pathForNextRep = "#{@exercise.path_for_next_rep}";
+  var pathForNextRep      = "#{@exercise.path_for_next_rep}";
 
 - if @exercise.color == 'purple' && @exercise.json_loaded['youtube_id'].nil?
   .video-script
@@ -25,8 +26,10 @@
   - if @exercise.color == 'purple' && @exercise.json_loaded['youtube_id']
     .exercise.purple
       .buttons-above
-        %button.next(onClick="window.location = pathForNextExercise")
-          &#x279c; Go on
+        = form_tag '/post/mark_complete' do
+          = hidden_field_tag :next_url, @exercise.path_for_next_exercise
+          %button.next{name: 'exercise_id', value: @exercise.id}
+            &#x279c; Go on
       .banner.purple Watch the introduction
     %iframe(width='840' height='480' frameborder='0' allowfullscreen){src: "//www.youtube.com/embed/#{@exercise.json_loaded['youtube_id']}?rel=0&autoplay=0"}
 

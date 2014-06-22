@@ -29,7 +29,7 @@ ExerciseComponent = React.createClass
             className: 'do-another'
             disabled: @props.doCommand.nextRep == null ||
                       @props.cases[0].actual_output == undefined
-            onClick: (e) => @props.doCommand.nextRep e
+            onClick: (e) => @props.doCommand.nextRep e, true
             "#{RELOAD_ICON} See another"
 
         if @props.color == 'yellow' || @props.color == 'blue'
@@ -108,7 +108,7 @@ ExerciseComponent = React.createClass
           button
             className: 'do-another'
             disabled: @props.doCommand.nextRep == null
-            onClick: (e) => @props.doCommand.nextRep e
+            onClick: (e) => @props.doCommand.nextRep e, true
             "#{RELOAD_ICON} Do another"
           br {}
           button
@@ -132,7 +132,7 @@ ExerciseComponent = React.createClass
           button
             className: 'do-another'
             disabled: @props.doCommand.nextRep == null
-            onClick: (e) => @props.doCommand.nextRep e
+            onClick: (e) => @props.doCommand.nextRep e, false
             "#{RELOAD_ICON} Try another"
 
 module.exports = ExerciseComponent

@@ -71,8 +71,16 @@ body.menu {
     font-size: 50pt;
     text-decoration: none;
     line-height: 48px;
+    position: relative;
+
     &:hover {
       color: white;
+    }
+    .num-completions {
+      position: absolute;
+      width: 100%;
+      font-size: 30pt;
+      top: 4px;
     }
   }
   td {

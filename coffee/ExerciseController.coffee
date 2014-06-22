@@ -5,7 +5,7 @@ DebuggerController    = require './DebuggerController.coffee'
 ExerciseComponent     = require './ExerciseComponent.coffee'
 
 class ExerciseController
-  constructor: ($div, featuresJson, exerciseJson, exerciseColor,
+  constructor: ($div, featuresJson, exerciseId, exerciseJson, exerciseColor,
       pathForNextExercise, pathForNextRep) ->
     @$div = $div
     exists = (feature) -> feature in featuresJson
@@ -18,14 +18,15 @@ class ExerciseController
       showInstructions: exists 'instructions'
       showConsole:      exists 'console'
       highlightTokens:  exists 'tokens'
-    @json = exerciseJson
-    @color = exerciseColor
+    @exerciseId          = exerciseId
+    @json                = exerciseJson
+    @color               = exerciseColor
     @pathForNextExercise = pathForNextExercise
-    @pathForNextRep = pathForNextRep
-    @cases = @json.cases || [{}]
-    @actualOutput = if @color == 'green' then [] else null
-    @retrieveNewCode = null
-    @popup = null
+    @pathForNextRep      = pathForNextRep
+    @cases               = @json.cases || [{}]
+    @actualOutput        = if @color == 'green' then [] else null
+    @retrieveNewCode     = null
+    @popup               = null
 
   setup: ->
     callback = =>
@@ -45,13 +46,14 @@ class ExerciseController
         makeRetriever = (codeMirror) -> (-> codeMirror.getValue())
         @retrieveNewCode = makeRetriever codeMirror
 
-      for textareaTests in @$div.querySelectorAll('textarea.expected')
-        options =
-          mode: 'ruby'
-          lineNumbers: true
-          readOnly: 'nocursor'
-          lineWrapping: true
-        CodeMirror.fromTextArea textareaTests, options
+      if @cases && @cases[0] && @cases[0].code
+        for textareaTests in @$div.querySelectorAll('textarea.expected')
+          options =
+            mode: 'ruby'
+            lineNumbers: true
+            readOnly: 'nocursor'
+            lineWrapping: true
+          CodeMirror.fromTextArea textareaTests, options
 
       if @color == 'red' || @color == 'green'
         @handleRun()
@@ -71,10 +73,13 @@ class ExerciseController
         allTestsPassed: => window.setTimeout (=> @handleAllTestsPassed()), 100
         next: if @pathForNextExercise == '' then null else (e) =>
           e.target.disabled = true
-          window.location.href = @pathForNextExercise
-        nextRep: if @pathForNextRep == '' then null else (e) =>
+          @_sendPostMarkComplete @pathForNextExercise
+        nextRep: if @pathForNextRep == '' then null else (e, success) =>
           e.target.disabled = true
-          window.location.href = @pathForNextRep
+          if success
+            @_sendPostMarkComplete @pathForNextRep
+          else
+            window.location.href = @pathForNextRep
         showSolution: => @handleShowSolution()
         closePopup: => @popup = null; @render()
         setPredictedOutput: (caseNum, newText) =>
@@ -191,5 +196,13 @@ class ExerciseController
       changeBackground 5, '.passed', 'PASSED'
     else if !passed && @color == 'blue'
       changeBackground 5, '.failed', 'FAILED'
+
+  _sendPostMarkComplete: (nextUrl) ->
+    document.body.innerHTML += "
+      <form id='fake-form' method='post' action='/post/mark_complete'>
+        <input type='hidden' name='exercise_id' value='#{@exerciseId}'>
+        <input type='hidden' name='next_url' value='#{nextUrl}'>
+      </form>"
+    document.getElementById('fake-form').submit()
 
 module.exports = ExerciseController

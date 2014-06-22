@@ -66,8 +66,11 @@
         %th.title!= topic.title_html
         - %w[purple yellow blue red green].each do |color|
           %td{class: color}
-            - if @topic_id_color_exists[[topic.id, color]]
-              = done_indicator topic.num, color.upcase[0]
+            - key = [topic.id, color]
+            - if @topic_id_color_exists[key]
+              = done_indicator topic.num, color.upcase[0],
+                (@topic_id_color_num_completions[key] || {}).size,
+                @topic_id_color_next_path[key]
 %br
 %br
 %br
