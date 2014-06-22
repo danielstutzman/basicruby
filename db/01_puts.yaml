@@ -23,6 +23,11 @@ purple:
     puts 3
 yellow:
 - code: |
+    puts 5
+    puts 4
+    puts
+    puts 3
+- code: |
     puts 8
     puts
     puts 3

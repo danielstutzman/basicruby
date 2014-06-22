@@ -29,6 +29,15 @@ purple:
     p b
 yellow:
 - code: |
+    a = [1, 2]
+    b = a
+    a.push 3
+    p b
+
+    a = a + [4]
+    a += [5]
+    p b
+- code: |
     x = [9]
     x.push 10
     y = x

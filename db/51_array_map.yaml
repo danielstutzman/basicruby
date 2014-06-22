@@ -45,6 +45,9 @@ purple:
     p f(a)
 yellow:
 - code: |
+    a = [3, 2, 1, 0]
+    p a.map { |x| x + 1 }
+- code: |
     a = [1, 3, 5]
     b = a.map { |x| x * 2 }
     p b

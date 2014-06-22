@@ -26,6 +26,14 @@ purple:
 yellow:
 - code: |
     x = gets
+    y = gets
+    puts y
+    puts x
+  cases:
+  - input: "3\n2\n"
+  - input: "8\n9\n"
+- code: |
+    x = gets
     x = gets
     puts x
     puts x

@@ -42,6 +42,15 @@ purple:
     puts z
 yellow:
 - code: |
+    x = 5
+    puts x
+    puts "x"
+
+    y = x
+    z = "x"
+    puts y
+    puts z
+- code: |
     x = gets
     y = "gets"
     puts x

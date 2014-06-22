@@ -62,4 +62,21 @@ purple:
     a = [3, 2, 1]
     p add_1(a)
 yellow:
+- code: |
+    def repeat(a, f)
+      b = []
+      for x in a
+        b.push f.call(x)
+      end
+      b
+    end
+    def plus1(x)
+      x + 1
+    end
+    def times2(x)
+      x * 2
+    end
 
+    a = [3, 2, 1]
+    p repeat(a, method(:plus1))
+    p repeat(a, method(:times2))

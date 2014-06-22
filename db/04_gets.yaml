@@ -33,6 +33,13 @@ purple:
   - input: 4
 yellow:
 - code: |
+    x = gets
+    puts 5
+    puts x
+  cases:
+  - input: 3
+  - input: 4
+- code: |
     y = 1
     z = gets
     puts z

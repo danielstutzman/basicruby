@@ -25,6 +25,14 @@ purple:
     puts z
 yellow:
 - code: |
+    x = 200.00
+    y =   1.00
+    puts x
+    puts y
+
+    z = "  5.00"
+    puts z
+- code: |
     s = " "
     puts 1
     print s

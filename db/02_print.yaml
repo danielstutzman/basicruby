@@ -22,6 +22,11 @@ purple:
     print 7
 yellow:
 - code: |
+    print 0
+    print 3
+    puts -1
+    print 7
+- code: |
     print 4
     puts 5
     print 9

@@ -39,6 +39,11 @@ purple:
     puts y
 yellow:
 - code: |
+    x = 3
+    y = x
+    x = 4
+    puts y
+- code: |
     y = 1
     z = y
     y = 2

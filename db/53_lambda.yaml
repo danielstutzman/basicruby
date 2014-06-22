@@ -53,3 +53,10 @@ purple:
       f.call(f.call(x))
     end
     p twice(plus1_proc, 1)
+yellow:
+- code: |
+    def twice(f, x)
+      f.call(f.call(x))
+    end
+    p twice(lambda { |x| x + 1}, 1)
+    p twice(->(x) { x + 1}, 1)

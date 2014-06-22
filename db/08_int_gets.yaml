@@ -33,6 +33,15 @@ purple:
   - input: 4
 yellow:
 - code: |
+    x = Integer gets
+    #   Integer(gets())
+    x = x + 1
+    x = x * 2
+    puts x
+  cases:
+  - input: 3
+  - input: 4
+- code: |
     y = Integer gets
     y = y * y
     puts y
