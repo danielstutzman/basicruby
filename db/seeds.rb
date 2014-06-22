@@ -16,7 +16,9 @@ Exercise.transaction do
       title:      yaml['title'],
       title_html: yaml['title_html'] || yaml['title'],
       level:      yaml['level'],
-      features:   yaml['features']
+      features:   yaml['features'],
+      youtube_id: yaml['purple'] && yaml['purple'][0] &&
+                  yaml['purple'][0]['youtube_id']
 
     %w[purple yellow blue red green orange].each do |color|
       exercises = yaml[color]

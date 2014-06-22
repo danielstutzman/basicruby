@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140608204112) do
+ActiveRecord::Schema.define(version: 20140622154936) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,8 +32,10 @@ ActiveRecord::Schema.define(version: 20140608204112) do
     t.string  "title"
     t.string  "title_html"
     t.string  "level",      null: false
+    t.string  "youtube_id"
   end
 
   add_index "topics", ["num"], name: "index_topics_on_num", using: :btree
+  add_index "topics", ["youtube_id"], name: "index_topics_on_youtube_id", using: :btree
 
 end

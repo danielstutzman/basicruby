@@ -1,4 +1,6 @@
 class Topic < ActiveRecord::Base
+  has_many :exercises
+
   def title_text
     self.title.gsub('`', '')
   end
