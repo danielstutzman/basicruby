@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140622165024) do
+ActiveRecord::Schema.define(version: 20140622191037) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,13 +26,14 @@ ActiveRecord::Schema.define(version: 20140622165024) do
   add_index "completions", ["learner_id"], name: "index_completions_on_learner_id", using: :btree
 
   create_table "exercises", force: true do |t|
-    t.integer "topic_id"
-    t.integer "topic_num"
-    t.string  "color"
-    t.text    "json"
+    t.integer "topic_id",              null: false
+    t.integer "topic_num",             null: false
+    t.string  "color",                 null: false
+    t.text    "json",                  null: false
     t.integer "rep_num",   default: 1, null: false
   end
 
+  add_index "exercises", ["topic_id", "color", "rep_num"], name: "index_exercises_on_topic_id_and_color_and_rep_num", unique: true, using: :btree
   add_index "exercises", ["topic_num", "color"], name: "index_exercises_on_topic_num_and_color", using: :btree
 
   create_table "learners", force: true do |t|
@@ -44,15 +45,23 @@ ActiveRecord::Schema.define(version: 20140622165024) do
   end
 
   create_table "topics", force: true do |t|
-    t.integer "num"
-    t.string  "features"
-    t.string  "title"
+    t.integer "num",        null: false
+    t.string  "features",   null: false
+    t.string  "title",      null: false
     t.string  "title_html"
     t.string  "level",      null: false
     t.string  "youtube_id"
+    t.string  "nickname",   null: false
   end
 
+  add_index "topics", ["nickname"], name: "index_topics_on_nickname", unique: true, using: :btree
   add_index "topics", ["num"], name: "index_topics_on_num", using: :btree
+  add_index "topics", ["title"], name: "index_topics_on_title", unique: true, using: :btree
   add_index "topics", ["youtube_id"], name: "index_topics_on_youtube_id", using: :btree
+
+  add_foreign_key "completions", "exercises", name: "completions_exercise_id_fk"
+  add_foreign_key "completions", "learners", name: "completions_learner_id_fk"
+
+  add_foreign_key "exercises", "topics", name: "exercises_topic_id_fk"
 
 end

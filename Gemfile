@@ -62,3 +62,5 @@ gem 'guard', group: :development
 gem 'guard-shell', group: :development
 
 gem 'rspec', group: :development
+
+gem 'foreigner' # adds database-level foreign key constraints to migrations
