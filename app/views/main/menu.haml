@@ -67,7 +67,11 @@
         %td.green
     - @topics.select { |topic| topic.level == level }.each do |topic|
       %tr
-        %th.title!= topic.title_html
+        %th.title
+          - if topic.under_construction
+            = image_tag 'under_construction.png', style: 'float: left',
+              title: 'Under construction'
+          != topic.title_html
         - %w[purple yellow blue red green].each do |color|
           %td{class: color}
             - key = [topic.id, color]

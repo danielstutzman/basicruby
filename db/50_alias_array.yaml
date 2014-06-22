@@ -1,6 +1,7 @@
 title: Array aliasing
 level: intermediate
 features: run step instructions console heap
+under_construction: true
 purple:
 - youtube_id: null
   video_script:

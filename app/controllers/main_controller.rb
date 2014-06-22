@@ -2,7 +2,12 @@ class MainController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:mark_complete]
 
   def menu
-    @topics = Topic.order(:num)
+    if Rails.env.production?
+      @topics = Topic.where(under_construction: false).order(:num)
+    else
+      @topics = Topic.order(:num)
+    end
+
     @exercises = Exercise.select('id, topic_id, topic_num, color, rep_num'
       ).order(:rep_num)
 

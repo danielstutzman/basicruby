@@ -1,6 +1,7 @@
 title: Demo of advanced debugger features
 level: intermediate
 features: run step partial_calls vars instructions console tokens
+under_construction: true
 yellow:
 - assignment: Demo of advanced debugger features
   code: |

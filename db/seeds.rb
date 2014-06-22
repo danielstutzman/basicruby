@@ -24,6 +24,7 @@ Exercise.transaction do
     topic.features   = yaml['features']
     topic.youtube_id = yaml['purple'] && yaml['purple'][0] &&
                        yaml['purple'][0]['youtube_id']
+    topic.under_construction = yaml['under_construction']
     topic.save!
 
     %w[purple yellow blue red green orange].each do |color|

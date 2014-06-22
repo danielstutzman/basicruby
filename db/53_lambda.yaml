@@ -1,6 +1,7 @@
 title: "Lambda and `->`"
 level: intermediate
 features: run step instructions console vars
+under_construction: true
 purple:
 - youtube_id: rlWX5yBA2fs
   video_script: |
