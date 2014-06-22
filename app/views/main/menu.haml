@@ -12,7 +12,8 @@
 
 %table(style='border-spacing: 0px; margin: 0 auto;')
   %tr
-    %th
+    %th.title(style='vertical-align: bottom')
+      %h2 Beginner
     %th.purple
       = image_tag_for_exercise_color 'purple', 60
       %br
@@ -50,17 +51,20 @@
     /  %br
     /  tricks
   - %w[beginner intermediate].each do |level|
-    %tr
-      %th.title
-        - if level == 'intermediate'
-          = image_tag 'under_construction.png', style: 'float: left',
-            title: 'Under construction'
-        %h2= level.humanize
-      %td.purple
-      %td.yellow
-      %td.blue
-      %td.red
-      %td.green
+    - if level != 'beginner' # because we'll show it left of the icons
+      %tr
+        %th.title
+          %br
+          %br
+          - if level == 'intermediate'
+            = image_tag 'under_construction.png', style: 'float: right',
+              title: 'Under construction'
+          %h2= level.humanize
+        %td.purple
+        %td.yellow
+        %td.blue
+        %td.red
+        %td.green
     - @topics.select { |topic| topic.level == level }.each do |topic|
       %tr
         %th.title!= topic.title_html
