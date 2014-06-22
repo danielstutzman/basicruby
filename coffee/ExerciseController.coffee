@@ -54,9 +54,6 @@ class ExerciseController
             readOnly: 'nocursor'
             lineWrapping: true
           CodeMirror.fromTextArea textareaTests, options
-
-      if @color == 'red' || @color == 'green'
-        @handleRun()
     @render callback
 
   render: (callback) ->

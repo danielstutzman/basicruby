@@ -91,7 +91,9 @@ CasesComponent = React.createClass
                   else
                     span { className: 'failed' }, "#{NOT_EQUALS}Predicted"
                 else
-                  if case0.passed
+                  if case0.actual_output == undefined
+                    ''
+                  else if case0.passed
                     span { className: 'passed' }, ' = Expected'
                   else
                     span { className: 'failed' }, " #{NOT_EQUALS} Expected"
