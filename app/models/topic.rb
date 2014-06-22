@@ -5,7 +5,8 @@ class Topic < ActiveRecord::Base
     self.title.gsub('`', '')
   end
   def title_html
-    attributes[:title_html] ||
-      self.title.gsub(/`(.*?)`/, '<code>\1</code>').html_safe
+    html = attributes['title_html'] || self.title
+    html.gsub! /`(.*?)`/, '<code>\1</code>'
+    html.html_safe
   end
 end
