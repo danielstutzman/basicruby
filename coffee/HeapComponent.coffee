@@ -7,10 +7,11 @@ HeapComponent = React.createClass
   displayName: 'HeapComponent'
 
   propTypes:
-    varsStack: type.array
+    varsStack:    type.array
+    doToggleHeap: type.func.isRequired
 
   render: ->
-    { br, div, span, table, tbody, td, th, tr } = React.DOM
+    { br, button, div, span, table, tbody, td, th, tr } = React.DOM
 
     heap = {}
     addToHeap = (value) ->
@@ -93,5 +94,10 @@ HeapComponent = React.createClass
                       value: value
                       object_ids: _.without _.keys(heap), object_id
                       show_type: false
+        button
+          className: 'heap-toggle'
+          onClick: (e) => @props.doToggleHeap()
+          'Hide IDs'
+
 
 module.exports = HeapComponent

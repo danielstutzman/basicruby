@@ -25,6 +25,9 @@ DebuggerComponent = React.createClass
     currentScrollTop:    type.number.isRequired
     doCommand:           type.object.isRequired
 
+  getInitialState: ->
+    showHeap: false
+
   render: ->
     { a, button, div, h1, label, span } = React.DOM
 
@@ -73,10 +76,15 @@ DebuggerComponent = React.createClass
           numPartialCallExecuting: @props.interpreter?.numPartialCallExecuting
 
       if @props.features.showVariables
-        VariablesComponent @props.interpreter
-
-      if @props.features.showHeap
-        HeapComponent @props.interpreter
+        if @state.showHeap
+          HeapComponent
+            varsStack: @props.interpreter?.varsStack
+            doToggleHeap: => @setState showHeap: false
+        else
+          VariablesComponent
+            varsStack: @props.interpreter?.varsStack
+            showHeapToggle: @props.features.showHeapToggle
+            doToggleHeap: => @setState showHeap: true
 
       if @props.features.showConsole
         ConsoleComponent

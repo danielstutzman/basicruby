@@ -8,12 +8,20 @@ VariablesComponent = React.createClass
 
   propTypes:
     varsStack:      type.array
+    showHeapToggle: type.bool.isRequired
+    doToggleHeap:   type.func.isRequired
 
   render: ->
-    { br, div, label, span, table, td, th, tr } = React.DOM
+    { br, button, div, label, span, table, td, th, tr } = React.DOM
 
     div { className: 'variables-with-label' },
-      label {}, 'Variables'
+      label {},
+        if @props.showHeapToggle
+          button
+            className: 'heap-toggle'
+            onClick: (e) => @props.doToggleHeap()
+            'Show IDs'
+        'Variables'
       div { className: 'variables-scroller' },
         table { className: 'variables' },
           _.map @props.varsStack, (vars, method_num) =>

@@ -14,7 +14,7 @@ class ExerciseController
       showRunButton:    exists 'run'
       showPartialCalls: exists 'partial_calls'
       showVariables:    exists 'vars'
-      showHeap:         exists 'heap'
+      showHeapToggle:   exists 'heap_toggle'
       showInstructions: exists 'instructions'
       showConsole:      exists 'console'
       highlightTokens:  exists 'tokens'
