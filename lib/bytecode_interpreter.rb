@@ -70,7 +70,7 @@ class BytecodeInterpreter
     @partial_calls = []
     @num_partial_call_executing = nil
     @result = [] # a stack with 0 or 1 items in it
-    @vars_stack = [{}]
+    @vars_stack = [{ __method_name: [false, "in '<main>'"] }]
     @main = (RUBY_PLATFORM == 'opal') ?
       `Opal.top` : TOPLEVEL_BINDING.eval('self')
     @accepting_input = false

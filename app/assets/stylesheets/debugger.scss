@@ -244,6 +244,17 @@ $label-height: 30px;
     }
     tr {
       vertical-align: top;
+      &.method {
+        border-top: 10px black solid;
+        td {
+          background-color: #040;
+          color: black;
+          font-size: 16pt;
+        }
+        .code {
+          font-family: monospace;
+        }
+      }
     }
     th {
       background-color: #333;
