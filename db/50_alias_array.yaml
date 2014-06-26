@@ -1,42 +1,66 @@
 title: Array aliasing
 level: intermediate
-features: run step instructions console heap
+features: run step instructions console vars heap_toggle
 under_construction: true
 purple:
-- youtube_id: null
-  video_script:
+- youtube_id: ajYuXyo2PnA
+  video_script: |
     Hi everyone :-)
-    In this lesson, I'll demonstrate how variable assignment copies over the
-    id of an array, not its contents.  So any changes to the array contents
-    will be visible from any variable pointing to it.  Let's see it -
-    So lines 1 and 2 set up a single array with two variables pointing to it.
-    Calling push modifies the array in place.
-    So the 3 is visible from b.
-    In constrast, the plus operator does not modify the array in place;
-      it creates a new copy.
-    So the 4 is not visible from b.
-    And there's a shorter way to write a = a + something;
-      it is "a plus equals something."
-      This might look like it modifies the array in place;
-        but it doesn't; the "plus" makes a copy.
+    In this lesson, I'll demonstrate how assigning variables doesn't actually
+      copy over a value; it copies over the ID of the value.
+    If you don't understand this, you can accidentally link two variables
+      together, so changes to one variable will affect the other!
+    Let's see an example -
+
+    So line 1 created an array containing 1 and 2.
+    Line 2 might look like it copied the array.
+    But, when we push 3 onto A, you see that B is affected too!
+    Same with line 4; when we work with B, A gets changed too!
+
+    However, once we make a copy of A and assign that to B,
+      now when we push onto A, B will stay the same.
+
+    Let's see it again, this time clicking "Show IDs."
+    Now the variables section is split into two parts.
+    On the right is the "heap", where all the values are,
+      with IDs to keep track of them.
+    And the left you'll see each variable and what ID it points to.
+    This is show you that variables don't actually contain values;
+      they actually contain an ID, which is an address to the heap.
+    So we see that A currently contains the ID ___,
+      which refers to the array 1 2.
+    Running "b = a" on line 2 is saying "b = the ID ___".
+      As you can see, there's still only one copy of the array 1 2.
+    So that's why calling "push" indirectly ends up affecting both variables.
+
+    When we run "a.clone" on line 7, it makes another copy of the array.
+      Now if we stopped there, without running "b =", the copy would just sit
+      on the heap, and since nothing would be pointing to it,
+      it would just get garbage-collected.
+    But since we ran "b = a.clone", B now contains the ID of the copy.
+    So now you can see - A and B point to different IDs.
+    So we can change the value of A, and this time B won't change.
+
   code: |
     a = [1, 2]
     b = a
     a.push 3
+    b.push 4
     p b
 
-    a = a + [4]
-    a += [5]
+    b = a.clone
+    a.push 5
     p b
 yellow:
 - code: |
     a = [1, 2]
     b = a
     a.push 3
+    b.push 4
     p b
 
-    a = a + [4]
-    a += [5]
+    b = a.clone
+    a.push 5
     p b
 - code: |
     x = [9]
