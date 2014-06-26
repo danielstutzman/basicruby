@@ -1,0 +1,110 @@
+- content_for :title, "Exercise #{@exercise && @exercise['task_id']}"
+
+:javascript
+  require('./coffee/tutor.coffee');
+%script
+  - if @traces
+    != "var traces_json = #{JSON.dump(@traces).inspect};"
+
+%form(method='post')
+  #sidebar
+    %a#edit-tab-link(href='#')
+      #edit-tab.tab
+        %h2 Edit
+        - if @exercise && @exercise['starting_code']
+          %button#restore-button(name='action' value='restore')
+            Restore original
+        %button#save-button(name='action' value='save')
+          Save
+
+    .filler
+    - @traces.each_with_index do |trace, i|
+      %a.case-tab-link(href="#")
+        .tab.case-tab{ :"data-case-num" => i }
+          %h2
+            = (@exercise && @exercise['cases']) ? "Case #{i}" : 'Debug'
+            - if trace['test_status'] != nil
+              .test-status{ :class => trace['test_status'].downcase }
+                = trace['test_status']
+
+    .filler.filler-tall
+      - if @current_user
+        logged in as
+        = @current_user.first_name
+        %button(name='logout' value='logout') Logout
+
+  #edit-content
+    - if params['exercise_num']
+      %b= "Exercise #{params['exercise_num']}"
+    - if @exercise && @exercise['description']
+      != @exercise['description'].gsub(/`([^`]*)`/, "<code>\\1</code>")
+
+    #user_code_div
+      %textarea#user_code_textarea(name='user_code_textarea'
+                                   cols='40' rows='10')
+        = @user_code
+
+  - (@traces || []).each_with_index do |trace, i|
+    .case-content{ :"data-case-num" => i }
+      - if params['exercise_num']
+        %b= "Exercise #{params['exercise_num']}"
+      - if @exercise && @exercise['description']
+        != @exercise['description'].gsub(/`([^`]*)`/, "<code>\\1</code>")
+
+      - if @exercise && @exercise['cases'] && @exercise['cases'][i]
+        - _case = @exercise['cases'][i]
+        %ul
+          %li
+            %b Case number:
+            = i
+          - if _case['given']
+            %li
+              %b Given:
+              %code= (_case['given'] || {}).map { |var, val| "#{var} = #{val.inspect}" }.join(', ')
+
+          - if _case['expected_return']
+            %li
+              %b Expected return:
+              = _case['expected_return'].inspect
+            %li
+              %b Actual return:
+              %code= trace['returned'].inspect
+
+          - elsif _case['expected_stdout']
+            %li
+              %b Expected output:
+              %pre(style='display:inline-block;vertical-align:top')
+                != _case['expected_stdout'].gsub('<', '&lt;')
+            %li
+              %b Actual output:
+              %pre(style='display:inline-block;vertical-align:top')
+                != trace['trace'].last && (trace['trace'].last['stdout'] || '').gsub('<', '&lt;')
+
+          - if trace['trace'].last && trace['trace'].last['exception_msg']
+            %li
+              %b Uncaught exception:
+              %code.exception= trace['trace'].last['exception_msg']
+
+          %li
+            %b Result:
+            - if trace['test_status'] != nil
+              .test-status{ :class => trace['test_status'].downcase }
+                = trace['test_status']
+
+      %div{ :id => "trace_render_div#{i}" }
+
+  .footer
+    Online Ruby Tutor is (C) 2013
+    != succeed '.' do
+      %a(href='http://www.danielstutzman.com/') Daniel Stutzman
+    %a(href='https://github.com/danielstutzman/online-ruby-tutor/issues')<
+      File a bug
+    or
+    != succeed '.' do
+      %a(href='https://github.com/danielstutzman/online-ruby-tutor')<
+        submit a pull request
+    Visualizations drawn by
+    %a(href='http://pythontutor.com/') Online Python Tutor
+    by
+    != succeed '.' do
+      %a(href='http://www.pgbovine.net/') Philip Guo

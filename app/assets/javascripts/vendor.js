@@ -1,5 +1,5 @@
 //= require_self
-//= require_tree ../../../vendor/assets/javascripts/.
+//= require_directory ../../../vendor/assets/javascripts
 
 var oldDebug = window.console.debug;
 window.console.debug = function() {

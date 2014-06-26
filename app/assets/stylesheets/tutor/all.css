@@ -1,0 +1,6 @@
+/*
+ *= require_tree .
+ *= require ../../../../vendor/assets/stylesheets/codemirror
+ *= require_directory ../../../../vendor/assets/stylesheets/tutor
+ *= require_self
+ */

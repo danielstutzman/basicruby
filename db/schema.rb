@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140622195457) do
+ActiveRecord::Schema.define(version: 20140626184610) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,6 +59,36 @@ ActiveRecord::Schema.define(version: 20140622195457) do
   add_index "topics", ["num"], name: "index_topics_on_num", using: :btree
   add_index "topics", ["title"], name: "index_topics_on_title", unique: true, using: :btree
   add_index "topics", ["youtube_id"], name: "index_topics_on_youtube_id", using: :btree
+
+  create_table "tutor_exercise_groups", force: true do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tutor_exercises", force: true do |t|
+    t.string   "task_id",                 limit: 4, null: false
+    t.integer  "tutor_exercise_group_id",           null: false
+    t.string   "task_id_substring"
+    t.text     "yaml"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "tutor_exercises", ["task_id"], name: "index_tutor_exercises_on_task_id", using: :btree
+  add_index "tutor_exercises", ["task_id_substring"], name: "index_tutor_exercises_on_task_id_substring", using: :btree
+
+  create_table "tutor_saves", force: true do |t|
+    t.integer  "user_id",              null: false
+    t.string   "task_id",    limit: 4, null: false
+    t.boolean  "is_current",           null: false
+    t.text     "code",                 null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "tutor_saves", ["task_id"], name: "index_tutor_saves_on_task_id", using: :btree
+  add_index "tutor_saves", ["user_id"], name: "index_tutor_saves_on_user_id", using: :btree
 
   add_foreign_key "completions", "exercises", name: "completions_exercise_id_fk"
   add_foreign_key "completions", "learners", name: "completions_learner_id_fk"

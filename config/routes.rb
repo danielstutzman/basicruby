@@ -1,8 +1,10 @@
 BasicRuby::Application.routes.draw do
   root 'main#menu'
 
-  # make sure this comes before more general routes
-  get '/yt/:youtube_id' => 'main#landing_page'
+  # make sure these routes come before more general routes
+  get '/tutor'                   => 'tutor#welcome'
+  get '/tutor/exercise/:task_id' => 'tutor#exercise'
+  get '/yt/:youtube_id'          => 'main#landing_page'
 
   get '/:path'          => 'main#exercise'
   get '/:path/:rep_num' => 'main#exercise'

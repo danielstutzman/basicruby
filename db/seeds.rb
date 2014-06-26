@@ -1,6 +1,8 @@
 require 'yaml'
 require 'json'
 
+load File.dirname(__FILE__) + '/tutor_seeds.rb'
+
 ActiveRecord::Base.logger = nil
 Exercise.transaction do
   dir = File.dirname(__FILE__)
