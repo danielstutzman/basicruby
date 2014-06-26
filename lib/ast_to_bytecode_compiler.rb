@@ -60,6 +60,7 @@ class AstToBytecodeCompiler
       when :true     then [[:token] + sexp.source, [:result, true]]
       when :false    then [[:token] + sexp.source, [:result, false]]
       when :array    then compile_array sexp
+      when :hash     then compile_hash sexp
       when :block    then compile_block sexp
       when :call     then compile_call sexp
       when :arglist  then compile_arglist sexp
@@ -121,6 +122,29 @@ class AstToBytecodeCompiler
     bytecodes.push [:result_array]
     bytecodes.push [:arg]
     bytecodes.push [:result, 'push']
+    bytecodes.push [:make_symbol]
+    bytecodes.push [:arg]
+    bytecodes.push [:result_nil]
+    bytecodes.push [:arg] # no block
+    elements.each do |element|
+      bytecodes.concat compile(element)
+      bytecodes.push [:arg]
+    end
+    bytecodes.push [:pre_call]
+    bytecodes.push [:call]
+    bytecodes
+  end
+
+  def compile_hash sexp
+    # For example, {1=2,3=>4} becomes:
+    #   (:hash, (:int, 1), (:int, 2), (:int, 3), (:int, 4))
+    _, *elements = sexp
+
+    bytecodes = []
+    bytecodes.push [:start_call]
+    bytecodes.push [:const, 'Hash']
+    bytecodes.push [:arg]
+    bytecodes.push [:result, '[]']
     bytecodes.push [:make_symbol]
     bytecodes.push [:arg]
     bytecodes.push [:result_nil]

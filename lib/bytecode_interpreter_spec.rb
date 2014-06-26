@@ -482,4 +482,8 @@ end").should == "8\n8\n8\n9\n9\n9\n"
     output_of('def p *args; puts 3; end; p 4').should == "3\n"
     output_of('p 4').should == "4\n"
   end
+
+  it 'accepts hash literals' do
+    output_of('p({1=>2, 3=>4})').should == "{1=>2, 3=>4}\n"
+  end
 end
