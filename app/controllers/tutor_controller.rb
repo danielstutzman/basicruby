@@ -76,28 +76,26 @@ class TutorController < ApplicationController
 
     cases_given =
       (@exercise['cases'] || [{}]).map { |_case| _case['given'] || {} }
-    #@traces = get_trace_for_cases('', @user_code, cases_given)
-@traces = JSON.parse("[{\"code\":\"puts 1\",\"trace\":[{\"ordered_globals\":[],\"stdout\":\"\",\"func_name\":\"main\",\"stack_to_render\":[{\"frame_id\":0,\"encoded_locals\":{},\"is_highlighted\":false,\"is_parent\":false,\"func_name\":\"<main>\",\"is_zombie\":false,\"parent_frame_id_list\":[],\"unique_hash\":\"0_\",\"ordered_varnames\":[]}],\"globals\":{},\"heap\":{},\"line\":1,\"event\":\"step_line\"},{\"ordered_globals\":[],\"stdout\":\"1\\n\",\"func_name\":\"main\",\"stack_to_render\":[{\"frame_id\":0,\"encoded_locals\":{},\"is_highlighted\":false,\"is_parent\":false,\"func_name\":\"<main>\",\"is_zombie\":false,\"parent_frame_id_list\":[],\"unique_hash\":\"0_\",\"ordered_varnames\":[]}],\"globals\":{},\"heap\":{},\"line\":1,\"event\":\"step_line\"}],\"returned\":null}]")
 
-    num_passed = 0
-    num_failed = 0
-    @traces.each_with_index do |trace, i|
-      last = trace['trace'].last || {}
-      if last['exception_msg']
-        trace['test_status'] = 'ERROR'
-      elsif @exercise['cases'].nil? || @exercise['cases'][i].nil?
-        # cases don't apply to this exercise
-      elsif expected_return = @exercise['cases'][i]['expected_return']
-        trace['test_status'] =
-          (trace['returned'] == expected_return) ? 'PASSED' : 'FAILED'
-      elsif expected_stdout = @exercise['cases'][i]['expected_stdout']
-        trace['test_status'] =
-          ((last['stdout'] || '').chomp == expected_stdout.chomp) ?
-          'PASSED' : 'FAILED'
-      end
-      num_passed += 1 if trace['test_status'] == 'PASSED'
-      num_failed += 1 if trace['test_status'] == 'FAILED' ||
-                         trace['test_status'] == 'ERROR'
-    end
+#    num_passed = 0
+#    num_failed = 0
+#    @traces.each_with_index do |trace, i|
+#      last = trace['trace'].last || {}
+#      if last['exception_msg']
+#        trace['test_status'] = 'ERROR'
+#      elsif @exercise['cases'].nil? || @exercise['cases'][i].nil?
+#        # cases don't apply to this exercise
+#      elsif expected_return = @exercise['cases'][i]['expected_return']
+#        trace['test_status'] =
+#          (trace['returned'] == expected_return) ? 'PASSED' : 'FAILED'
+#      elsif expected_stdout = @exercise['cases'][i]['expected_stdout']
+#        trace['test_status'] =
+#          ((last['stdout'] || '').chomp == expected_stdout.chomp) ?
+#          'PASSED' : 'FAILED'
+#      end
+#      num_passed += 1 if trace['test_status'] == 'PASSED'
+#      num_failed += 1 if trace['test_status'] == 'FAILED' ||
+#                         trace['test_status'] == 'ERROR'
+#    end
   end
 end
