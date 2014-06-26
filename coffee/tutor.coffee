@@ -84,19 +84,61 @@ html_for_case = (_case, i, trace) ->
   html += "<div id='trace_render_div#{i}'></div>"
   html
 
+
+represent_value_simple = (value) ->
+  klass = value.$class().$to_s()
+  switch klass
+    when 'NilClass'   then null
+    when 'Numeric'    then value.valueOf()
+    when 'String'     then value.valueOf()
+    when 'TrueClass'  then true
+    when 'FalseClass' then false
+    when 'Array'      then ['REF', value.$object_id()]
+    when 'Hash'       then ['REF', value.$object_id()]
+    when 'Proc'       then ['REF', value.$object_id()]
+    else klass
+
+represent_value = (value, heap) ->
+  klass = value.$class().$to_s()
+  switch klass
+    when 'NilClass'   then null
+    when 'Numeric'    then value.valueOf()
+    when 'String'     then value.valueOf()
+    when 'TrueClass'  then true
+    when 'FalseClass' then false
+    when 'Array'
+      on_heap = ['LIST'].concat _.map value, (element) ->
+        represent_value element, heap
+      heap[value.$object_id()] = on_heap
+      ['REF', value.$object_id()]
+    when 'Hash'
+      on_heap = ['DICT'].concat _.map value.keys, (key) ->
+        [represent_value(key, heap), represent_value(value.map[key], heap)]
+      heap[value.$object_id()] = on_heap
+      ['REF', value.$object_id()]
+    when 'Proc'
+      on_heap = ['FUNCTION', "line # unknown", null]
+      heap[value.$object_id()] = on_heap
+      ['REF', value.$object_id()]
+    else klass
+
 new_trace_entry = (interpreter, line_num) ->
   locals = {}
   map = _.omit(interpreter.visibleState().varsStack[0].map, '__method_name')
+  heap = {}
   for pair in _.pairs(map)
     if pair[1].length == 2
-      locals[pair[0]] = pair[1][1].valueOf()
+      value = represent_value_simple(pair[1][1])
+      locals[pair[0]] = value
+      represent_value pair[1][1], heap
+
   trace_entry =
     ordered_globals:[]
     stdout: _.map(interpreter.getStdoutAndStderr(), (pair) -> pair[1]).join()
     func_name:"main"
     stack_to_render:[]
     globals:{}
-    heap:{}
+    heap:heap
     line:line_num
     event:"step_line"
   trace_entry.stack_to_render.push
