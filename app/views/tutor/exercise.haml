@@ -4,50 +4,6 @@
   require('./coffee/tutor.coffee');
 :javascript
   exercise = JSON.parse(#{@exercise.to_json.inspect});
-  traces = [{
-    "code": "puts 1",
-    "trace": [
-      {
-        "ordered_globals":[],
-        "stdout":"",
-        "func_name":"main",
-        "stack_to_render":[
-          {"frame_id":0,
-            "encoded_locals":{},
-            "is_highlighted":false,
-            "is_parent":false,
-            "func_name":"<main>",
-            "is_zombie":false,
-            "parent_frame_id_list":[],
-            "unique_hash":"0_",
-            "ordered_varnames":[]
-        }],
-        "globals":{},
-        "heap":{},
-        "line":1,
-        "event":"step_line"
-      },{
-        "ordered_globals":[],
-        "stdout":"1\n",
-        "func_name":"main",
-        "stack_to_render":[
-          {"frame_id":0,
-            "encoded_locals":{},
-            "is_highlighted":false,
-            "is_parent":false,
-            "func_name":"<main>",
-            "is_zombie":false,
-            "parent_frame_id_list":[],
-            "unique_hash":"0_",
-            "ordered_varnames":[]
-        }],
-        "globals":{},
-        "heap":{},
-        "line":1,
-        "event":"step_line"
-      }
-    ],"returned":null
-  }]
 
 #sidebar
   %a#edit-tab-link(href='#')

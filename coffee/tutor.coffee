@@ -123,37 +123,49 @@ represent_value = (value, heap) ->
     else klass
 
 new_trace_entry = (interpreter, line_num) ->
-  locals = {}
-  map = _.omit(interpreter.visibleState().varsStack[0].map, '__method_name')
+  varsStack = interpreter.visibleState().varsStack
+
+  # prepare heap variable
   heap = {}
-  for pair in _.pairs(map)
-    if pair[1].length == 2
-      value = represent_value_simple(pair[1][1])
-      locals[pair[0]] = value
-      represent_value pair[1][1], heap
+  for vars in varsStack
+    for pair in _.pairs(_.omit(vars.map, '__method_name'))
+      if pair[1].length == 2
+        represent_value pair[1][1], heap
 
   trace_entry =
     ordered_globals:[]
-    stdout: _.map(interpreter.getStdoutAndStderr(), (pair) -> pair[1]).join()
+    stdout: _.map(interpreter.getStdoutAndStderr(), (pair) -> pair[1]).join('')
     func_name:"main"
     stack_to_render:[]
     globals:{}
     heap:heap
     line:line_num
     event:"step_line"
-  trace_entry.stack_to_render.push
-    frame_id:0
-    encoded_locals: locals
-    is_highlighted:false
-    is_parent:false
-    func_name:"<main>"
-    is_zombie:false
-    parent_frame_id_list:[]
-    unique_hash:"0_"
-    ordered_varnames: _.map _.without(interpreter.visibleState().varsStack[0].keys, '__method_name'), (key) -> key.$to_s()
+  for vars, i in varsStack
+    locals = {}
+    keys = []
+    for key in vars.keys
+      tuple = vars.map[key.$to_s()]
+      if tuple.length == 2 && key.$to_s().indexOf('__') != 0
+        keys.push key.$to_s()
+        locals[key.$to_s()] = represent_value_simple(tuple[1])
+    method_name = vars.map['__method_name'][1].$to_s()
+    method_name_for_hash = method_name.replace(/['<> ]/g, '')
+    trace_entry.stack_to_render.push
+      frame_id: i
+      encoded_locals: locals
+      is_highlighted: false
+      is_parent: i < varsStack.length - 1
+      func_name: method_name
+      is_zombie: false
+      parent_frame_id_list: []
+      unique_hash: "#{i}_#{method_name_for_hash}"
+      ordered_varnames: keys
   trace_entry
 
-save = (code) ->
+traces = []
+
+compile_to_traces = (code) ->
   trace = []
 
   bytecodes = AstToBytecodeCompiler.compile [['YourCode', code]]
@@ -162,14 +174,24 @@ save = (code) ->
     interpreter = new BytecodeInterpreter()
     spool.queueRunUntil 'DONE'
     i = 0
+    line_num = 1
+    ended_abnormally = false
     until spool.isDone()
       i += 1
       if i > 10000
-        throw "Interpreter seems to be stuck in a loop"
+        interpreter.undefineMethods()
+        spool.terminateEarly()
+        ended_abnormally = true
+        trace.push
+          event: 'instruction_limit_reached'
+          exception_msg: "(stopped after #{i} steps to prevent infinite loop)"
+        break
       bytecode = spool.getNextBytecode()
       try
         if bytecode[0] == 'position' && bytecode[1] == 'YourCode'
           line_num = bytecode[2]
+        if bytecode[0] == 'position' && bytecode[1] == 'YourCode' ||
+           bytecode[0] == 'return'
           trace.push new_trace_entry(interpreter, line_num)
         spoolCommand = interpreter.interpret bytecode
         spool.doCommand.apply spool, spoolCommand
@@ -177,10 +199,18 @@ save = (code) ->
         if e.name == 'ProgramTerminated'
           interpreter.undefineMethods()
           spool.terminateEarly()
+          ended_abnormally = true
+          trace.push new_trace_entry(interpreter, line_num)
+          _.last(trace).event = 'uncaught_exception'
+          _.last(trace).exception_msg = e.message
         else
           throw e
-    trace.push new_trace_entry(interpreter, line_num)
-    trace
+    unless ended_abnormally
+      trace.push new_trace_entry(interpreter, line_num)
+
+    traces.splice 0 # clear out traces
+    traces.push { code: code, returned: null, trace: trace }
+    null
 
 render_traces = ->
   console.log traces
@@ -205,13 +235,15 @@ render_traces = ->
     $('.traces-tabs').html html
 
     html = ''
+    # if no cases provided, assume just one case with no variables pre-assigned
+    cases = (exercise && exercise['cases']) || [{}]
     for trace, i in traces
       html += "<div class='case-content' data-case-num='#{i}'>"
       if exercise && exercise['description']
         html += exercise['description'].replace /`([^`]*)`/, (match) ->
           "<code>#{match[1]}</code>"
-      if exercise && exercise['cases'] && exercise['cases'][i]
-        html += html_for_case exercise['cases'][i], i, trace
+      if cases[i]
+        html += html_for_case cases[i], i, trace
       html += "</div>"
     $('.case-contents').html html
 
@@ -279,14 +311,13 @@ $(document).ready ->
     autofocus: true
   )
 
+  compile_to_traces codeMirror.getValue()
   render_traces()
 
-  $('#restore-button').click (event) ->
+  $('#restore-button').click (e) ->
     confirm('Are you sure you want to discard your current code?')
 
-  $('#save-button').click ->
-    code = codeMirror.getValue()
-    trace = save(code)
-    traces.splice 0
-    traces.push { code: code, returned: null, trace: trace }
+  $('#save-button').click (e) ->
+    compile_to_traces codeMirror.getValue()
     render_traces()
+    e.preventDefault()
