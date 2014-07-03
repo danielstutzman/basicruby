@@ -19,16 +19,16 @@ TutorExercise.create! \
       
       x = [1, 2, 3] # a different [1, 2, 3] list!
       y = x
-      x.append(4)
-      y.append(5)
+      x.push(4)
+      y.push(5)
       z = [1, 2, 3, 4, 5] # a different list!
-      x.append(6)
-      y.append(7)
+      x.push(6)
+      y.push(7)
       y = "hello"
       
       
       def foo(lst)
-          lst.append("hello")
+          lst.push("hello")
           bar(lst)
       end
       
