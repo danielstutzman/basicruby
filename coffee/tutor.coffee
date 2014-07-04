@@ -213,8 +213,6 @@ compile_to_traces = (code) ->
     null
 
 render_traces = ->
-  console.log traces
-
   if typeof traces isnt 'undefined'
     html = ''
     for trace, i in traces
