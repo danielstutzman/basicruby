@@ -36,42 +36,16 @@ class TutorController < ApplicationController
       halt 500, "#{e.class}: #{e} with #{exercise.yaml}"
     end
 
-    if request.get?
-      old_record =
-        TutorSave.where({
-          :user_id     => current_user.id,
-          :task_id     => task_id,
-          :is_current  => true
-        }).first
-      if old_record
-        @user_code = old_record.code
-      else
-        @user_code = @exercise['starting_code'] || ''
-      end
-    elsif request.post?
-      if params['action'] == 'save'
-        @user_code = params['user_code_textarea']
-        TutorSave.transaction do
-          TutorSave.where("is_current = 'f'").update_all({
-            :user_id      => current_user.id,
-            :task_id      => task_id,
-            :is_current   => true
-          })
-          TutorSave.create({
-            :user_id      => current_user.id,
-            :task_id      => task_id,
-            :is_current   => true,
-            :code         => @user_code,
-          })
-        end
-      elsif params['action'] == 'restore'
-        TutorSave.where({
-          :user_id      => current_user.id,
-          :task_id      => task_id,
-          :is_current   => true
-        }).update_all(:is_current => false)
-        redirect "/tutor/exercise/#{task_id}"
-      end
+    old_record =
+      TutorSave.where({
+        :user_id     => current_user.id,
+        :task_id     => task_id,
+        :is_current  => true
+      }).first
+    if old_record
+      @user_code = old_record.code
+    else
+      @user_code = @exercise['starting_code'] || ''
     end
 
     cases_given =
@@ -97,5 +71,34 @@ class TutorController < ApplicationController
 #      num_failed += 1 if trace['test_status'] == 'FAILED' ||
 #                         trace['test_status'] == 'ERROR'
 #    end
+  end
+
+  def post_to_database
+    current_user = Learner.find_by(id: session[:user_id])
+    task_id = params[:task_id]
+
+    if params['button'] == 'save'
+      @user_code = params['user_code_textarea']
+      TutorSave.transaction do
+        TutorSave.where({
+          :user_id      => current_user.id,
+          :task_id      => task_id,
+          :is_current   => true
+        }).update_all(:is_current => 'f')
+        TutorSave.create({
+          :user_id      => current_user.id,
+          :task_id      => task_id,
+          :is_current   => true,
+          :code         => @user_code,
+        })
+      end
+    elsif params['button'] == 'restore'
+      TutorSave.where({
+        :user_id      => current_user.id,
+        :task_id      => task_id,
+        :is_current   => true
+      }).update_all(:is_current => false)
+    end
+    render json: [], status: :ok
   end
 end

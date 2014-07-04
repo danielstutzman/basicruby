@@ -297,6 +297,16 @@ render_traces = ->
     event.preventDefault()
     false
 
+post_to_database = (button, code) ->
+  auth_token = $('meta[name=csrf-token]').attr('content')
+  promise = $.post window.location.pathname,
+    button: button
+    user_code_textarea: code
+    authenticity_token: auth_token
+  promise.fail (data) ->
+    window.alert "Failed #{button}: #{data.status} #{data.statusText}"
+  promise
+
 $(document).ready ->
 
   textarea = $('#user_code_textarea')[0]
@@ -315,9 +325,14 @@ $(document).ready ->
   render_traces()
 
   $('#restore-button').click (e) ->
-    confirm('Are you sure you want to discard your current code?')
+    if confirm('Are you sure you want to discard your current code?')
+      promise = post_to_database 'restore', null
+      promise.done ->
+        window.location.reload()
+    e.preventDefault()
 
   $('#save-button').click (e) ->
     compile_to_traces codeMirror.getValue()
     render_traces()
+    post_to_database 'save', codeMirror.getValue()
     e.preventDefault()
