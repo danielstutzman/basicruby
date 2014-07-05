@@ -166,51 +166,72 @@ new_trace_entry = (interpreter, line_num) ->
 traces = []
 
 compile_to_traces = (code) ->
-  trace = []
+  traces.splice 0 # clear out traces
+  for case_ in (exercise['cases'] || [{}])
+    given_vars = case_['given'] || {}
+    given_vars_statements = _.map _.keys(given_vars), (var_name) ->
+      "#{var_name} = #{given_vars[var_name].$inspect()}\n"
+    num_givens = _.keys(given_vars).length
+    code_with_givens = given_vars_statements.join('') + code
+    bytecodes = AstToBytecodeCompiler.compile [['YourCode', code_with_givens]]
+    if bytecodes
+      bytecodes = _.compact _.map bytecodes, (bytecode) ->
+        if bytecode[0] == 'position'
+          if bytecode[2] > num_givens
+            [bytecode[0], bytecode[1], bytecode[2] - num_givens, bytecode[3]]
+          else
+            null # will be removed by _.compact
+        else if bytecode[0] == 'token'
+          if bytecode[1] > num_givens
+            [bytecode[0], bytecode[1] - num_givens, bytecode[2]]
+          else
+            null # will be removed by _.compact
+        else
+          bytecode
+      trace = execute_to_trace bytecodes, given_vars
+      traces.push { code: code, returned: null, trace: trace }
+  null
 
-  bytecodes = AstToBytecodeCompiler.compile [['YourCode', code]]
-  if bytecodes
-    spool = new BytecodeSpool bytecodes
-    interpreter = new BytecodeInterpreter()
-    spool.queueRunUntil 'DONE'
-    i = 0
-    line_num = 1
-    ended_abnormally = false
-    until spool.isDone()
-      i += 1
-      if i > 10000
+execute_to_trace = (bytecodes, given_vars) ->
+  trace = []
+  spool = new BytecodeSpool bytecodes
+  interpreter = new BytecodeInterpreter()
+  spool.queueRunUntil 'DONE'
+  i = 0
+  line_num = 1
+  ended_abnormally = false
+  until spool.isDone()
+    i += 1
+    if i > 10000
+      interpreter.undefineMethods()
+      spool.terminateEarly()
+      ended_abnormally = true
+      trace.push
+        event: 'instruction_limit_reached'
+        exception_msg: "(stopped after #{i} steps to prevent infinite loop)"
+      break
+    bytecode = spool.getNextBytecode()
+    try
+      if bytecode[0] == 'position' && bytecode[1] == 'YourCode'
+        line_num = bytecode[2]
+      if bytecode[0] == 'position' && bytecode[1] == 'YourCode' ||
+         bytecode[0] == 'return'
+        trace.push new_trace_entry(interpreter, line_num)
+      spoolCommand = interpreter.interpret bytecode
+      spool.doCommand.apply spool, spoolCommand
+    catch e
+      if e.name == 'ProgramTerminated'
         interpreter.undefineMethods()
         spool.terminateEarly()
         ended_abnormally = true
-        trace.push
-          event: 'instruction_limit_reached'
-          exception_msg: "(stopped after #{i} steps to prevent infinite loop)"
-        break
-      bytecode = spool.getNextBytecode()
-      try
-        if bytecode[0] == 'position' && bytecode[1] == 'YourCode'
-          line_num = bytecode[2]
-        if bytecode[0] == 'position' && bytecode[1] == 'YourCode' ||
-           bytecode[0] == 'return'
-          trace.push new_trace_entry(interpreter, line_num)
-        spoolCommand = interpreter.interpret bytecode
-        spool.doCommand.apply spool, spoolCommand
-      catch e
-        if e.name == 'ProgramTerminated'
-          interpreter.undefineMethods()
-          spool.terminateEarly()
-          ended_abnormally = true
-          trace.push new_trace_entry(interpreter, line_num)
-          _.last(trace).event = 'uncaught_exception'
-          _.last(trace).exception_msg = e.message
-        else
-          throw e
-    unless ended_abnormally
-      trace.push new_trace_entry(interpreter, line_num)
-
-    traces.splice 0 # clear out traces
-    traces.push { code: code, returned: null, trace: trace }
-    null
+        trace.push new_trace_entry(interpreter, line_num)
+        _.last(trace).event = 'uncaught_exception'
+        _.last(trace).exception_msg = e.message
+      else
+        throw e
+  unless ended_abnormally
+    trace.push new_trace_entry(interpreter, line_num)
+  trace
 
 render_traces = ->
   if typeof traces isnt 'undefined'
@@ -220,7 +241,7 @@ render_traces = ->
         <a class='case-tab-link' href='#'>
           <div class='tab case-tab' data-case-num='#{i}'>
             <h2>
-              #{if @exercise && @exercise['cases'] then "Case #{i}" else 'Debug'}
+              #{if exercise && exercise['cases'] then "Case #{i}" else 'Debug'}
               #{if trace['test_status']
                 "<div class='test-status #{trace['test_status'].toLowerCase()}'
                   #{trace['test_status']}
