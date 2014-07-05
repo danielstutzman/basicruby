@@ -270,8 +270,7 @@ render_traces = ->
     for trace, i in traces
       html += "<div class='case-content' data-case-num='#{i}'>"
       if exercise && exercise['description']
-        html += exercise['description'].replace /`([^`]*)`/, (match) ->
-          "<code>#{match[1]}</code>"
+        html += exercise['description'].replace /`([^`]*)`/, "<code>$1</code>"
       if cases[i]
         html += html_for_case cases[i], i, trace
       html += "</div>"
