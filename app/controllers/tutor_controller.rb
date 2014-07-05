@@ -50,27 +50,6 @@ class TutorController < ApplicationController
 
     cases_given =
       (@exercise['cases'] || [{}]).map { |_case| _case['given'] || {} }
-
-#    num_passed = 0
-#    num_failed = 0
-#    @traces.each_with_index do |trace, i|
-#      last = trace['trace'].last || {}
-#      if last['exception_msg']
-#        trace['test_status'] = 'ERROR'
-#      elsif @exercise['cases'].nil? || @exercise['cases'][i].nil?
-#        # cases don't apply to this exercise
-#      elsif expected_return = @exercise['cases'][i]['expected_return']
-#        trace['test_status'] =
-#          (trace['returned'] == expected_return) ? 'PASSED' : 'FAILED'
-#      elsif expected_stdout = @exercise['cases'][i]['expected_stdout']
-#        trace['test_status'] =
-#          ((last['stdout'] || '').chomp == expected_stdout.chomp) ?
-#          'PASSED' : 'FAILED'
-#      end
-#      num_passed += 1 if trace['test_status'] == 'PASSED'
-#      num_failed += 1 if trace['test_status'] == 'FAILED' ||
-#                         trace['test_status'] == 'ERROR'
-#    end
   end
 
   def post_to_database

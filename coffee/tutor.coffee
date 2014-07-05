@@ -49,10 +49,6 @@ html_for_case = (_case, i, trace) ->
       "#{var_and_val[0]} = #{var_and_val[1]}"
     html += givens.join(', ') + "</li>"
 
-  if _case['expected_return']
-    html += "<li><b>Expected return:</b> #{_case['expected_return']}</li>"
-    html += "<li><b>Actual return:</b> #{trace['returned']}</li>"
-
   else if _case['expected_stdout']
     html += "<li><b>Expected output:</b> "
     html += "<pre style='display:inline-block;vertical-align:top'>"
@@ -74,7 +70,6 @@ html_for_case = (_case, i, trace) ->
     html += "</li>"
 
   html += "<li><b>Result:</b> "
-  html += "</li>"
   if trace['test_status']
     html += "<div class='test-status #{trace['test_status'].toLowerCase()}'>"
     html += trace['test_status'] + "</div>"
@@ -189,7 +184,8 @@ compile_to_traces = (code) ->
         else
           bytecode
       trace = execute_to_trace bytecodes, given_vars
-      traces.push { code: code, returned: null, trace: trace }
+      test_status = determine_test_status trace, case_
+      traces.push { code: code, returned: null, trace, test_status }
   null
 
 execute_to_trace = (bytecodes, given_vars) ->
@@ -233,6 +229,21 @@ execute_to_trace = (bytecodes, given_vars) ->
     trace.push new_trace_entry(interpreter, line_num)
   trace
 
+determine_test_status = (trace, case_) ->
+  last = _.last(trace) || {}
+  chomp = (string) ->
+    string.replace /\s+$/, ''
+
+  if last['exception_msg']
+    'ERROR'
+  else if _.keys(case_).length == 0
+    null # cases don't apply to this exercise
+  else if expected_stdout = case_['expected_stdout']
+    if chomp(last['stdout'] || '') == chomp(expected_stdout)
+      'PASSED'
+    else
+      'FAILED'
+
 render_traces = ->
   if typeof traces isnt 'undefined'
     html = ''
@@ -243,7 +254,7 @@ render_traces = ->
             <h2>
               #{if exercise && exercise['cases'] then "Case #{i}" else 'Debug'}
               #{if trace['test_status']
-                "<div class='test-status #{trace['test_status'].toLowerCase()}'
+                "<div class='test-status #{trace['test_status'].toLowerCase()}'>
                   #{trace['test_status']}
                 </div>"
               else ''}
