@@ -365,3 +365,7 @@ $(document).ready ->
     render_traces()
     post_to_database 'save', codeMirror.getValue()
     e.preventDefault()
+
+  $('#basic-ruby-popup a.close').click (e) ->
+    $('#basic-ruby-popup').hide()
+    e.preventDefault()
