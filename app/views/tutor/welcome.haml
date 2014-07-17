@@ -1,5 +1,11 @@
 - content_for :title, 'Online Ruby Tutor'
 
+:javascript
+  $('#basic-ruby-popup a.close').click(function(e) {
+    $('#basic-ruby-popup').hide();
+    e.preventDefault();
+  });
+
 %div(style='font-family: sans-serif; width:600px; margin:0 auto;')
   %h1 Online Ruby Tutor
   %p
