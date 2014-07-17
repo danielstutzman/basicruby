@@ -5,3 +5,10 @@ development:
   username: postgres
   password: postgres
   encoding: unicode
+
+production:
+  adapter: postgresql
+  host: ec2-54-83-199-115.compute-1.amazonaws.com
+  database: ddibte8chhlo4
+  username: dnyqrrfmabhzva
+  encoding: unicode
