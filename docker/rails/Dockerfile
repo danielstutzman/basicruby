@@ -18,9 +18,12 @@ ADD ./Gemfile.lock /home/app/Gemfile.lock
 WORKDIR /home/app
 RUN ruby-switch --set ruby2.0
 RUN su app -c "bundle install --deployment"
+ADD ./package.json /home/app/package.json
+RUN su app -c "npm install"
 
 ADD . /home/app
 RUN chown -R app /home/app
+RUN su app -c "bundle exec rake js"
 
 ENV HOME /home/app
 ENV RAILS_ENV development
