@@ -6,13 +6,11 @@ FROM phusion/passenger-full:0.9.11
 
 #ENV DEBIAN_FRONTEND noninteractive
 
-# Use baseimage-docker's init process.
-CMD ["/sbin/my_init"]
-
 RUN apt-get -y update
 RUN apt-get install -y -q postgresql-client libpq-dev
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN rm -rf /etc/service/sshd /etc/my_init.d/00_regen_ssh_host_keys.sh
 
 # Do bundle install first so it gets cached
 ADD ./Gemfile /home/app/Gemfile
@@ -23,7 +21,6 @@ RUN su app -c "bundle install --deployment"
 
 ADD . /home/app
 RUN chown -R app /home/app
-USER app
 
 ENV HOME /home/app
 ENV RAILS_ENV development
