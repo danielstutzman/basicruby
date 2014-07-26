@@ -1,10 +1,23 @@
-development:
+default: &default
   adapter: postgresql
-  host: localhost
-  database: basicruby
-  username: postgres
-  password: postgres
+  pool: 5
+  timeout: 5000
   encoding: unicode
+
+development:
+  <<: *default
+  database: basicruby
+  username: <%= ENV['DB_ENV_POSTGRESQL_USER'] %>
+  password: <%= ENV['DB_ENV_POSTGRESQL_PASS'] %>
+  host: <%= ENV['DB_PORT_5432_TCP_ADDR'] %>
+
+#development:
+#  adapter: postgresql
+#  host: 192.168.59.103
+#  database: basicruby
+#  username: postgres
+#  password: postgres
+#  encoding: sql_ascii
 
 production:
   adapter: postgresql

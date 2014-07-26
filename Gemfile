@@ -68,3 +68,5 @@ gem 'foreigner' # adds database-level foreign key constraints to migrations
 group :production, :staging do
   gem 'sprockets-redirect'
 end
+
+gem 'unicorn'
