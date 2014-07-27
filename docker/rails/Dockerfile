@@ -21,11 +21,11 @@ RUN su app -c "bundle install --deployment"
 ADD ./package.json /home/app/package.json
 RUN su app -c "npm install"
 
+ENV HOME /home/app
+ENV RAILS_ENV production
+
 ADD . /home/app
 RUN chown -R app /home/app
-RUN su app -c "bundle exec rake js"
+RUN su app -c "bundle exec rake js; bundle exec rake assets:precompile"
 
-ENV HOME /home/app
-ENV RAILS_ENV development
-
-EXPOSE 3000
+EXPOSE 80
