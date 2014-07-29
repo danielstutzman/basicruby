@@ -70,3 +70,5 @@ group :production, :staging do
 end
 
 gem 'unicorn'
+
+gem 'newrelic_rpm'
