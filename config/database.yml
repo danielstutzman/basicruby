@@ -7,21 +7,13 @@ default: &default
 development:
   <<: *default
   database: basicruby
-  username: <%= ENV['DB_ENV_POSTGRESQL_USER'] %>
-  password: <%= ENV['DB_ENV_POSTGRESQL_PASS'] %>
-  host: <%= ENV['DB_PORT_5432_TCP_ADDR'] %>
-
-#development:
-#  adapter: postgresql
-#  host: 192.168.59.103
-#  database: basicruby
-#  username: postgres
-#  password: postgres
-#  encoding: sql_ascii
+  username: postgres
+  password: postgres
+  host: localhost
 
 production:
   <<: *default
-  database: basicruby
+  database: <%= ENV['DB_ENV_POSTGRESQL_DATABASE'] %>
   username: <%= ENV['DB_ENV_POSTGRESQL_USER'] %>
   password: <%= ENV['DB_ENV_POSTGRESQL_PASS'] %>
   host: <%= ENV['DB_PORT_5432_TCP_ADDR'] %>
