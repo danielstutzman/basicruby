@@ -11,6 +11,13 @@ development:
   password: postgres
   host: localhost
 
+staging:
+  <<: *default
+  database: <%= ENV['DB_ENV_POSTGRESQL_DATABASE'] %>
+  username: <%= ENV['DB_ENV_POSTGRESQL_USER'] %>
+  password: <%= ENV['DB_ENV_POSTGRESQL_PASS'] %>
+  host: <%= ENV['DB_PORT_5432_TCP_ADDR'] %>
+
 production:
   <<: *default
   database: <%= ENV['DB_ENV_POSTGRESQL_DATABASE'] %>
