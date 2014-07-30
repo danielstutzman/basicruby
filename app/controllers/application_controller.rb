@@ -11,8 +11,10 @@ class ApplicationController < ActionController::Base
       @learner.user_agent   = request.user_agent
       @learner.http_referer = request.env['HTTP_REFERER']
       @learner.remote_ip    = request.remote_ip
-      @learner.save!
-      session[:learner_id] = @learner.id
+      unless request.user_agent =~ /(monitis|Googlebot|baiduspider|Exabot|Yahoo! Slurp|DotBot|bingbot|MJ12bot|panscient.com|YandexBot)/
+        @learner.save!
+        session[:learner_id] = @learner.id
+      end
     end
   end
 end
