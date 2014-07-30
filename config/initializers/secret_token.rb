@@ -9,4 +9,5 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-BasicRuby::Application.config.secret_key_base = 'bdbebb7bb9446099fae2e55d5a19cb6256039468b87182c21b31b1bfadfeb2342d7e70d7a2cac32aca255787e3dcfa03e5df87aaa7c4f204953c6a8d079e9a46'
+BasicRuby::Application.config.secret_key_base = Rails.env.production? ?
+  ENV['SECRET_KEY_BASE'] : "secrecy doesn't matter for non-production"

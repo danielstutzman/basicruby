@@ -31,7 +31,7 @@ class TutorController < ApplicationController
     halt(404, 'Exercise not found') if exercise.nil?
     halt(404, 'No code for that exercise') if exercise.yaml.nil?
     begin
-      @exercise = YAML.load(exercise.yaml)
+      @exercise = exercise.yaml_loaded
     rescue Psych::SyntaxError => e
       halt 500, "#{e.class}: #{e} with #{exercise.yaml}"
     end

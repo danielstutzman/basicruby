@@ -54,11 +54,11 @@ class MainController < ApplicationController
     #   description promised them 'Interact with this code at...'
     yellow = topic.exercises.find_by color: 'yellow', rep_num: 1
     raise ActiveRecord::RecordNotFound if yellow.nil?
-    redirect_to yellow.path
+    redirect_to URI.parse(yellow.path).path
   end
   def mark_complete
     Completion.create! learner_id: @learner.id,
       exercise_id: params[:exercise_id]
-    redirect_to params[:next_url]
+    redirect_to URI.parse(params[:next_url]).path
   end
 end
