@@ -32,6 +32,6 @@ RUN perl -pe 's(exec /usr/sbin/nginx)(cat /etc/nginx/sites-available/basicruby.c
 
 ADD . /home/app
 RUN chown -R app /home/app
-#RUN su app -c "bundle exec brakeman --safe-methods yaml_loaded -z; bundle exec rake js; bundle exec rake assets:precompile"
+RUN su app -c "bundle exec brakeman --safe-methods yaml_loaded -z; bundle exec rake js; bundle exec rake assets:precompile"
 
 EXPOSE 80
