@@ -29,6 +29,7 @@ RUN rm -f /etc/service/nginx/down /etc/nginx/sites-enabled/default
 ADD basicruby.conf.template /etc/nginx/sites-available/
 ADD preserve-env.conf /etc/nginx/main.d/
 RUN perl -pe 's(exec /usr/sbin/nginx)(cat /etc/nginx/sites-available/basicruby.conf.template | sed "s/RAILS_ENV/\$RAILS_ENV/" > /etc/nginx/sites-enabled/basicruby.conf; exec /usr/sbin/nginx)' -i /etc/service/nginx/run
+RUN perl -pe 's/# gzip_types/gzip_types/' -i /etc/nginx/nginx.conf
 
 ADD . /home/app
 RUN chown -R app /home/app
