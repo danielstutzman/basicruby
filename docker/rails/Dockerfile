@@ -24,8 +24,13 @@ RUN su app -c "npm install"
 ENV HOME /home/app
 ENV RAILS_ENV production
 
+# Enable Nginx and Passenger; disable default site on :80
+RUN rm -f /etc/service/nginx/down /etc/nginx/sites-enabled/default
+ADD basicruby.conf /etc/nginx/sites-enabled/basicruby.conf
+ADD preserve-env.conf /etc/nginx/main.d/preserve-env.conf
+
 ADD . /home/app
 RUN chown -R app /home/app
-RUN su app -c "bundle exec brakeman --safe-methods yaml_loaded -z; bundle exec rake js; bundle exec rake assets:precompile"
+#RUN su app -c "bundle exec brakeman --safe-methods yaml_loaded -z; bundle exec rake js; bundle exec rake assets:precompile"
 
 EXPOSE 80
