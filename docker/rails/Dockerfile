@@ -26,9 +26,9 @@ ENV RAILS_ENV production
 
 # Enable Nginx and Passenger; disable default site on :80
 RUN rm -f /etc/service/nginx/down /etc/nginx/sites-enabled/default
-ADD basicruby.production.conf /etc/nginx/sites-available
-ADD basicruby.staging.conf /etc/nginx/sites-available
-ADD preserve-env.conf /etc/nginx/main.d
+ADD basicruby.production.conf /etc/nginx/sites-available/
+ADD basicruby.staging.conf /etc/nginx/sites-available/
+ADD preserve-env.conf /etc/nginx/main.d/
 RUN perl -pe 's(exec /usr/sbin/nginx)(exec /usr/sbin/nginx -g "include /etc/nginx/sites-available/basicruby.$ENV{"RAILS_ENV"}.conf;")' -i /etc/service/nginx/run
 
 ADD . /home/app
