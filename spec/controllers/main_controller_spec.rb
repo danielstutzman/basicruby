@@ -17,7 +17,7 @@ describe MainController do
     end
 
     it "uses existing learner if provided in session" do
-      learner = FactoryGirl.create :learner
+      learner = create :learner
       Learner.count.should == 1
 
       get :menu, {}, learner_id: learner.id
