@@ -79,10 +79,16 @@ file 'app/assets/javascripts/bytecode_spool.js' =>
   create_with_sh command, task.name
 end
 
+file 'test/opal.js' => 'vendor/assets/javascripts/opal.js.erb' do |task|
+  command = 'bundle exec erb vendor/assets/javascripts/opal.js.erb'
+  create_with_sh command, task.name
+end
+
 task :js => %w[
   app/assets/javascripts/ast_to_bytecode_compiler.js
   app/assets/javascripts/browserified.js
   app/assets/javascripts/bytecode_interpreter.js
   app/assets/javascripts/bytecode_spool.js
   app/assets/javascripts/lexer.js
+  test/opal.js
 ]
