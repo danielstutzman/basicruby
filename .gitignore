@@ -47,3 +47,4 @@ build/
 /app/assets/javascripts/bytecode_interpreter.js
 /app/assets/javascripts/bytecode_spool.js
 /app/assets/javascripts/lexer.js
+/db/test.sqlite3

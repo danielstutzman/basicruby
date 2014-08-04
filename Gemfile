@@ -74,3 +74,10 @@ gem 'unicorn'
 gem 'newrelic_rpm'
 
 gem 'brakeman', require: false
+
+gem 'sqlite3'
+
+group :development, :test do
+  gem 'rspec-rails'
+  gem 'factory_girl_rails', '~> 4.0'
+end
