@@ -48,7 +48,7 @@ build/
 /app/assets/javascripts/bytecode_spool.js
 /app/assets/javascripts/lexer.js
 /db/test.sqlite3
-/bower_components
 /test/opal.js
 /test/browserified-coverage.js
 /test/lcov-report
+/vendor/assets/bower_components

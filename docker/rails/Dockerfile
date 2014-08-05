@@ -15,11 +15,14 @@ RUN rm -rf /etc/service/sshd /etc/my_init.d/00_regen_ssh_host_keys.sh
 # Do bundle install first so it gets cached
 ADD ./Gemfile /home/app/Gemfile
 ADD ./Gemfile.lock /home/app/Gemfile.lock
+ADD ./package.json /home/app/package.json
+ADD vendor/assets/bower.json /home/app/vendor/assets/bower.json
 WORKDIR /home/app
 RUN ruby-switch --set ruby2.0
+RUN chown -R app /home/app
 RUN su app -c "bundle install --deployment"
-ADD ./package.json /home/app/package.json
 RUN su app -c "npm install"
+RUN su app -c "cd vendor/assets; ../../node_modules/.bin/bower install"
 
 ENV HOME /home/app
 ENV RAILS_ENV production

@@ -1,9 +1,0 @@
-{
-  "name": "basicruby",
-  "private": true,
-  "dependencies": {
-  },
-  "devDependencies": {
-    "jasmine": "~2.0.0"
-  }
-}
