@@ -13,6 +13,8 @@
         </script>
         <script src="../bower_components/jasmine/lib/jasmine-core/boot.js">
         </script>
+        <script src="../jquery.min.js">
+        </script>
 
         <script>
           var oldDebug = window.console.debug;
@@ -27,7 +29,7 @@
               var url = 'http://' + hostname + ':3030';
               $.support.cors = true; // for IE8
               $.post(url, JSON.stringify(__coverage__), function() {
-                  window.open(window.location.href.replace("test/index.html", "lcov-report/app-compiled/index.html"));
+                  window.open(window.location.href.replace("test/index.html", "test/lcov-report/coffee-compiled/index.html"));
                 }
               ).fail(function(error) {
                 alert("Couldn't contact cov_server.js at " + url + ": " +
@@ -71,14 +73,12 @@
 
         <script src="opal.js"></script>
         <script src="../app/assets/javascripts/ast_to_bytecode_compiler.js"></script>
-        <script src="../app/assets/javascripts/browserified.js"></script>
+        <!--<script src="../app/assets/javascripts/browserified.js"></script>-->
+        <script src="browserified-coverage.js"></script>
         <script src="../app/assets/javascripts/bytecode_spool.js"></script>
         <script src="../app/assets/javascripts/bytecode_interpreter.js"></script>
         <script src="../app/assets/javascripts/lexer.js"></script>
         <!--<script src="jsreporter_jasmine2.js"></script>-->
-        <script>
-          require('./coffee/RubyCodeHighlighterTest.coffee');
-        </script>
 
     </body>
 </html>

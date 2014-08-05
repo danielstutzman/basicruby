@@ -50,3 +50,5 @@ build/
 /db/test.sqlite3
 /bower_components
 /test/opal.js
+/test/browserified-coverage.js
+/test/lcov-report

@@ -84,6 +84,43 @@ file 'test/opal.js' => 'vendor/assets/javascripts/opal.js.erb' do |task|
   create_with_sh command, task.name
 end
 
+file 'test/browserified-coverage.js' =>
+  Dir.glob(['coffee/*.coffee', 'test/*.coffee']) do |task|
+  dash_r_paths = task.prerequisites.map { |path|
+    if path.start_with?('coffee/')
+      path = path.gsub(%r[^coffee/], 'coffee-istanbul/')
+      path = path.gsub(%r[\.coffee$], '.js')
+      ['-r', "./#{path}"]
+    end
+  }.compact.flatten.join(' ')
+  non_dash_r_paths = task.prerequisites.select { |path|
+    path.start_with?('test/')
+  }.join(' ')
+  command = %W[
+    rm -rf coffee-compiled coffee-istanbul
+  ; cp -R coffee coffee-compiled
+  ; node_modules/coffeeify/node_modules/coffee-script/bin/coffee
+    -c coffee-compiled/*.coffee
+  ; rm coffee-compiled/*.coffee
+  ; perl -pi -w -e 's/\.coffee/\.js/g;' coffee-compiled/*.js
+  ; node_modules/.bin/istanbul
+      instrument coffee-compiled
+      --no-compact --embed-source --preserve-comments
+      -o coffee-istanbul
+  ; node_modules/.bin/browserify
+    --insert-global-vars '' -t coffeeify -d
+    #{dash_r_paths}
+    #{non_dash_r_paths}
+  ].join(' ')
+  create_with_sh command, task.name
+
+  command = %W[rm -rf coffee-compiled coffee-istanbul].join(' ')
+  sh command
+
+  puts "To run tests: python -m SimpleHTTPServer; cd test; node cov_server.js;
+    open http://localhost:8000/test/index.html?coverage=true"
+end
+
 task :js => %w[
   app/assets/javascripts/ast_to_bytecode_compiler.js
   app/assets/javascripts/browserified.js
@@ -91,4 +128,5 @@ task :js => %w[
   app/assets/javascripts/bytecode_spool.js
   app/assets/javascripts/lexer.js
   test/opal.js
+  test/browserified-coverage.js
 ]

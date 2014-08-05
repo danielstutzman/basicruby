@@ -11,6 +11,7 @@
     "node": "0.10.x"
   },
   "devDependencies": {
+    "istanbul": "~0.2.4",
     "watch": "~0.10.0"
   }
 }
