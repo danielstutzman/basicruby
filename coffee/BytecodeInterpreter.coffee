@@ -9,7 +9,7 @@ class BytecodeInterpreter
 
   interpret: (bytecode) ->
     try
-      @interpreter.$interpret bytecode
+      @_nilToNull @interpreter.$interpret bytecode
     catch e
       if e.name == 'ProgramTerminated'
         # don't print out its stack trace
