@@ -69,6 +69,13 @@
 
         <script src="opal.js"></script>
         <script src="../vendor/assets/javascripts/underscore.js"></script>
+        <script>
+          // Workaround for PhantomJS deficiency
+          Function.prototype.bind = Function.prototype.bind || function (thisp) {
+            var fn = this;
+            return function () { return fn.apply(thisp, arguments); };
+          };
+        </script>
         <script src="../vendor/assets/javascripts/react.js"></script>
         <script src="../app/assets/javascripts/ast_to_bytecode_compiler.js"></script>
         <script src="../app/assets/javascripts/bytecode_spool.js"></script>
