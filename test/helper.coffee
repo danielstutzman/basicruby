@@ -29,6 +29,11 @@ click = (node) ->
     e = document.createEventObject()
     node.fireEvent 'onclick', e
   else
-    node.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    e = document.createEvent 'MouseEvent'
+    e.initMouseEvent('click', true, true,
+      window, null, 0, 0, 0, 0, false, false, false, false, 0, null)
+    node.dispatchEvent e
+    # Doesn't work with PhantomJS:
+    #   node.dispatchEvent(new MouseEvent('click', { bubbles: true }))
 
 module.exports = { assertRendersHtml, click }
