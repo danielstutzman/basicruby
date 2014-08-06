@@ -38,9 +38,9 @@ ADD . /home/app
 RUN chown -R app /home/app
 RUN su app -c "RAILS_ENV=test bundle exec rake db:migrate && \
   RAILS_ENV=test bundle exec rspec && \
+  bundle exec rake js && \
   node_modules/.bin/phantomjs test/jasmine2-runner.js test/index.html && \
   bundle exec brakeman --safe-methods yaml_loaded -z && \
-  bundle exec rake js && \
   bundle exec rake assets:precompile"
 
 EXPOSE 80
