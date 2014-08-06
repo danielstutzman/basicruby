@@ -184,6 +184,7 @@ function processPage(status, page, resultsKey) {
                 for (var filename in xml_results) {
                     if (xml_results.hasOwnProperty(filename) && (output = xml_results[filename]) && typeof(output) === "string") {
                         fs.write(filename, output, "w");
+                        console.error(output);
                     }
                 }
 
