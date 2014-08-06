@@ -170,7 +170,7 @@ function processPage(status, page, resultsKey) {
             return page.evaluate(function(){
                 return document.getElementsByClassName("bar").length &&
                        document.getElementsByClassName("bar")[0].innerHTML.match(/(\d+) spec.* (\d+) failure.*/) ||
-                       ["Unable to determine success or failure."];
+                       ["Unable to determine success or failure.", 0, 9999];
             });
         };
         var timeout = 60000;
