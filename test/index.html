@@ -9,6 +9,13 @@
     <body>
         <script src="../vendor/assets/bower_components/jasmine/lib/jasmine-core/jasmine.js"></script>
         <script src="../vendor/assets/bower_components/jasmine/lib/jasmine-core/jasmine-html.js"></script>
+        <script src="jasmine2-junit.js"></script>
+        <script>
+          window.onload = function() {
+            var reporter = new (window.jasmineRequire.JUnitXmlReporter())();
+            jasmine.getEnv().addReporter(reporter);
+          };
+        </script>
         <script src="../vendor/assets/bower_components/jasmine/lib/jasmine-core/boot.js"></script>
         <script src="../vendor/assets/bower_components/jquery/jquery.min.js"></script>
 
