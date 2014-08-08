@@ -36,9 +36,9 @@ RUN perl -pe 's/# gzip_types/gzip_types/' -i /etc/nginx/nginx.conf
 
 ADD . /home/app
 RUN chown -R app /home/app
-RUN su app -c "RAILS_ENV=test bundle exec rake db:migrate && \
+RUN su app -c "bundle exec rake js && \
+  RAILS_ENV=test bundle exec rake db:migrate && \
   RAILS_ENV=test bundle exec rspec && \
-  bundle exec rake js && \
   node_modules/.bin/phantomjs test/jasmine2-runner.js test/index.html && \
   bundle exec brakeman --safe-methods yaml_loaded -z && \
   bundle exec rake assets:precompile"
