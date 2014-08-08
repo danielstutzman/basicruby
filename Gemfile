@@ -83,5 +83,3 @@ group :development, :test do
 end
 
 gem 'jbuilder'
-
-gem 'rack-cors', require: 'rack/cors'
