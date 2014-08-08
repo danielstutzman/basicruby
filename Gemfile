@@ -81,3 +81,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'factory_girl_rails', '~> 4.0'
 end
+
+gem 'jbuilder'
+
+gem 'rack-cors', require: 'rack/cors'

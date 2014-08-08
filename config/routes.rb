@@ -6,6 +6,8 @@ BasicRuby::Application.routes.draw do
   get  '/tutor/exercise/:task_id' => 'tutor#exercise'
   post '/tutor/exercise/:task_id' => 'tutor#post_to_database'
   get  '/yt/:youtube_id'          => 'main#landing_page'
+  get  '/api/menu'                => 'api#menu'
+  match '*path', to: 'api#options', via: :options # for CORS
 
   get  '/:path'          => 'main#exercise'
   get  '/:path/:rep_num' => 'main#exercise'
