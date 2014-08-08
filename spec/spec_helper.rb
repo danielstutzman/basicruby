@@ -45,4 +45,6 @@ RSpec.configure do |config|
   end
 
   config.include FactoryGirl::Syntax::Methods
+
+  config.render_views = true # needed to examine json in response
 end
