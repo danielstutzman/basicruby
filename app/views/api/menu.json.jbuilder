@@ -1,12 +1,12 @@
 json.learner_id session[:learner_id]
 json.topics do
   json.array! @topics do |topic|
-    json.num               topic.num
-    json.nickname          topic.nickname
-    json.under_contruction topic.under_construction
-    json.title             topic.title
-    json.title_html        topic.title_html
-    json.level             topic.level
+    json.num                topic.num
+    json.nickname           topic.nickname
+    json.under_construction topic.under_construction
+    json.title              topic.title
+    json.title_html         topic.title_html
+    json.level              topic.level
     json.completed do
       %w[purple yellow blue red green].each do |color|
         key = [topic.id, color]
