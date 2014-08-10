@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 ruby '2.0.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.0.7'
+gem 'rails', '4.1.3'
 
 # Use pg as the database for Active Record
 gem 'pg'
@@ -83,3 +83,6 @@ group :development, :test do
 end
 
 gem 'jbuilder'
+
+gem 'spring', group: :development
+gem 'spring-commands-rspec', group: :development
