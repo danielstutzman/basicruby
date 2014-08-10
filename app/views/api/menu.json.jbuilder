@@ -6,11 +6,14 @@ json.topics do
     json.under_contruction topic.under_construction
     json.title             topic.title
     json.title_html        topic.title_html
-    json.num_completed do
+    json.level             topic.level
+    json.completed do
       %w[purple yellow blue red green].each do |color|
         key = [topic.id, color]
         if @topic_id_color_next_path[key]
-          json.set! color, (@topic_id_color_num_completions[key] || {}).size
+          num = (@topic_id_color_num_completions[key] || {}).size
+          next_path = @topic_id_color_next_path[key]
+          json.set! color, { num: num, next: next_path }
         end
       end
     end
