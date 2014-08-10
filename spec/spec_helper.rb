@@ -12,6 +12,14 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.check_pending! if defined?(ActiveRecord::Migration)
 
+module Requests
+  module JsonHelpers
+    def expect_json(expected)
+      JSON.parse(response.body).should == JSON.parse(JSON.generate(expected))
+    end
+  end
+end
+
 RSpec.configure do |config|
   # ## Mock Framework
   #
@@ -40,11 +48,9 @@ RSpec.configure do |config|
   #     --seed 1234
   config.order = "random"
 
-  config.before(:suite) do
-    FactoryGirl.lint
-  end
-
   config.include FactoryGirl::Syntax::Methods
 
   config.render_views = true # needed to examine json in response
+
+  config.include Requests::JsonHelpers, type: :controller
 end
