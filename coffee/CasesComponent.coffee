@@ -36,6 +36,7 @@ CasesComponent = React.createClass
                   className: 'expected'
                   readOnly: true
                   value: _.map(@props.cases, (_case) => _case.code).join('')
+                  onFocus: => @props.doCommand.closePopup()
 
         else if hasExpectedOutputs
           table {},
@@ -67,6 +68,7 @@ CasesComponent = React.createClass
                       onChange: (e) =>
                         newText = e.target.value
                         @props.doCommand.setPredictedOutput case_num, newText
+                      onFocus: => @props.doCommand.closePopup()
                   else
                     _case.expected_output
 

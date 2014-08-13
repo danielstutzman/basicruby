@@ -43,6 +43,7 @@ class ExerciseController
         @retrieveNewCode = -> textarea.value
       else
         codeMirror = CodeMirror.fromTextArea textarea, options
+        codeMirror.on 'focus', => @handleClosePopup()
         makeRetriever = (codeMirror) -> (-> codeMirror.getValue())
         @retrieveNewCode = makeRetriever codeMirror
 
@@ -53,7 +54,8 @@ class ExerciseController
             lineNumbers: true
             readOnly: 'nocursor'
             lineWrapping: true
-          CodeMirror.fromTextArea textareaTests, options
+          codeMiror = CodeMirror.fromTextArea textareaTests, options
+          codeMirror.on 'focus', => @handleClosePopup()
     @render callback
 
   render: (callback) ->
@@ -78,7 +80,7 @@ class ExerciseController
           else
             window.location.href = @pathForNextRep
         showSolution: => @handleShowSolution()
-        closePopup: => @popup = null; @render()
+        closePopup: => @handleClosePopup()
         setPredictedOutput: (caseNum, newText) =>
           @cases[caseNum].predicted_output = newText
           @render()
@@ -87,6 +89,11 @@ class ExerciseController
           if _.every @cases, isCaseFinished
             @checkForPassingTests()
     React.renderComponent ExerciseComponent(props), @$div, callback
+
+  handleClosePopup: ->
+    if @popup != null
+      @popup = null
+      @render()
 
   handleRun: ->
     code = @retrieveNewCode()

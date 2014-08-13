@@ -30,6 +30,7 @@ ExerciseComponent = React.createClass
             disabled: @props.doCommand.nextRep == null ||
                       @props.cases[0].actual_output == undefined
             onClick: (e) => @props.doCommand.nextRep e, true
+            onFocus: => @props.doCommand.closePopup()
             "#{RELOAD_ICON} See another"
 
         if @props.color == 'yellow' || @props.color == 'blue'
@@ -38,12 +39,14 @@ ExerciseComponent = React.createClass
             disabled: @props.doCommand.next== null ||
                       @props.cases[0].actual_output == undefined
             onClick: (e) => @props.doCommand.next e
+            onFocus: => @props.doCommand.closePopup()
             "#{RIGHT_ARROW} Go on"
 
         if @props.color == 'red' || @props.color == 'green'
           button
             className: 'show-solution'
             onClick: => @props.doCommand.showSolution()
+            onFocus: => @props.doCommand.closePopup()
             'Show solution'
 
       switch @props.color
@@ -84,6 +87,7 @@ ExerciseComponent = React.createClass
         textarea
           className: 'code'
           defaultValue: @props.code
+          onFocus: => @props.doCommand.closePopup()
 
       CasesComponent @props
 
