@@ -2,7 +2,7 @@ title: Array aliasing and `Array#clone`
 title_html: Array aliasing<br>and <code>Array#clone</code>
 level: intermediate
 features: run step instructions console vars heap_toggle
-under_construction: true
+under_construction: false
 purple:
 - youtube_id: ajYuXyo2PnA
   video_script: |
