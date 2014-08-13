@@ -1,4 +1,5 @@
-title: Array aliasing
+title: Array aliasing and `Array#clone`
+title_html: Array aliasing<br>and <code>Array#clone</code>
 level: intermediate
 features: run step instructions console vars heap_toggle
 under_construction: true
@@ -72,11 +73,12 @@ blue:
 - code: |
     a = [4, 5]
     b = a
-    a = [3] + a
+    a.pop
+    b = b.clone
     a.push 6
     p b
   cases:
-  - expected_output: "[4, 5]"
+  - expected_output: "[4]"
 red:
 - code: |
     x = [1, 2, 3]
@@ -103,7 +105,10 @@ green:
     end
   solution: |
     def double(a)
-      a.concat(a)
+      a2 = a.clone
+      a2.each do |b|
+        a.push b
+      end
     end
   cases:
   - code: |
