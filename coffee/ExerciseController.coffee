@@ -95,7 +95,7 @@ class ExerciseController
       case_.inputLineNum = 0
       try
         if case_.code
-          match = /^def (test_[a-zA-Z0-9_]*)\n/.exec case_.code
+          match = /^def (test[a-zA-Z0-9_]*)\n/.exec case_.code
           throw "Case doesn't start with def test_" if match == null
           test_name = match[1]
           bytecodes = AstToBytecodeCompiler.compile [
