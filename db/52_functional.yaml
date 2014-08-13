@@ -1,7 +1,8 @@
-title: Functional programming
+title: Functional programming with `method`
+title_html: Functional programming<br>with <code>method</code>
 level: intermediate
 features: run step instructions console vars
-under_construction: true
+under_construction: false
 purple:
 - youtube_id: mWzDnLPFOHs
   video_script: |
@@ -81,3 +82,59 @@ yellow:
     a = [3, 2, 1]
     p repeat(a, method(:plus1))
     p repeat(a, method(:times2))
+blue:
+- code: |
+    def f(x)
+      x + 1
+    end
+    def g(f, x)
+      y = f.call(x)
+      f(y)
+    end
+    p g(method(:f), 3)
+  cases:
+  - expected_output: 5
+red:
+- code: |
+    def minus1(x)
+      x - 1
+    end
+    def f(g, x)
+      g(x)
+    end
+    p f(method(:minus1), 4)
+  solution:
+    def minus1(x)
+      x - 1
+    end
+    def f(g, x)
+      g.call(x)
+    end
+    p f(method(:minus1), 4)
+  cases:
+  - expected_output: 3
+green:
+- code: |
+    def twice(f, x)
+      x
+    end
+  solution:
+    def twice(f, x)
+      y = f.call(x)
+      f.call(y)
+    end
+  cases:
+  - code: |
+      def test1
+        def f(x)
+          x + 1
+        end
+        assert_equal 5, twice(method(:f), 3)
+      end
+  - code: |
+      def test2
+        def f(x)
+          x - 1
+        end
+        assert_equal 1, twice(method(:f), 3)
+      end
