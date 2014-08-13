@@ -162,7 +162,7 @@ class ExerciseController
   _popupDebugger: (code, features, doCommand) ->
     newDiv = document.createElement('div')
     newDiv.className = 'debugger'
-    document.body.appendChild newDiv
+    @$div.appendChild newDiv
     new DebuggerController(code, newDiv, features, @json, doCommand).setup()
 
   checkForPassingTests: ->

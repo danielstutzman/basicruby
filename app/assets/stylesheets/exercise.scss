@@ -10,6 +10,7 @@ $code-font-size: 30pt;
 body.exercise {
   margin: 0;
   font-family: sans-serif;
+  position: relative; // so debugger position is relative to it
 
   .title {
     color: white;
