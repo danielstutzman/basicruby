@@ -3,23 +3,23 @@ level: intermediate
 features: run step instructions console vars
 under_construction: true
 purple:
-- youtube_id: null
-  video_script:
+- youtube_id: Y2K5dvRJi0g
+  video_script: |
     Hi everyone :-)
-    In this lesson, we'll call the map method on arrays to simplify our code.
-    For example - here's a method named f that takes in an array, and returns a
-    new array that has one added to each element, and also appends zero to the
-    end -
+    In this lesson, we'll refactor some code to be simpler,
+      by calling the map method.
+    For example - here's a method named f that adds one,
+      to each element of an array.
     ... (run it) ...
     So now we'll refactor this code using map.
-    Just like the each method, map will run a block one time for each element.
-    So first I'll change each to map.
+    Just like the each method, map will run a block, once for each element.
+    So first, I'll change each to map.
     ...
-    Now unlike each, map pays attention to the block's value.
-    So we don't have to call push inside the block; we just write the
-      expression that we're asking map to push.  (Demonstrate)
+    Now unlike each, map pays attention to the block's return value.
+    So we don't have to call push inside the block; we just return an
+      expression, and map pushes each one for us.  (Demonstrate)
     ...
-    Also unlike each, map *returns* a useful value.
+    Also unlike each, map itself *returns* a useful value.
     So I'll save the result to b.
     So that's how to refactor each and push, to use map instead.
     ...
@@ -27,26 +27,23 @@ purple:
     Well, instead of taking three steps to set b to what we want,
     we can now refactor to use less code.
     We can eliminate line 2, since map creates the array for us. (Run)
-    We can eliminate line 3 by changing a push call to a Plus call. (Run)
-    And we can even eliminate the b variable altogether! (Run)
-    We might even eliminate the f method altogether! (Run)
-    ...
-    This is possible when you call methods that just return values, like map,
-      instead of methods that have side-effects, like each and push.
+    We can even eliminate the b variable altogether,
+      because the last line of the method returns automatically! (Run)
+    And... we can even eliminate the f method altogether! (Run)
+    This style of programming can be very powerful and concise.
   
   code: |
     def f(a)
       b = []
       a.each { |x| b.push(x + 1) }
-      b.push 0
       b
     end
 
-    a = [3, 2, 1, 0]
+    a = [3, 2, 1]
     p f(a)
 yellow:
 - code: |
-    a = [3, 2, 1, 0]
+    a = [3, 2, 1]
     p a.map { |x| x + 1 }
 - code: |
     a = [1, 3, 5]
