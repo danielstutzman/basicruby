@@ -75,7 +75,8 @@
         - %w[purple yellow blue red green].each do |color|
           %td{class: color}
             - key = [topic.id, color]
-            - if @topic_id_color_exists[key]
+            - if @topic_id_color_exists[key] &&               |
+                (color == 'purple' ? topic.youtube_id : true) |
               = done_indicator topic.num, color.upcase[0],
                 (@topic_id_color_num_completions[key] || {}).size,
                 @topic_id_color_next_path[key]
