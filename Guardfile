@@ -1,6 +1,9 @@
 guard :shell do
-  watch /.*.coffee$/ do
-    `rake app/assets/javascripts/browserified.js`
+  watch /coffee\/.*.coffee$/ do
+    `rake app/assets/javascripts/browserified.js test/browserified-coverage.js`
+  end
+  watch /test\/.*.coffee$/ do
+    `rake test/browserified-coverage.js`
   end
   watch /lib\/ast_to_bytecode_compiler.rb$/ do
     `rake app/assets/javascripts/ast_to_bytecode_compiler.js`
