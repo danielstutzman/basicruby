@@ -2,6 +2,7 @@ require 'json'
 
 class Exercise < ActiveRecord::Base
   belongs_to :topic
+  has_many :completions #, dependent: :destroy
 
   def self.color_initial_to_color
     {
