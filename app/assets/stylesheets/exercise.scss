@@ -131,50 +131,65 @@ div.exercise {
     height: 400px;
     float: left;
 
-    .code-header {
-      .indent {
-        background-color: red;
-        width: 60px;
-        height: $label-height;
-        float: left;
-        margin-right: 5px;
+    .wrapper {
+      width: 100%;
+      height: 96%;
+      display: table;
+
+      .code-header {
+        display: table-row;
+        .indent {
+          width: 60px;
+          height: $label-height;
+          float: left;
+          margin-right: 5px;
+        }
+      }
+      textarea.code, .CodeMirror {
+        width: 100%;
+        height: 100%;
+        font-size: $code-font-size;
+        display: table-row;
+
+        .CodeMirror-linenumbers {
+          width: 25px;
+          padding-right: 18px;
+        }
+        .CodeMirror-linenumber {
+          color: black;
+          opacity: 0.25;
+        }
+        .CodeMirror-gutters {
+          height: 100% !important;
+        }
       }
     }
-    textarea.code, .CodeMirror {
-      width: 100%;
-      height: 100%;
-      font-size: $code-font-size;
-
-      .CodeMirror-linenumbers {
-        width: 25px;
-        padding-right: 18px;
-      }
-      .CodeMirror-linenumber {
-        color: black;
-        opacity: 0.25;
-      }
+    .margin {
+      height: 4%;
     }
   }
   .col-2-of-2 {
     width: 30%;
-    height: 450px;
+    height: 500px;
     float: left;
     margin-left: 2%;
     margin-right: 2%;
 
-    .actual {
-      overflow: scroll;
-      height: 160px;
-    }
     .expected {
       overflow: scroll;
-      height: 160px;
-      margin-bottom: 10px;
+      height: 35%;
+    }
+    .margin {
+      height: 4%;
+    }
+    .actual {
+      overflow: scroll;
+      height: 35%;
     }
     table {
       border-collapse: collapse;
       width: 100%;
-      height: 135px + $label-height;
+      height: 100%;
 
       &.expected {
         margin-bottom: 10px;
@@ -273,13 +288,13 @@ div.exercise {
 
   .buttons-under {
     width: 100%;
-    margin-top: 10px;
     display: inline-block;
+    height: 18%;
   }
   .buttons-under button {
     font-size: 20pt;
     width: 48%;
-    height: 80px;
+    height: 100%;
     margin: 0;
     float: left;
     &.run {

@@ -69,20 +69,22 @@ ExerciseComponent = React.createClass
           div { className: 'banner green' }, 'Simplification'
 
       div { className: 'col-1-of-2' },
-        div { className: 'code-header' },
-          div { className: 'indent' }
-          label { className: 'code' },
-            switch @props.color
-              when 'purple' then 'Code to look over'
-              when 'yellow' then 'Code to look over'
-              when 'blue'   then 'Code to look over'
-              when 'red'    then 'Code to edit'
-              when 'green'  then 'Write code here'
-              when 'orange' then 'Code to simplify'
-        textarea
-          className: 'code'
-          defaultValue: @props.code
-          onFocus: => @props.doCommand.closePopup()
+        div { className: 'wrapper' },
+          div { className: 'code-header' },
+            div { className: 'indent' }
+            label { className: 'code' },
+              switch @props.color
+                when 'purple' then 'Code to look over'
+                when 'yellow' then 'Code to look over'
+                when 'blue'   then 'Code to look over'
+                when 'red'    then 'Code to edit'
+                when 'green'  then 'Write code here'
+                when 'orange' then 'Code to simplify'
+          textarea
+            className: 'code'
+            defaultValue: @props.code
+            onFocus: => @props.doCommand.closePopup()
+        div { className: 'margin' } # because %-based margins don't work
 
       CasesComponent @props
 

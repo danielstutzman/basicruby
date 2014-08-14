@@ -72,6 +72,7 @@ CasesComponent = React.createClass
                   else
                     _case.expected_output
 
+      div { className: 'margin' } # because margin-bottom based on % is broken
       div { className: 'actual' },
         table {},
           tr { key: 'header' },
@@ -157,6 +158,7 @@ CasesComponent = React.createClass
                     td {},
                       span { className: 'failed' }, NOT_EQUALS
 
+      div { className: 'margin' } # because margin-bottom based on % is broken
       div { className: 'buttons-under' },
         button
           className: 'debug'
@@ -176,5 +178,7 @@ CasesComponent = React.createClass
             'Run'
           else
             'Run Tests'
+
+      div { className: 'margin' } # because margin-bottom based on % is broken
 
 module.exports = CasesComponent
