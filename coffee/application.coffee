@@ -1,7 +1,6 @@
 DebuggerController = require './DebuggerController.coffee'
 ExerciseController = require './ExerciseController.coffee'
 ExerciseComponent  = require './ExerciseComponent.coffee'
-SetupResizeHandler = require('./setup_resize_handler.coffee')
 
 $one = (selector) -> document.querySelector(selector)
 $all = (selector) -> document.querySelectorAll(selector)

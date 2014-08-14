@@ -8,34 +8,17 @@ heightOfDiv = (div) ->
     0
 
 resizeDivs = (w, h) ->
-  title_h      = heightOfDiv $one 'div.title-bar'
-  assignment_h = heightOfDiv $one 'div.assignment-above'
-  solution_h   = heightOfDiv $one '#solution-section'
-  actions_h    = heightOfDiv $one '.actions'
-  fudge = 40
+  title_h      = heightOfDiv $one 'div.title'
+  banner_h     = heightOfDiv $one 'div.banner'
 
-  height_total = Math.floor(h -
-    title_h - assignment_h - solution_h - actions_h - fudge)
+  height_total = Math.floor(h - title_h - banner_h)
   if height_total < 400
     height_total = 400
 
-  stretch = $one('.section.stretch-section .consistent-height')
-  if stretch
-    stretch.style.height = "#{height_total}px"
-    resizeConsoleToFitHeight stretch
+  for col in $all('.col-1-of-2, .col-2-of-2')
+    col.style.height = "#{height_total}px"
 
-resizeConsoleToFitHeight = (div) ->
-  height_total = heightOfDiv div
-  buttons_h = heightOfDiv div.querySelector('.buttons')
-  instructions_h = heightOfDiv div.querySelector('.instructions')
-  _console = div.querySelector('.debugger .console')
-  vars_h = heightOfDiv div.querySelector('.variables')
-  fudge = 40
-  if _console
-    height_console = height_total - buttons_h - instructions_h - vars_h - fudge
-    _console.style.height = "#{height_console}px"
-
-setupResizeHandler = (code_mirror) ->
+setupResizeHandler = (code_mirrors) ->
   oldW = 0
   oldH = 0
   isChanging = false
@@ -53,7 +36,8 @@ setupResizeHandler = (code_mirror) ->
     else if isChanging
       isChanging = false
       resizeDivs w, h
-      code_mirror.refresh()
+      for code_mirror in code_mirrors
+        code_mirror.refresh()
   window.setInterval resizeIfChanged, 500
   resizeIfChanged()
   resizeIfChanged()
@@ -61,8 +45,8 @@ setupResizeHandler = (code_mirror) ->
     w = window.innerWidth
     h = window.innerHeight
     resizeDivs w, h
-    code_mirror.refresh()
+    for code_mirror in code_mirrors
+      code_mirror.refresh()
 
 module.exports =
   setupResizeHandler: setupResizeHandler
-  resizeConsoleToFitHeight: resizeConsoleToFitHeight

@@ -3,6 +3,7 @@ BytecodeInterpreter   = require './BytecodeInterpreter.coffee'
 BytecodeSpool         = require './BytecodeSpool.coffee'
 DebuggerController    = require './DebuggerController.coffee'
 ExerciseComponent     = require './ExerciseComponent.coffee'
+SetupResizeHandler    = require './setup_resize_handler.coffee'
 
 class ExerciseController
   constructor: ($div, featuresJson, exerciseId, exerciseJson, exerciseColor,
@@ -39,11 +40,14 @@ class ExerciseController
       isMobileSafari = ->
          navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
          navigator.userAgent.match(/AppleWebKit/)
+      codeMirrors = []
+
       if isMobileSafari()
         @retrieveNewCode = -> textarea.value
       else
         codeMirror = CodeMirror.fromTextArea textarea, options
         codeMirror.on 'focus', => @handleClosePopup()
+        codeMirrors.push codeMirror
         makeRetriever = (codeMirror) -> (-> codeMirror.getValue())
         @retrieveNewCode = makeRetriever codeMirror
 
@@ -54,8 +58,13 @@ class ExerciseController
             lineNumbers: true
             readOnly: 'nocursor'
             lineWrapping: true
-          codeMiror = CodeMirror.fromTextArea textareaTests, options
+          codeMirror = CodeMirror.fromTextArea textareaTests, options
           codeMirror.on 'focus', => @handleClosePopup()
+          codeMirrors.push codeMirror
+
+      # TODO: destroy old resize handler before setting up a new one
+      SetupResizeHandler.setupResizeHandler codeMirrors
+
     @render callback
 
   render: (callback) ->
