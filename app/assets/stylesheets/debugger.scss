@@ -278,15 +278,6 @@ body.exercise .debugger {
       font-size: 20pt;
       background-color: black;
       padding-right: 5px;
-      .object-id {
-        display: inline-block;
-        font-family: sans-serif;
-        font-size: 12pt;
-        background-color: #0f0;
-        color: black;
-        vertical-align: top;
-        margin-top: 5px;
-      }
     }
     .left {
       padding-left: 5px;
@@ -298,6 +289,18 @@ body.exercise .debugger {
       display: inline-block;
       vertical-align: top;
     }
+  }
+
+  // recursive arrays can cause object-ids to show on vars screen
+  .variables td .object-id,
+  .vars-and-heap td .object-id {
+    display: inline-block;
+    font-family: sans-serif;
+    font-size: 12pt;
+    background-color: #0f0;
+    color: black;
+    vertical-align: top;
+    margin-top: 5px;
   }
 
   button.heap-toggle {

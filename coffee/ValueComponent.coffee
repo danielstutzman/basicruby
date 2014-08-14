@@ -31,8 +31,10 @@ ValueComponent = React.createClass
           when 'Symbol' then 'symbol'
           else ''
 
+    object_id = value.$object_id().toString()
+
     div { className: "value #{css_class}" },
-      if object_ids && object_ids.indexOf(value.$object_id().toString()) != -1
+      if object_ids && object_ids.indexOf(object_id) != -1
         div { key: 'object-id', className: 'object-id' },
           value.$object_id()
       else if type == 'String'
@@ -58,7 +60,7 @@ ValueComponent = React.createClass
                     i
                   ValueComponent
                     value: element
-                    object_ids: object_ids
+                    object_ids: object_ids.concat([object_id])
                     show_type: false
       else
         display
