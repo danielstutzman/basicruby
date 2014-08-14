@@ -92,7 +92,7 @@ blue:
     a = Integer gets
     z = a + z
     a = z + a
-    puts z
+    puts a
   cases:
   - input: "1\n2\n"
     expected_output: 5

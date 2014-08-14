@@ -128,8 +128,9 @@ red:
   solution: |
     x = gets
     y = gets
-    x = y
+    z = y
     y = x
+    x = z
     puts x
     puts y
   cases:

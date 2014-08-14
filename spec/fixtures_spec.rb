@@ -4,20 +4,20 @@ require_relative '../lib/rspec_ruby_runner'
 
 $runner = RspecRubyRunner.new
 
-def runs_without_error code
+def runs_without_error code, input
+  input = input.to_s
+  input += "\n" if !input.end_with?("?")
   it 'runs without error' do
-    if !code.include?('gets')
-      $runner.output_from(code)
-    end
+    $runner.output_from(code, input)
   end
 end
-def matches_expected_output code, expected_output
+def matches_expected_output code, input, expected_output
+  input = input.to_s
+  input += "\n" if !input.end_with?("?")
   it 'matches expected_output' do
     begin
-      if !code.include?('gets')
-        output = $runner.output_from(code)
-        output.rstrip.should == expected_output.to_s.rstrip
-      end
+      output = $runner.output_from(code, input)
+      output.rstrip.should == expected_output.to_s.rstrip
     rescue
       STDERR.puts code
       raise
@@ -29,41 +29,42 @@ describe 'db/' do
   Dir.glob(File.dirname(__FILE__) + '/../db/*.yaml').sort.each do |path|
     filename = path.split('/').last
     next if filename == '99_advanced.yaml'
+    next unless filename.start_with? '0'
     yaml = YAML.load_file(path)
 
     describe filename do
-      #%w[purple yellow red blue green].each do |color|
-      #  describe color do
-      #    yaml[color]
-      #  end
-      #end
-      yaml['yellow'].each_with_index do |exercise, i|
-        describe "yellow[#{i}]'s code" do
-          runs_without_error exercise['code']
-        end
-      end
+      %w[purple yellow blue red green].each do |color|
+        yaml[color].each_with_index do |exercise, i|
+          if %w[purple yellow blue].include?(color)
+            code = exercise['code']
+          else
+            code = exercise['solution']
+          end
 
-      yaml['blue'].each_with_index do |exercise, i|
-        describe "blue[#{i}]'s code" do
-          matches_expected_output exercise['code'],
-            exercise['cases'][0]['expected_output']
-        end
-      end
+          if exercise['cases']
+            exercise['cases'].each_with_index do |case_, j|
+              describe "#{color}[#{i}]'s code case[#{j}]" do
+                if %w[blue red green].include? color
+                  matches_expected_output code,
+                    case_['input'], case_['expected_output']
+                else
+                  runs_without_error code, case_['input']
+                end
+              end
+            end
+          else # no cases
+            describe "#{color}[#{i}]'s code" do
+              if %w[blue red green].include? color
+                raise "Missing cases"
+              else
+                runs_without_error code, nil
+              end
+            end
+          end # end if cases or not
 
-      yaml['red'].each_with_index do |exercise, i|
-        describe "red[#{i}]'s solution" do
-          matches_expected_output exercise['solution'],
-            exercise['cases'][0]['expected_output']
-        end
-      end
+        end # next exercise
+      end # next color
+    end # end describe filename
 
-      yaml['green'].each_with_index do |exercise, i|
-        describe "green[#{i}]'s solution" do
-          matches_expected_output exercise['solution'],
-            exercise['cases'][0]['expected_output']
-        end
-      end
-
-    end
-  end
-end
+  end # next .yaml
+end # end describe db/

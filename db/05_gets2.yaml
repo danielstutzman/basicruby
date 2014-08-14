@@ -63,9 +63,9 @@ blue:
     x = gets
     puts x
   cases:
-  - input: 2
+  - input: "7\n2\n"
     expected_output: "1\n2\n"
-  - input: 5
+  - input: "9\n5\n"
     expected_output: "1\n5\n"
 - code: |
     y = gets
@@ -130,9 +130,9 @@ red:
     x = gets
     puts x
   cases:
-  - input: 5
+  - input: "5\n5\n"
     expected_output: "8\n5\n5\n"
-  - input: 6
+  - input: "6\n6\n"
     expected_output: "8\n6\n6\n"
 green:
 - solution: |

@@ -97,7 +97,7 @@ red:
 - code: |
     gets x
     puts x
-  solution:
+  solution: |
     x = gets
     puts x
   cases:
@@ -109,7 +109,7 @@ red:
     puts 5
     gets
     puts 7
-  solution:
+  solution: |
     puts 5
     x = gets
     puts x
@@ -124,7 +124,7 @@ red:
     x = 1
     puts x
     puts x
-  solution:
+  solution: |
     x = gets
     puts x
     x = 1

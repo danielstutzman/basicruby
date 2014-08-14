@@ -149,7 +149,9 @@ green:
     expected_output: "3\ngets\n"
 - solution: |
     z = gets
+    puts z
     y = gets
+    puts y
     puts "x"
   cases:
   - input: "4\n5\n"
