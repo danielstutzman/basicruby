@@ -97,19 +97,18 @@ div.exercise {
     float: right;
     margin-right: 10px;
     margin-top: 25px;
+
     button {
       font-size: 12pt;
       padding: 0 8px;
       height: 40px;
       margin-right: 10px;
+
       &.do-another {
-        padding: 0;
-        width: 131px;
+        float: left;
       }
       &.next {
-        /* weird tweak to make buttons line up */
-        position: relative;
-        top: 1.5px;
+        float: left;
       }
       &.show-solution {
         background-image: image-url('exercise_icons/light_bulb_60.png');
