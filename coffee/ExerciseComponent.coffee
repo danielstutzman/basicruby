@@ -4,7 +4,6 @@ type        = React.PropTypes
 RELOAD_ICON = "\u27f3"
 RIGHT_ARROW = "\u279c"
 EM_DASH     = "\u2014"
-SOUTH_EAST  = "\u2198"
 X_FOR_CLOSE = "\u00d7"
 
 ExerciseComponent = React.createClass
@@ -57,21 +56,15 @@ ExerciseComponent = React.createClass
         when 'blue'
           div
             className: 'banner blue'
-            "Predict the output#{SOUTH_EAST}"
+            'Predict the output'
         when 'red'
           div
             className: 'banner red'
-            if @props.cases[0].code
-              "Fix the program to pass #{SOUTH_EAST}"
-            else
-              "Fix the program to output#{SOUTH_EAST}"
+            'Fix this program so tests pass'
         when 'green'
           div
             className: 'banner green'
-            if @props.cases[0].code
-              "Write a program to pass #{SOUTH_EAST}"
-            else
-              "Write a program to output#{SOUTH_EAST}"
+            'Write new code so tests pass'
         when 'orange'
           div { className: 'banner green' }, 'Simplification'
 
