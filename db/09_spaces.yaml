@@ -79,7 +79,7 @@ red:
     puts 1
     puts  2
     puts   3
-  solution:
+  solution: |
     puts "1"
     puts " 2"
     puts "  3"
@@ -95,7 +95,7 @@ red:
     puts "a"
     puts " b"
     puts "  c"
-  solution:
+  solution: |
     a = 4
     b = 5
     c = 6

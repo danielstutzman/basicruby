@@ -103,7 +103,7 @@ red:
       g(x)
     end
     p f(method(:minus1), 4)
-  solution:
+  solution: |
     def minus1(x)
       x - 1
     end
@@ -118,7 +118,7 @@ green:
     def twice(f, x)
       x
     end
-  solution:
+  solution: |
     def twice(f, x)
       y = f.call(x)
       f.call(y)

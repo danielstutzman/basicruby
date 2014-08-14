@@ -53,8 +53,8 @@ blue:
     puts 3
   cases:
   - expected_output: |
-      12
-      3
+      1
+      23
 - code: |
     print 11
     print -11
@@ -66,7 +66,7 @@ blue:
     puts
     print 0
   cases:
-  - expected_output:
+  - expected_output: |
       1
       0
 red:
@@ -90,12 +90,12 @@ red:
 - code: |
     print 1
     print 0.01
-    puts 0.01
+    puts 10.01
     puts 0.01
   solution: |
     print 1
     puts 0.01
-    print 0.01
+    print 10.01
     puts 0.01
   cases:
   - expected_output: |
