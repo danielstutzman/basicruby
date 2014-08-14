@@ -17,8 +17,8 @@ body.exercise .debugger {
   top: 42px;
   background-color: #777;
   padding: 10px;
-  width: 800px;
-  left: 22px;
+  width: 96%;
+  left: 2%;
   height: 485px;
   z-index: 5;
 
@@ -74,16 +74,16 @@ body.exercise .debugger {
     height: 350px - $label-height;
   }
   .showInstructions.showConsole {
-    .instructions-with-label { width: 380px; margin-right: 10px; }
-    .console-with-label { width: 380px; }
+    .instructions-with-label { width: 49%; margin-right: 1%; }
+    .console-with-label { width: 50%; }
   }
   .showInstructions.showConsole.showVariables,
   .showInstructions.showConsole.showHeap {
-    .instructions-with-label { width: 440px; margin-right: 10px; }
-    .variables-with-label { width: 320px; height: 160px; margin-right: 10px; }
-    .console-with-label { width: 320px; height: 190px; }
-    .variables-scroller { height: 160px - $label-height; }
-    .console { height: 190px - $label-height; }
+    .instructions-with-label { width: 49%; margin-right: 1%; }
+    .variables-with-label { width: 50%; height: 260px; }
+    .console-with-label { width: 50%; height: 90px; }
+    .variables-scroller { height: 260px - $label-height; }
+    .console { height: 90px - $label-height; }
   }
 
   label {

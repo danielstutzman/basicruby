@@ -1,4 +1,5 @@
 $code-font-size: 30pt;
+$label-height: 25px;
 
 /* apply a natural box layout model to all elements */
 *, *:before, *:after {
@@ -16,7 +17,7 @@ body.exercise {
     color: white;
     letter-spacing: 3px;
     padding-left: 60px;
-    width: 840px;
+    width: 100%;
 
     &.purple { background-color: #305; }
     &.yellow { background-color: #873; }
@@ -49,21 +50,20 @@ body.exercise {
   }
 }
 div.exercise {
-  width: 840px;
+  width: 100%;
 
-  .purple { background-color: #709; }
-  .yellow { background-color: #a94; }
-  .blue   { background-color: #55a; }
-  .red    { background-color: #600; }
-  .green  { background-color: #484; }
-  .orange { background-color: #a60; }
-
-  .purple { .CodeMirror-linenumbers { background-color: #709; } }
-  .yellow { .CodeMirror-linenumbers { background-color: #a94; } }
-  .blue   { .CodeMirror-linenumbers { background-color: #55a; } }
-  .red    { .CodeMirror-linenumbers { background-color: #600; } }
-  .green  { .CodeMirror-linenumbers { background-color: #484; } }
-  .orange { .CodeMirror-linenumbers { background-color: #a60; } }
+  .purple, .purple .CodeMirror-linenumbers,
+    .purple .col-1-of-2 .code-header .indent { background-color: #709; }
+  .yellow, .yellow .CodeMirror-linenumbers,
+    .yellow .col-1-of-2 .code-header .indent { background-color: #a94; }
+  .blue, .blue .CodeMirror-linenumbers,
+    .blue .col-1-of-2 .code-header .indent { background-color: #55a; }
+  .red, .red .CodeMirror-linenumbers,
+    .red .col-1-of-2 .code-header .indent { background-color: #600; }
+  .green, .green .CodeMirror-linenumbers,
+    .green .col-1-of-2 .code-header .indent { background-color: #484; }
+  .orange, .orange .CodeMirror-linenumbers,
+    .orange .col-1-of-2 .code-header .indent { background-color: #a60; }
 
   .banner {
     font-size: 44pt;
@@ -127,10 +127,19 @@ div.exercise {
   }
 
   .col-1-of-2 {
-    width:550px;
-    height:400px;
+    width: 66%;
+    height: 400px;
     float: left;
 
+    .code-header {
+      .indent {
+        background-color: red;
+        width: 60px;
+        height: $label-height;
+        float: left;
+        margin-right: 5px;
+      }
+    }
     textarea.code, .CodeMirror {
       width: 100%;
       height: 100%;
@@ -147,21 +156,11 @@ div.exercise {
     }
   }
   .col-2-of-2 {
-    width: 250px;
+    width: 30%;
     height: 450px;
-    margin-left: 570px;
-
-    .little-video-container {
-      position: relative;
-    }
-    .little-video-play-button {
-      background-image: image-url('play-button-overlay.png');
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 250px;
-      height: 140px;
-    }
+    float: left;
+    margin-left: 2%;
+    margin-right: 2%;
 
     .actual {
       overflow: scroll;
@@ -174,8 +173,8 @@ div.exercise {
     }
     table {
       border-collapse: collapse;
-      width: 250px;
-      height: 135px + 25px; // label height
+      width: 100%;
+      height: 135px + $label-height;
 
       &.expected {
         margin-bottom: 10px;
@@ -255,7 +254,7 @@ div.exercise {
   label {
     display: block;
     width: 100%;
-    height: 25px;
+    height: $label-height;
     background-color: gray;
     font-size: 12pt;
     text-transform: uppercase;
@@ -264,10 +263,6 @@ div.exercise {
     padding-right: 0;
     font-weight: bold;
 
-    &.code {
-      width: 489px;
-      margin-left: 61px;
-    }
     .equals {
       color: #0f0;
     }
@@ -277,17 +272,18 @@ div.exercise {
   }
 
   .buttons-under {
+    width: 100%;
     margin-top: 10px;
     display: inline-block;
   }
   .buttons-under button {
     font-size: 20pt;
-    width: 120px;
+    width: 48%;
     height: 80px;
     margin: 0;
     float: left;
     &.run {
-      margin-left: 10px;
+      margin-left: 4%;
     }
   }
 }
