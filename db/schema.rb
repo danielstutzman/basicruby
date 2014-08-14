@@ -13,9 +13,6 @@
 
 ActiveRecord::Schema.define(version: 20140626184610) do
 
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
   create_table "completions", force: true do |t|
     t.integer  "learner_id",  null: false
     t.integer  "exercise_id", null: false
@@ -23,7 +20,7 @@ ActiveRecord::Schema.define(version: 20140626184610) do
     t.datetime "updated_at"
   end
 
-  add_index "completions", ["learner_id"], name: "index_completions_on_learner_id", using: :btree
+  add_index "completions", ["learner_id"], name: "index_completions_on_learner_id"
 
   create_table "exercises", force: true do |t|
     t.integer "topic_id",              null: false
@@ -33,8 +30,8 @@ ActiveRecord::Schema.define(version: 20140626184610) do
     t.integer "rep_num",   default: 1, null: false
   end
 
-  add_index "exercises", ["topic_id", "color", "rep_num"], name: "index_exercises_on_topic_id_and_color_and_rep_num", unique: true, using: :btree
-  add_index "exercises", ["topic_num", "color"], name: "index_exercises_on_topic_num_and_color", using: :btree
+  add_index "exercises", ["topic_id", "color", "rep_num"], name: "index_exercises_on_topic_id_and_color_and_rep_num", unique: true
+  add_index "exercises", ["topic_num", "color"], name: "index_exercises_on_topic_num_and_color"
 
   create_table "learners", force: true do |t|
     t.string   "http_referer"
@@ -55,10 +52,10 @@ ActiveRecord::Schema.define(version: 20140626184610) do
     t.boolean "under_construction", null: false
   end
 
-  add_index "topics", ["nickname"], name: "index_topics_on_nickname", unique: true, using: :btree
-  add_index "topics", ["num"], name: "index_topics_on_num", using: :btree
-  add_index "topics", ["title"], name: "index_topics_on_title", unique: true, using: :btree
-  add_index "topics", ["youtube_id"], name: "index_topics_on_youtube_id", using: :btree
+  add_index "topics", ["nickname"], name: "index_topics_on_nickname", unique: true
+  add_index "topics", ["num"], name: "index_topics_on_num"
+  add_index "topics", ["title"], name: "index_topics_on_title", unique: true
+  add_index "topics", ["youtube_id"], name: "index_topics_on_youtube_id"
 
   create_table "tutor_exercise_groups", force: true do |t|
     t.string   "name",       null: false
@@ -75,8 +72,8 @@ ActiveRecord::Schema.define(version: 20140626184610) do
     t.datetime "updated_at"
   end
 
-  add_index "tutor_exercises", ["task_id"], name: "index_tutor_exercises_on_task_id", using: :btree
-  add_index "tutor_exercises", ["task_id_substring"], name: "index_tutor_exercises_on_task_id_substring", using: :btree
+  add_index "tutor_exercises", ["task_id"], name: "index_tutor_exercises_on_task_id"
+  add_index "tutor_exercises", ["task_id_substring"], name: "index_tutor_exercises_on_task_id_substring"
 
   create_table "tutor_saves", force: true do |t|
     t.integer  "user_id",              null: false
@@ -87,12 +84,7 @@ ActiveRecord::Schema.define(version: 20140626184610) do
     t.datetime "updated_at"
   end
 
-  add_index "tutor_saves", ["task_id"], name: "index_tutor_saves_on_task_id", using: :btree
-  add_index "tutor_saves", ["user_id"], name: "index_tutor_saves_on_user_id", using: :btree
-
-  add_foreign_key "completions", "exercises", name: "completions_exercise_id_fk"
-  add_foreign_key "completions", "learners", name: "completions_learner_id_fk"
-
-  add_foreign_key "exercises", "topics", name: "exercises_topic_id_fk"
+  add_index "tutor_saves", ["task_id"], name: "index_tutor_saves_on_task_id"
+  add_index "tutor_saves", ["user_id"], name: "index_tutor_saves_on_user_id"
 
 end
