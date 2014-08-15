@@ -176,10 +176,9 @@ class ExerciseController
     @_popupDebugger @json.solution, features, doCommand
 
   _popupDebugger: (code, features, doCommand) ->
-    newDiv = document.createElement('div')
-    newDiv.className = 'debugger'
-    @$div.appendChild newDiv
-    new DebuggerController(code, newDiv, features, @json, doCommand).setup()
+    for div in document.querySelectorAll('.debugger')
+      div.style.display = 'block'
+      new DebuggerController(code, div, features, @json, doCommand).setup()
 
   checkForPassingTests: ->
     rtrim = (s) -> if s then s.replace(/\s+$/, '') else s

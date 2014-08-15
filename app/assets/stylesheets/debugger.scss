@@ -12,7 +12,7 @@ $min-width-for-extra-padding: 1000px;
 $lightening-to-show-spaces: rgba(255, 255, 255, 0.2);
 $label-height: 30px;
 
-body.exercise .debugger {
+.debugger {
   position: absolute; // relative to parent (.exercise)
   top: 42px;
   background-color: #777;
@@ -451,4 +451,4 @@ body.exercise .debugger {
       padding-left: 2px;
     }
   }
-} // end body.exercise .debugger
+} // end .debugger

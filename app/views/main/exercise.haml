@@ -16,6 +16,7 @@
     .banner { display: none; }
     .purple { padding-top: 30px; margin-top: 100px; }
   .exercise(style='width: 854px; height: 480px')
+  .debugger(style='display:none')
 
 - else
   .title{ class: @exercise.color }
@@ -32,6 +33,8 @@
             &#x279c; Go on
       .banner.purple Watch the introduction
     %iframe(width='840' height='480' frameborder='0' allowfullscreen){src: "//www.youtube.com/embed/#{@exercise.json_loaded['youtube_id']}?rel=0&autoplay=0"}
+    .debugger(style='display:none')
 
   - else
     .exercise
+    .debugger(style='display:none')

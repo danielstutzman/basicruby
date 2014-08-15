@@ -44,7 +44,7 @@ class DebuggerController
       numCharsToOutput: @numCharsToOutput
       currentScrollTop: @currentScrollTop
       doCommand:
-        close:         => @$div.parentNode.removeChild @$div
+        close:         => @$div.style.display = 'none'
         nextExercise:  @exerciseDoCommand.nextExercise
         nextRep:       @exerciseDoCommand.nextRep
         nextLine:      => @handleClickNextLine.apply this, []
