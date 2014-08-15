@@ -11,9 +11,9 @@ MILLIS_TO_HIGHLIGHT_CALL       = 500
 MILLIS_TO_HIGHLIGHT_ADDED_ARG  = 500
 
 class DebuggerController
-  constructor: (code, $div, features, exerciseJson, exerciseDoCommand) ->
+  constructor: (code, $parentDiv, features, exerciseJson, exerciseDoCommand) ->
     @code = code
-    @$div = $div
+    @$parentDiv = $parentDiv
     @features = features
     @exerciseDoCommand = exerciseDoCommand
     @spool = null
@@ -44,7 +44,7 @@ class DebuggerController
       numCharsToOutput: @numCharsToOutput
       currentScrollTop: @currentScrollTop
       doCommand:
-        close:         => @$div.style.display = 'none'
+        close:         => @$parentDiv.innerHTML = ''
         nextExercise:  @exerciseDoCommand.nextExercise
         nextRep:       @exerciseDoCommand.nextRep
         nextLine:      => @handleClickNextLine.apply this, []
@@ -52,7 +52,7 @@ class DebuggerController
         run:           => @handleClickRun.apply          this, []
         doChangeInput: (newText) => @pendingStdin = newText; @render()
         doSubmitInput: (newText) => @pendingStdin = null; @handleInput newText
-    React.renderComponent DebuggerComponent(props), @$div
+    React.renderComponent DebuggerComponent(props), @$parentDiv
     @handleNextAnimationOrBytecode props
 
   handleNextAnimationOrBytecode: (props) ->

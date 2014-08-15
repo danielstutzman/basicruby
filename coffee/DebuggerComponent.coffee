@@ -33,7 +33,7 @@ DebuggerComponent = React.createClass
 
     featuresList = _.keys(@props.features).filter((key) => @props.features[key])
 
-    div { className: featuresList.join(' ') },
+    div { className: 'debugger ' + featuresList.join(' ') },
       a
         className: 'close-button'
         href: '#'

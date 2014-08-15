@@ -15,8 +15,10 @@ resizeDivs = (w, h) ->
   if height_under_banner < 400
     height_under_banner = 400
 
-  for debugger_ in $all('.debugger')
-    debugger_.style.height = "#{h * 0.90}px"
+  # need to set debugger-container height's directly, because styling it as
+  #   bottom: 0 uses the height of its parent, not the browser window
+  for debugger_ in $all('.debugger-container')
+    debugger_.style.height = "#{h}px"
   for col in $all('.col-1-of-2, .col-2-of-2')
     col.style.height = "#{height_under_banner}px"
 
