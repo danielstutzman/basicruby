@@ -221,11 +221,14 @@ div.exercise {
         &.hidden {
           background-image: image-url('black-curtains.jpg');
           background-size: cover;
+          position: relative;
+
           .click-run {
-            padding-top: 50px;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 48%; // same width as the run button
             font-size: 15pt;
-            padding-left: 140px;
-            padding-right: 10px;
             font-family: serif;
             font-style: italic;
             color: white;
