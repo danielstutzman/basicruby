@@ -11,12 +11,14 @@ resizeDivs = (w, h) ->
   title_h      = heightOfDiv $one 'div.title'
   banner_h     = heightOfDiv $one 'div.banner'
 
-  height_total = Math.floor(h - title_h - banner_h)
-  if height_total < 400
-    height_total = 400
+  height_under_banner = Math.floor(h - title_h - banner_h)
+  if height_under_banner < 400
+    height_under_banner = 400
 
+  for debugger_ in $all('.debugger')
+    debugger_.style.height = "#{h * 0.90}px"
   for col in $all('.col-1-of-2, .col-2-of-2')
-    col.style.height = "#{height_total}px"
+    col.style.height = "#{height_under_banner}px"
 
 setupResizeHandler = (code_mirrors) ->
   oldW = 0
