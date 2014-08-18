@@ -107,16 +107,16 @@ red:
       -1
 green:
 - solution: |
-    puts
+    puts 5
     puts 10
   cases:
-  - expected_output: "\n10\n"
+  - expected_output: "5\n10\n"
 - solution: |
     puts 3
     puts
-    puts
+    puts 1
   cases:
-  - expected_output: "3\n\n\n"
+  - expected_output: "3\n\n1\n"
 - solution: |
     puts 7
     puts 77
