@@ -84,14 +84,14 @@ yellow:
     p repeat(a, method(:times2))
 blue:
 - code: |
-    def f(x)
+    def plus1(x)
       x + 1
     end
     def g(f, x)
       y = f.call(x)
-      f(y)
+      f.call(y)
     end
-    p g(method(:f), 3)
+    p g(method(:plus1), 3)
   cases:
   - expected_output: 5
 red:
