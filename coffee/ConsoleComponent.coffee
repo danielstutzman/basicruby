@@ -32,36 +32,39 @@ ConsoleComponent = React.createClass
     numCharsToEmit = @props.numCharsToOutput
 
     div { className: 'console-with-label' },
-      label {}, 'Output'
-      div
-        className: 'console'
-        ref: 'console'
-        span
-          className: 'before-cursor'
-          _.map (@props.output || []), (pair, i) ->
-            if numCharsToEmit > 0
-              [source, text] = pair
-              substring = text.substring 0, numCharsToEmit
-              numCharsToEmit -= substring.length
-              span { className: source, key: "output#{i}" },
-                substring
-        if @props.pendingStdin != null
-          input
-            ref: 'stdin'
-            type: 'text'
-            className: 'stdin'
-            value: @props.pendingStdin
-            onChange: (e) =>
-              @props.doChangeInput e.target.value
-            onKeyPress: (e) =>
-              if e.keyCode == 13
-                @props.doSubmitInput "#{e.target.value}\n"
-        if @props.pendingStdin != null
+      div { className: 'table-row for-label' },
+        label {}, 'Output'
+      div { className: 'table-row' },
+        div { className: 'table-cell' },
           div
-            className: 'stdin-reminder'
-            "#{UP_ARROW} Type something on the keyboard, then press Enter."
-        else
-          div
-            className: 'cursor'
+            className: 'console'
+            ref: 'console'
+            span
+              className: 'before-cursor'
+              _.map (@props.output || []), (pair, i) ->
+                if numCharsToEmit > 0
+                  [source, text] = pair
+                  substring = text.substring 0, numCharsToEmit
+                  numCharsToEmit -= substring.length
+                  span { className: source, key: "output#{i}" },
+                    substring
+            if @props.pendingStdin != null
+              input
+                ref: 'stdin'
+                type: 'text'
+                className: 'stdin'
+                value: @props.pendingStdin
+                onChange: (e) =>
+                  @props.doChangeInput e.target.value
+                onKeyPress: (e) =>
+                  if e.keyCode == 13
+                    @props.doSubmitInput "#{e.target.value}\n"
+            if @props.pendingStdin != null
+              div
+                className: 'stdin-reminder'
+                "#{UP_ARROW} Type something on the keyboard, then press Enter."
+            else
+              div
+                className: 'cursor'
 
 module.exports = ConsoleComponent

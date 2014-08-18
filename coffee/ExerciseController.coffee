@@ -36,6 +36,7 @@ class ExerciseController
         lineNumbers: true
         autofocus: true
         readOnly: false
+        lineWrapping: true
       textarea = @$div.querySelector('textarea.code')
       isMobileSafari = ->
          navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&

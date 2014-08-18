@@ -80,11 +80,13 @@ ExerciseComponent = React.createClass
                 when 'red'    then 'Code to edit'
                 when 'green'  then 'Write code here'
                 when 'orange' then 'Code to simplify'
-          div { className: 'textarea-wrapper' },
-            textarea
-              className: 'code'
-              defaultValue: @props.code
-              onFocus: => @props.doCommand.closePopup()
+          div { className: 'code-wrapper' },
+            div { className: 'code-wrapper2' },
+              div { className: 'code-wrapper3' },
+                textarea
+                  className: 'code'
+                  defaultValue: @props.code
+                  onFocus: => @props.doCommand.closePopup()
         div { className: 'margin' } # because %-based margins don't work
 
       CasesComponent @props

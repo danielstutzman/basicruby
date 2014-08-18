@@ -144,10 +144,23 @@ div.exercise {
           margin-right: 5px;
         }
       }
-      .textarea-wrapper {
+      .code-wrapper {
+        display: table-row;
         width: 100%;
         height: 100%;
-        display: table-row;
+      }
+      .code-wrapper2 {
+        display: table-cell;
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+      .code-wrapper3 {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
       }
       textarea.code, .CodeMirror {
         width: 100%;
