@@ -1,4 +1,5 @@
 class ApiController < ApplicationController
+
   def menu
     if Rails.env.production?
       @topics = Topic.where(under_construction: false).order(:num)
@@ -42,4 +43,9 @@ class ApiController < ApplicationController
       hash[key] = exercise.path if hash[key].nil?
     end
   end
+
+  def exercise
+    @exercise = Exercise.find_by_path params[:path], params[:rep_num]
+  end
+
 end
