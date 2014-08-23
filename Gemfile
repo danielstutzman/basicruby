@@ -86,3 +86,5 @@ gem 'jbuilder'
 
 gem 'spring', group: :development
 gem 'spring-commands-rspec', group: :development
+
+gem 'easyxdm-rails'

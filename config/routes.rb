@@ -10,6 +10,7 @@ BasicRuby::Application.routes.draw do
   post '/tutor/exercise/:task_id' => 'tutor#post_to_database'
   get  '/yt/:youtube_id'          => 'main#landing_page'
 
+  get  '/easyxdm.html'                => 'api#easyxdm'
   get  '/api/menu'                    => 'api#menu'
   get  '/api/exercise/:path'          => 'api#exercise'
   get  '/api/exercise/:path/:rep_num' => 'api#exercise'

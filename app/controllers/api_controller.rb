@@ -2,6 +2,10 @@ class ApiController < ApplicationController
   #protect_from_forgery with: :null_session
   skip_before_action :verify_authenticity_token, if: :json_request?
 
+  def easyxdm
+    response.headers.delete 'X-Frame-Options'
+    render :easyxdm, layout: false
+  end
 
   def menu
     if Rails.env.production?

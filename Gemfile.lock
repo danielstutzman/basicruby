@@ -61,6 +61,8 @@ GEM
     coffee-script-source (1.7.0)
     daemons (1.1.9)
     diff-lcs (1.2.5)
+    easyxdm-rails (0.0.8)
+      rails (>= 3.2.8)
     erubis (2.7.0)
     eventmachine (1.0.3)
     execjs (2.0.2)
@@ -220,6 +222,7 @@ PLATFORMS
 DEPENDENCIES
   brakeman
   coffee-rails (~> 4.0.0)
+  easyxdm-rails
   factory_girl_rails (~> 4.0)
   foreigner
   guard
