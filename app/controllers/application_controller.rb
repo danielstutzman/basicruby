@@ -11,6 +11,8 @@ class ApplicationController < ActionController::Base
 
   def options_for_cors
     headers['Access-Control-Allow-Headers'] = 'X-Requested-With'
+    headers['Access-Control-Max-Age'] = '86400'
+    expires_in 86400.seconds, public: true
     head(:ok)
   end
 

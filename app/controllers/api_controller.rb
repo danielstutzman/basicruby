@@ -1,4 +1,7 @@
 class ApiController < ApplicationController
+  #protect_from_forgery with: :null_session
+  skip_before_action :verify_authenticity_token, if: :json_request?
+
 
   def menu
     if Rails.env.production?
@@ -45,7 +48,27 @@ class ApiController < ApplicationController
   end
 
   def exercise
-    @exercise = Exercise.find_by_path params[:path], params[:rep_num]
+    path, rep_num = params[:path], params[:rep_num]
+    @exercise = Exercise.find_by_path path, rep_num
+  end
+
+  def mark_complete
+    exercise_id = params[:exercise_id]
+    Completion.create! learner_id: @learner.id, exercise_id: exercise_id
+    render json: ['ok']
+  end
+
+  private
+
+  def json_request?
+    request.format.json?
+  end
+
+  rescue_from Exception do |e|
+    headers['Access-Control-Allow-Origin'] = '*'
+    headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE'
+    logger.error "#{e.class} #{e}"
+    render status: 500, json: { error: [e.class.to_s, e.to_s] }
   end
 
 end

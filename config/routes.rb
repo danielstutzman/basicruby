@@ -13,6 +13,7 @@ BasicRuby::Application.routes.draw do
   get  '/api/menu'                    => 'api#menu'
   get  '/api/exercise/:path'          => 'api#exercise'
   get  '/api/exercise/:path/:rep_num' => 'api#exercise'
+  post '/api/mark_complete'           => 'api#mark_complete'
 
   get  '/:path'          => 'main#exercise'
   get  '/:path/:rep_num' => 'main#exercise'
