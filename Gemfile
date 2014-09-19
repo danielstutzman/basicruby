@@ -75,7 +75,7 @@ gem 'newrelic_rpm'
 
 gem 'brakeman', require: false
 
-gem 'sqlite3'
+gem 'sqlite3', group: :test
 
 group :development, :test do
   gem 'rspec-rails'
