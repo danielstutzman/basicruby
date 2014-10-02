@@ -117,6 +117,10 @@ class TutorController < ApplicationController
     else
       @user_code = @exercise['starting_code'] || ''
     end
+
+    @exercise['task_id'] = task_id
+
+    render json: @exercise
   end
 
   private
