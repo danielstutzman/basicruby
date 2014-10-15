@@ -123,6 +123,37 @@ class TutorController < ApplicationController
     render json: @exercise
   end
 
+  def api_save_tutor_code
+    current_user = Learner.find_by(id: session[:user_id])
+    task_id = params[:task_id]
+    user_code = params[:user_code_textarea]
+    TutorSave.transaction do
+      TutorSave.where({
+        :user_id      => current_user.id,
+        :task_id      => task_id,
+        :is_current   => true
+      }).update_all(:is_current => 'f')
+      TutorSave.create({
+        :user_id      => current_user.id,
+        :task_id      => task_id,
+        :is_current   => true,
+        :code         => user_code,
+      })
+    end
+    render json: [], status: :ok
+  end
+
+  def api_discard_tutor_code
+    current_user = Learner.find_by(id: session[:user_id])
+    task_id = params[:task_id]
+    TutorSave.where({
+      :user_id      => current_user.id,
+      :task_id      => task_id,
+      :is_current   => true
+    }).update_all(:is_current => false)
+    render json: [], status: :ok
+  end
+
   private
 
   def json_request?
