@@ -118,7 +118,8 @@ class TutorController < ApplicationController
       @user_code = @exercise['starting_code'] || ''
     end
 
-    @exercise['task_id'] = task_id
+    @exercise['task_id']   = task_id
+    @exercise['user_code'] = @user_code
 
     render json: @exercise
   end
