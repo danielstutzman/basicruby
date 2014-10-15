@@ -11,7 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140626184610) do
+ActiveRecord::Schema.define(version: 20141015181155) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "completions", force: true do |t|
     t.integer  "learner_id",  null: false
@@ -20,18 +23,20 @@ ActiveRecord::Schema.define(version: 20140626184610) do
     t.datetime "updated_at"
   end
 
-  add_index "completions", ["learner_id"], name: "index_completions_on_learner_id"
+  add_index "completions", ["learner_id"], name: "index_completions_on_learner_id", using: :btree
 
   create_table "exercises", force: true do |t|
-    t.integer "topic_id",              null: false
-    t.integer "topic_num",             null: false
-    t.string  "color",                 null: false
-    t.text    "json",                  null: false
-    t.integer "rep_num",   default: 1, null: false
+    t.integer  "topic_id",               null: false
+    t.integer  "topic_num",              null: false
+    t.string   "color",                  null: false
+    t.text     "json",                   null: false
+    t.integer  "rep_num",    default: 1, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "exercises", ["topic_id", "color", "rep_num"], name: "index_exercises_on_topic_id_and_color_and_rep_num", unique: true
-  add_index "exercises", ["topic_num", "color"], name: "index_exercises_on_topic_num_and_color"
+  add_index "exercises", ["topic_id", "color", "rep_num"], name: "index_exercises_on_topic_id_and_color_and_rep_num", unique: true, using: :btree
+  add_index "exercises", ["topic_num", "color"], name: "index_exercises_on_topic_num_and_color", using: :btree
 
   create_table "learners", force: true do |t|
     t.string   "http_referer"
@@ -42,20 +47,22 @@ ActiveRecord::Schema.define(version: 20140626184610) do
   end
 
   create_table "topics", force: true do |t|
-    t.integer "num",                null: false
-    t.string  "features",           null: false
-    t.string  "title",              null: false
-    t.string  "title_html"
-    t.string  "level",              null: false
-    t.string  "youtube_id"
-    t.string  "nickname",           null: false
-    t.boolean "under_construction", null: false
+    t.integer  "num",                null: false
+    t.string   "features",           null: false
+    t.string   "title",              null: false
+    t.string   "title_html"
+    t.string   "level",              null: false
+    t.string   "youtube_id"
+    t.string   "nickname",           null: false
+    t.boolean  "under_construction", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "topics", ["nickname"], name: "index_topics_on_nickname", unique: true
-  add_index "topics", ["num"], name: "index_topics_on_num"
-  add_index "topics", ["title"], name: "index_topics_on_title", unique: true
-  add_index "topics", ["youtube_id"], name: "index_topics_on_youtube_id"
+  add_index "topics", ["nickname"], name: "index_topics_on_nickname", unique: true, using: :btree
+  add_index "topics", ["num"], name: "index_topics_on_num", using: :btree
+  add_index "topics", ["title"], name: "index_topics_on_title", unique: true, using: :btree
+  add_index "topics", ["youtube_id"], name: "index_topics_on_youtube_id", using: :btree
 
   create_table "tutor_exercise_groups", force: true do |t|
     t.string   "name",       null: false
@@ -72,8 +79,8 @@ ActiveRecord::Schema.define(version: 20140626184610) do
     t.datetime "updated_at"
   end
 
-  add_index "tutor_exercises", ["task_id"], name: "index_tutor_exercises_on_task_id"
-  add_index "tutor_exercises", ["task_id_substring"], name: "index_tutor_exercises_on_task_id_substring"
+  add_index "tutor_exercises", ["task_id"], name: "index_tutor_exercises_on_task_id", using: :btree
+  add_index "tutor_exercises", ["task_id_substring"], name: "index_tutor_exercises_on_task_id_substring", using: :btree
 
   create_table "tutor_saves", force: true do |t|
     t.integer  "user_id",              null: false
@@ -84,7 +91,12 @@ ActiveRecord::Schema.define(version: 20140626184610) do
     t.datetime "updated_at"
   end
 
-  add_index "tutor_saves", ["task_id"], name: "index_tutor_saves_on_task_id"
-  add_index "tutor_saves", ["user_id"], name: "index_tutor_saves_on_user_id"
+  add_index "tutor_saves", ["task_id"], name: "index_tutor_saves_on_task_id", using: :btree
+  add_index "tutor_saves", ["user_id"], name: "index_tutor_saves_on_user_id", using: :btree
+
+  add_foreign_key "completions", "exercises", name: "completions_exercise_id_fk"
+  add_foreign_key "completions", "learners", name: "completions_learner_id_fk"
+
+  add_foreign_key "exercises", "topics", name: "exercises_topic_id_fk"
 
 end
