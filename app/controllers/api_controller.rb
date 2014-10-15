@@ -7,6 +7,10 @@ class ApiController < ApplicationController
     render :easyxdm, layout: false
   end
 
+  def all_exercises
+    render json: Exercise.select(:id, :topic_num, :color, :rep_num).order(:id)
+  end
+
   def menu
     if Rails.env.production?
       @topics = Topic.where(under_construction: false).order(:num)

@@ -17,6 +17,7 @@ BasicRuby::Application.routes.draw do
   post '/api/mark_complete'           => 'api#mark_complete'
   get  '/api/tutor'                   => 'tutor#api_welcome'
   get  '/api/tutor/exercise/:task_id' => 'tutor#api_exercise'
+  get  '/api/all_exercises'            => 'api#all_exercises'
 
   get  '/:path'          => 'main#exercise'
   get  '/:path/:rep_num' => 'main#exercise'
