@@ -88,3 +88,7 @@ gem 'spring', group: :development
 gem 'spring-commands-rspec', group: :development
 
 gem 'easyxdm-rails'
+
+# Nginx 1.7.3+ will convert strong etags to weak etags so gzipping doesn't
+# break, but Rails won't recognize the weak etags.
+gem 'rails_weak_etags'
