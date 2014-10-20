@@ -127,10 +127,9 @@ task :js => %w[
   app/assets/javascripts/bytecode_interpreter.js
   app/assets/javascripts/bytecode_spool.js
   app/assets/javascripts/lexer.js
+  test/opal.js
+  test/browserified-coverage.js
 ]
-# Removed to fix Heroku build:
-#  test/opal.js
-#  test/browserified-coverage.js
 
 task :docker => %w[
   docker/rails/Dockerfile
