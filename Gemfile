@@ -49,8 +49,6 @@ gem 'haml'
 
 gem 'thin'
 
-gem 'rails_12factor'
-
 # Ruby to JavaScript transpiler
 #gem 'opal', github: 'opal/opal', ref: '680eb8fa'
 gem 'opal', github: 'danielstutzman/opal', branch: 'patches_to_20140504'
