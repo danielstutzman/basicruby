@@ -40,15 +40,4 @@ build/
 /log/*.log
 /tmp
 
-/node_modules
-/public/browserified.js.map
-/app/assets/javascripts/ast_to_bytecode_compiler.js
-/app/assets/javascripts/browserified.js
-/app/assets/javascripts/bytecode_interpreter.js
-/app/assets/javascripts/bytecode_spool.js
-/app/assets/javascripts/lexer.js
 /db/test.sqlite3
-/test/opal.js
-/test/browserified-coverage.js
-/test/lcov-report
-/vendor/assets/bower_components

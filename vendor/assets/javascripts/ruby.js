@@ -1,1 +1,0 @@
-../bower_components/codemirror/mode/ruby/ruby.js

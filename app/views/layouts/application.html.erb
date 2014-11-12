@@ -1,20 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title><%= content_for(:title) or raise "Call content_for :title, 'x'" %></title>
+  <title>BasicRuby backend</title>
   <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
   <%= javascript_include_tag 'vendor', 'application', "data-turbolinks-track" => true %>
   <%= csrf_meta_tags %>
-
-  <%= render 'layouts/google_analytics' %>
-
-  <% if params[:action] == 'menu' %>
-    <meta name="viewport" content="width=960">
-  <% elsif params[:action] == 'exercise' %>
-    <meta name="viewport" content="width=840, minimal-ui">
-  <% end %>
 </head>
-<body class="<%= params[:action] %>">
+<body>
 
 <%= yield %>
 
