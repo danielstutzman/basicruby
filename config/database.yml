@@ -17,23 +17,12 @@ test:
   pool: 5
   timeout: 5000
 
-staging:
-  <<: *default
-  database: <%= ENV['DB_ENV_POSTGRESQL_DATABASE'] %>
-  username: <%= ENV['DB_ENV_POSTGRESQL_USER'] %>
-  password: <%= ENV['DB_ENV_POSTGRESQL_PASS'] %>
-  host: <%= ENV['DB_PORT_5432_TCP_ADDR'] %>
-
 production:
-  <<: *default
-  database: <%= ENV['DB_ENV_POSTGRESQL_DATABASE'] %>
-  username: <%= ENV['DB_ENV_POSTGRESQL_USER'] %>
-  password: <%= ENV['DB_ENV_POSTGRESQL_PASS'] %>
-  host: <%= ENV['DB_PORT_5432_TCP_ADDR'] %>
-
-#production:
-#  adapter: postgresql
-#  host: ec2-54-83-199-115.compute-1.amazonaws.com
-#  database: ddibte8chhlo4
-#  username: dnyqrrfmabhzva
-#  encoding: unicode
+  adapter: postgresql
+  encoding: unicode
+  database: postgres
+  username: basicruby
+  password: basicruby
+  host: localhost
+  pool: 5
+  timeout: 5000
