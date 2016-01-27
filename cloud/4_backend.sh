@@ -90,6 +90,7 @@ sudo apt-get install -y make g++
 gem2.0 install thin -v '1.6.2'
 sudo sudo -u deployer bundle install --deployment
 sudo sudo -u deployer env RAILS_ENV=production bundle exec rake db:migrate
+sudo sudo -u deployer env RAILS_ENV=production bundle exec rake db:seed
 
 sudo chmod 0755 /etc/init.d/unicorn
 sudo service unicorn stop || true
