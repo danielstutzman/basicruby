@@ -82,6 +82,8 @@ if [ "$USER_EXISTS" == "0" ]; then
   echo "ALTER USER basicruby WITH PASSWORD 'basicruby'" | sudo sudo -u postgres psql
 fi
 
+sudo mkdir -p /home/deployer/basicruby/current/tmp
+chmod -R g+w /home/deployer/basicruby/current/tmp
 chown -R deployer:www-data /home/deployer/basicruby/current
 cd /home/deployer/basicruby/current
 sudo apt-get install -y make g++
