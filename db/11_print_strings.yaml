@@ -1,0 +1,28 @@
+title: The print method and string literals
+title_html: "The <code>print</code> method<br>and string literals"
+level: new_intro
+features: run step instructions console
+under_construction: false
+yellow:
+- code: |
+    print("a")
+    print("bc")
+    print("")
+    print("d(")
+blue:
+- code: |
+    print("abc")
+    print("d")
+    print("")
+    print("print(print)")
+    print("print(")
+  cases:
+  - expected_output: abcdprint(print)print(
+- code: |
+    print("a")
+    print("ab")
+    print("")
+    print("print((")
+    print("")
+  cases:
+  - expected_output: aabprint((

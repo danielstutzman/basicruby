@@ -1,0 +1,9 @@
+title: SyntaxError
+title_html: "<code>SyntaxError</code>"
+level: new_intro
+features: run step instructions console
+under_construction: false
+yellow:
+- code: |
+    print("a")
+    print("b"

@@ -1,0 +1,61 @@
+title: Parens are optional
+title_html: Parens are optional
+level: new_intro
+features: run step instructions console
+under_construction: false
+yellow:
+- code: |
+    "a"
+    print("b")
+    print "c"
+    print(
+    "d"
+    )
+    print "
+    e"
+    print
+      "f"
+    print
+    ("g")
+- code: |
+    print( "a" )
+    print(" b ")
+    print " c "
+    print
+         (" d ")
+    print(
+           "e ")
+    print "
+            f "
+    print(
+           "g" )
+blue:
+- code: |
+    "a"
+    print(
+    "b")
+    print "c"
+    print
+    ("d"
+    )
+    print "
+      e"
+    print
+    "  f"
+    print("g")
+    print "(h)"
+  cases:
+  - expected_output: "bc\n  e  g(h)"
+- code: |
+    print ""
+    print( ""
+    )
+    print "
+      ab"
+    print
+    ("c")
+    print " d "
+    print( "e
+            f")
+  cases:
+  - expected_output: "\n  ab d e\n        f"

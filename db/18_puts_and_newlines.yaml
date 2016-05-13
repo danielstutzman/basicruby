@@ -1,0 +1,48 @@
+title: The puts method
+title_html: "The <code>puts</code> method"
+level: new_intro
+features: run step instructions console
+under_construction: false
+yellow:
+- code: |
+    print "a"
+    print "b\n"
+    puts "c"
+    puts "d\n"
+    puts "e\n\n"
+    puts "f"
+    puts ""
+    puts "g"
+    puts "\nh"
+- code: |
+    puts "a\n"
+    puts "b"
+    print "c\n"
+    print "d"
+    print ""
+    puts ""
+    puts "e"
+    puts "f\ng"
+blue:
+- code: |
+    print "a"
+    puts "b"
+    print "c"
+    puts "\n"
+    puts "\nd\n"
+    puts "e"
+    puts "
+    f"
+  cases:
+  - expected_output: "ab\nc\n\nd\ne\n\nf"
+- code: |
+    puts ""
+    print "a"
+    puts ""
+    print "b\nc"
+    puts "d
+    "
+    puts "
+    \\"
+  cases:
+  - expected_output: "\na\nb\ncd\n\n\\"

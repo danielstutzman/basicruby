@@ -42,3 +42,4 @@ build/
 
 /db/test.sqlite3
 /cloud/secret_key_base
+/vendor/bundle

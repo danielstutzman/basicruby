@@ -1,0 +1,30 @@
+title: "\\\" in string literals"
+title_html: "<code>\\\"</code> in string literals"
+level: new_intro
+features: run step instructions console
+under_construction: false
+yellow:
+- code: |
+    print "I didn't say \"hello.\" too."
+- code: |
+    print("")
+    print("\"")
+    print("\"\"
+    ")
+    print "\""
+blue:
+- code: |
+    print "
+    print 'hello'
+    print \"hello\"
+    "
+  cases:
+  - expected_output: "\nprint 'hello'\nprint \"hello\"\n"
+- code: |
+    print ""
+    print("\"\"
+    ")
+    print("print \"hello\"
+    \"\"")
+  cases:
+  - expected_output: "\"\"\nprint \"hello\"\n\"\""

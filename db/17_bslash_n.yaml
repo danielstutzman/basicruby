@@ -1,0 +1,29 @@
+title: "\\n in string literals"
+title_html: "<code>\\n</code> in string literals"
+level: new_intro
+features: run step instructions console
+under_construction: false
+yellow:
+- code: |
+    print "a
+    b
+    c"
+    print "d\ne\n\nf"
+- code: |
+    print "\n
+    n\"
+    print "
+    print "n\n\"\\"
+blue:
+- code: |
+    print "a\n\n
+    b"
+    print ""
+    print "\\nc\\\nd"
+  cases:
+  - expected_output: "a\n\n\nb\nc\\\nd"
+- code: |
+    print "\\n\n\\n\n\\"
+    print "\n\\n\\\n\\\\n"
+  cases:
+  - expected_output: "\\n\n\\n\n\\\n\\n\\\n\\\\n"
