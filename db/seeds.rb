@@ -7,14 +7,22 @@ ActiveRecord::Base.logger = nil
 Exercise.transaction do
   dir = File.dirname(__FILE__)
   topic_num = 1
+
+  nickname2count = {}
+  Dir.glob("#{dir}/*.yaml").each do |path|
+    match = path.match(/\/([0-9]+)_(.*).yaml$/) or raise "Filename doesn't match regex: #{path}"
+    nickname = match[2]
+    nickname2count[nickname] ||= 0
+    nickname2count[nickname] += 1
+  end
+  dup_nicknames = nickname2count.select { |nickname, count| count > 1 }
+  raise "Duplicate nicknames: #{dup_nicknames}" if dup_nicknames.size > 0
+
   Dir.glob("#{dir}/*.yaml").sort.each do |path|
     puts path
-    yaml     = YAML.load_file(path)
-    if match = path.match(/\/([0-9]+)_(.*).yaml$/)
-      nickname = match[2]
-    else
-      raise "Filename doesn't match regex: #{path}"
-    end
+    yaml = YAML.load_file(path)
+    match = path.match(/\/([0-9]+)_(.*).yaml$/)
+    nickname = match[2]
 
     # update old topic so foreign keys aren't broken
     topic = Topic.find_by(nickname: nickname) ||
