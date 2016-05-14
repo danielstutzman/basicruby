@@ -50,7 +50,6 @@ files:
   - /var/log/nginx/todomvc_error_nginx.log
   - /var/log/postgresql/postgresql-9.3-main.log
   - /var/log/newrelic-plugin/newrelic-plugin-agent.log
-  - /var/log/upstart/docker.log
   - /home/deployer/basicruby/shared/unicorn_error.log
   - /var/log/nginx/basicruby_access_nginx.log
   - /var/log/nginx/basicruby_error_nginx.log
