@@ -60,7 +60,6 @@ destination:
   host: logs.papertrailapp.com
   port: 45259
 ssl_server_cert: /etc/syslog.papertrail.crt
-hostname: basicruby
 EOF2
 sudo service remote_syslog restart
 EOF
