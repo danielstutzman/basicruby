@@ -28,6 +28,12 @@ server {
     add_header Pragma public;
     add_header Cache-Control public;
   }
+  gzip            on;
+  gzip_min_length 1000;
+  gzip_proxied    expired no-cache no-store private auth;
+  gzip_types      text/plain text/css application/json application/x-javascript text/javascript;
+  gzip_static     on;
+  charset         UTF-8;
 }
 EOF2
 sudo ln -sf /etc/nginx/sites-available/basicruby.conf /etc/nginx/sites-enabled/basicruby.conf
