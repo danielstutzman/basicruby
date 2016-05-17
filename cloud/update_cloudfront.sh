@@ -1,4 +1,28 @@
-#!/bin/bash -e
+#!/bin/bash -ex
+
+# Set to true to renew certificate
+if false; then
+  gem install aws-sdk
+  pushd letsencrypt.sh
+  AWS_ACCESS_KEY_ID=`grep aws_access_key_id ~/.aws/config | awk '{print $3}'`
+  AWS_SECRET_ACCESS_KEY=`grep aws_secret_access_key ~/.aws/config | awk '{print $3}'`
+  AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+    AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+    ./letsencrypt.sh \
+    --config ./config.sh \
+    --cron --hook ./hook.rb --challenge dns-01 --domain basicruby.com
+  pushd
+
+  aws iam delete-server-certificate --server-certificate-name basicruby.com || true
+  aws iam upload-server-certificate \
+    --server-certificate-name basicruby.com \
+    --certificate-body file://letsencrypt.sh/certs/basicruby.com/cert.pem \
+    --private-key file://letsencrypt.sh/certs/basicruby.com/privkey.pem \
+    --certificate-chain file://letsencrypt.sh/certs/basicruby.com/chain.pem \
+    --path /cloudfront/ \
+    | tee upload-server-certificate.json
+fi
+SERVER_CERTIFICATE_ID=`cat upload-server-certificate.json | python -c "import json,sys; response = json.load(sys.stdin); print response['ServerCertificateMetadata']['ServerCertificateId']"`
 
 aws configure set preview.cloudfront true
 
@@ -40,7 +64,7 @@ cat > distconfig.json <<EOF
         "Items": []
       }
     },
-    "ViewerProtocolPolicy": "allow-all",
+    "ViewerProtocolPolicy": "redirect-to-https",
     "MinTTL": 0,
     "TrustedSigners": {
       "Enabled": false,
@@ -84,9 +108,12 @@ cat > distconfig.json <<EOF
     "Items": []
   },
   "ViewerCertificate": {
-    "CloudFrontDefaultCertificate": true,
-    "MinimumProtocolVersion": "SSLv3",
-    "CertificateSource": "cloudfront"
+    "CloudFrontDefaultCertificate": false,
+    "SSLSupportMethod": "sni-only",
+    "MinimumProtocolVersion": "TLSv1",
+    "Certificate": "$SERVER_CERTIFICATE_ID",
+    "IAMCertificateId": "$SERVER_CERTIFICATE_ID",
+    "CertificateSource": "iam"
   },
   "Restrictions": {
     "GeoRestriction": {

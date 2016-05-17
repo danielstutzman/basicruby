@@ -43,3 +43,7 @@ build/
 /db/test.sqlite3
 /cloud/secret_key_base
 /vendor/bundle
+/cloud/letsencrypt.sh/certs/
+/cloud/letsencrypt.sh/private_key.json
+/cloud/letsencrypt.sh/private_key.pem
+/cloud/upload-server-certificate.json
