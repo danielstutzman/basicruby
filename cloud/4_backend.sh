@@ -8,28 +8,25 @@ id -u deployer &>/dev/null || useradd deployer --gid www-data
 sudo apt-get install -y nginx libpq-dev libsqlite3-dev
 sudo rm -f /etc/nginx/sites-enabled/default
 
-sudo tee /etc/nginx/sites-available/basicruby.conf <<EOF2
+sudo tee /etc/nginx/sites-available/basicruby.conf <<"EOF2"
 server {
   listen 0.0.0.0:80;
   proxy_intercept_errors off;
-  server_name basicruby;
   access_log /var/log/nginx/basicruby_access_nginx.log;
   error_log /var/log/nginx/basicruby_error_nginx.log error;
-  location ~ ^/(assets)/  {
-    root /home/deployer/basicruby/current/public;
-    gzip_static on;
-    expires 1y;
+  root /home/deployer/basicruby/current/public;
+  try_files $uri $uri/index.html @app;
+  location @app {
+    proxy_read_timeout 150;
+    proxy_pass http://unix:/home/deployer/basicruby/shared/tmp/unicorn.sock;
+  }
+  error_page 500 502 503 504 /500.html;
+  client_max_body_size 4G;
+  keepalive_timeout 10;
+  location ~* "^.+\.[0-9a-f]{5}\.(css|js|png|jpg|jpeg)$" {
+    expires 365d;
+    add_header Pragma public;
     add_header Cache-Control public;
-  }
-  location @proxy {
-    proxy_read_timeout 150;
-    proxy_pass http://unix:/home/deployer/basicruby/shared/tmp/unicorn.sock;
-    expires 1m;
-  }
-  location / {
-    proxy_read_timeout 150;
-    proxy_pass http://unix:/home/deployer/basicruby/shared/tmp/unicorn.sock;
-    expires 1m;
   }
 }
 EOF2
@@ -43,9 +40,9 @@ for ITEM in /home/deployer/basicruby \
     /home/deployer/basicruby/shared/tmp \
     /home/deployer/basicruby/shared/vendor_bundle \
     /home/deployer/basicruby/releases; do
-  sudo mkdir -p \$ITEM
-  sudo chown deployer:www-data \$ITEM
-  chmod 0755 \$ITEM
+  sudo mkdir -p $ITEM
+  sudo chown deployer:www-data $ITEM
+  chmod 0755 $ITEM
 done
 sudo chmod g+w /home/deployer/basicruby/shared/tmp /home/deployer/basicruby/shared/log
 sudo touch /home/deployer/basicruby/shared/log/production.log
