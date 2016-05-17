@@ -2,15 +2,6 @@ class ApiController < ApplicationController
   #protect_from_forgery with: :null_session
   skip_before_action :verify_authenticity_token, if: :json_request?
 
-  def root
-    render text: 'This is the backend server.  It should be accessed through XHR requests from a JavaScript frontend, not directly.'
-  end
-
-  def easyxdm
-    response.headers.delete 'X-Frame-Options'
-    render :easyxdm, layout: false
-  end
-
   def all_exercises
     render json: Exercise.select(:id, :topic_num, :color, :rep_num).order(:id)
   end

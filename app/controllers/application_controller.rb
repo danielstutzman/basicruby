@@ -3,11 +3,8 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  after_filter :set_access_control_headers
-
   before_action :load_learner
 
-  skip_before_filter :verify_authenticity_token, only: :options_for_cors
 
   def options_for_cors
     headers['Access-Control-Allow-Headers'] = 'X-Requested-With'
@@ -29,10 +26,5 @@ class ApplicationController < ActionController::Base
         session[:learner_id] = @learner.id
       end
     end
-  end
-
-  def set_access_control_headers
-    headers['Access-Control-Allow-Origin'] = '*'
-    headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE'
   end
 end
