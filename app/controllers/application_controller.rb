@@ -5,12 +5,13 @@ class ApplicationController < ActionController::Base
 
   before_action :load_learner
 
+  def index
+    topic_num = params[:topic_num]
+    rep_num   = params[:rep_num]
+    # let it raise ActiveRecord::RecordNotFound if not found; it will become a 404
+    Exercise.find_by_path topic_num, rep_num
 
-  def options_for_cors
-    headers['Access-Control-Allow-Headers'] = 'X-Requested-With'
-    headers['Access-Control-Max-Age'] = '86400'
-    expires_in 86400.seconds, public: true
-    head(:ok)
+    send_file 'public/index.html', disposition: 'inline'
   end
 
   private
