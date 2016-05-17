@@ -4,6 +4,8 @@ tugboat ssh basicruby <<EOF
 
 set -ex
 
+sudo apt-get update
+
 sudo apt-get install -y ntp
 sudo service ntp restart
 
