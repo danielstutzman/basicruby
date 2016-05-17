@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-tugboat ssh basicruby <<"EOF"
+tugboat ssh -n basicruby <<"EOF"
 
 set -ex
 

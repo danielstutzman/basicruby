@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-tugboat ssh basicruby <<EOF
+tugboat ssh -n basicruby <<"EOF"
 set -ex
 
 name=deployer group=www-data shell=/bin/bash
@@ -50,10 +50,10 @@ sudo chown www-data:www-data /home/deployer/basicruby/shared/log/production.log
 sudo chmod 0666 /home/deployer/basicruby/shared/log/production.log
 EOF
 
-INSTANCE_IP=`tugboat droplets | grep basicruby | egrep -oh "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+" || true`
+INSTANCE_IP=`tugboat droplets | grep 'basicruby ' | egrep -oh "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+" || true`
 echo INSTANCE_IP=$INSTANCE_IP
 scp -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null unicorn.initd root@$INSTANCE_IP:/etc/init.d/unicorn
-echo 'sudo mkdir -p /etc/unicorn' | tugboat ssh basicruby
+echo 'sudo mkdir -p /etc/unicorn' | tugboat ssh -n basicruby
 scp -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null basicruby-unicorn.conf root@$INSTANCE_IP:/etc/unicorn/basicruby.conf
 scp -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null basicruby.unicorn.rb root@$INSTANCE_IP:/etc/unicorn/basicruby.unicorn.rb
 if [ ! -e secret_key_base ]; then
@@ -61,7 +61,7 @@ if [ ! -e secret_key_base ]; then
 fi
 SECRET_KEY_BASE=`cat secret_key_base`
 scp -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null secret_key_base root@$INSTANCE_IP:/etc/unicorn/secret_key_base
-tugboat ssh basicruby <<EOF
+tugboat ssh -n basicruby <<EOF
 tee -a /etc/unicorn/basicruby.unicorn.rb <<EOF2
 ENV["SECRET_KEY_BASE"] = "$SECRET_KEY_BASE"
 EOF2
@@ -69,7 +69,7 @@ EOF
 
 rsync -e "ssh -l deployer -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null" -rv .. root@$INSTANCE_IP:/home/deployer/basicruby/current --exclude vendor --exclude ".*" --exclude tmp --exclude log
 
-tugboat ssh basicruby <<"EOF"
+tugboat ssh -n basicruby <<"EOF"
 set -ex
 
 sudo apt-get install -y postgresql postgresql-client-common

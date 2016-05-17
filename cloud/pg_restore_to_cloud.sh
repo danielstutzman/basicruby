@@ -6,7 +6,7 @@ if [ "$1" == "" ]; then
 fi
 DUMPFILE=$1
 
-INSTANCE_IP=`tugboat droplets | grep basicruby2 | egrep -oh "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+"`
+INSTANCE_IP=`tugboat droplets | grep 'basicruby ' | egrep -oh "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+"`
 echo INSTANCE_IP=$INSTANCE_IP
 
 scp -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null $DUMPFILE root@$INSTANCE_IP:/tmp/$DUMPFILE

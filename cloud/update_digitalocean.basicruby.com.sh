@@ -6,7 +6,7 @@ if [[ "$CREATE_ZONE_OUTPUT" != *HostedZoneAlreadyExists* ]]; then
   exit 1
 fi
 
-INSTANCE_IP=`tugboat droplets | grep basicruby | egrep -oh "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+" || true`
+INSTANCE_IP=`tugboat droplets | grep 'basicruby ' | egrep -oh "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+" || true`
 echo INSTANCE_IP=$INSTANCE_IP
 
 ZONE_ID=`aws route53 list-hosted-zones | python -c '
