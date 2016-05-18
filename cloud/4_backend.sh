@@ -89,9 +89,9 @@ sudo mkdir -p /home/deployer/basicruby/current/public
 if [ ! -e /home/deployer/basicruby/current/public/index.html ]; then
   echo "Backend service is running but no frontend (public dir) has been deployed yet" > /home/deployer/basicruby/current/public/index.html
 fi
-sudo mkdir -p /home/deployer/basicruby/current/tmp
-chmod -R g+w /home/deployer/basicruby/current/tmp
 chown -R deployer:www-data /home/deployer/basicruby/current
+sudo mkdir -p /home/deployer/basicruby/current/tmp
+chown -R www-data:www-data /home/deployer/basicruby/current/tmp
 cd /home/deployer/basicruby/current
 sudo apt-get install -y make g++
 gem2.0 install thin -v '1.6.2'
