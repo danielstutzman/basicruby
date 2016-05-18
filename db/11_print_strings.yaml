@@ -1,6 +1,6 @@
 title: The print method and string literals
 title_html: "The <code>print</code> method<br>and string literals"
-level: new_intro
+level: outputting_strings
 features: run step instructions console
 under_construction: false
 yellow:

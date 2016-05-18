@@ -1,6 +1,6 @@
 title: The puts method
 title_html: "The <code>puts</code> method"
-level: new_intro
+level: outputting_strings
 features: run step instructions console
 under_construction: false
 yellow:
