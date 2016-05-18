@@ -1,0 +1,25 @@
+title: Number literals
+title_html: "Number literals"
+level: expressions_and_types
+features: run step instructions console
+under_construction: false
+yellow:
+- code: |
+    print "3\n"
+    puts 3
+    puts 3.0
+    puts 3.00
+    puts -12.00
+    puts  -1.20
+    puts  -0.12
+blue:
+- code: |
+    print "a"
+    print 1
+    print -1
+    print "-"
+    puts  -0.1
+    puts  -1.0
+    puts "-1.0"
+  cases:
+  - expected_output: "a1-1--0.1\n-1\n-1.0\n"

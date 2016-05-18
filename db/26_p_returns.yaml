@@ -1,0 +1,31 @@
+title: The p method returns
+title_html: "The <code>p</code> method returns"
+level: expressions_and_types
+features: run step instructions console
+under_construction: false
+yellow:
+- code: |
+    p 2 + 3
+    p(2 + 3)
+    puts p(2 + 3)
+    puts p(2 + 3) * 4
+    puts(p(2) + p(3))
+    p(p(2) + p(3))
+    p(p("2") * 3)
+blue:
+- code: |
+    p("a")
+    p(p("b"))
+    p("c" + p("d"))
+    p("e" * 2)
+    p("f" * p(2))
+  cases:
+  - expected_output: |
+      "a"
+      "b"
+      "b"
+      "d"
+      "cd"
+      "ee"
+      2
+      "ff"
