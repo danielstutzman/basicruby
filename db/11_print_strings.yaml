@@ -26,3 +26,14 @@ blue:
     print("")
   cases:
   - expected_output: aabprint((
+red:
+- code: |
+    print("a")
+    print("b"
+  cases:
+  - expected_output: ab
+green:
+- code: |
+    print("bc") #
+  cases:
+  - expected_output: abc

@@ -25,3 +25,14 @@ blue:
     puts 2 / (4 + 4)
   cases:
   - expected_output: "0.25\n2\n2\n4.5\n0.25\n"
+green:
+- code: |
+    puts 2 +  #
+      0
+    puts (1 + #
+      0
+      ) * 2   #
+  cases:
+  - expected_output: |
+      12
+      6

@@ -62,3 +62,22 @@ blue:
     f")
   cases:
   - expected_output: "\n      abcde\nf"
+red:
+- code: |
+    print(       #
+    "a")
+    print("b")   #
+    print(       #
+     "c"
+    )            #
+  cases:
+  - expected_output: "\n  ab c"
+green:
+- code: |
+    print("a") #
+    print(     #
+
+    )          #
+    print("c") #
+  cases:
+  - expected_output: "a\n  b\nc"

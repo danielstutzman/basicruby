@@ -29,3 +29,15 @@ blue:
       "ee"
       2
       "ff"
+- code: |
+    puts "\\"
+    p("\\")
+    puts p("\\") * 2
+    p p("\\") * 2
+  cases:
+  - expected_output: |
+      \
+      "\\"
+      "\\"
+      \\
+      "\\\\"

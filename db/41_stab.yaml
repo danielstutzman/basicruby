@@ -1,0 +1,79 @@
+title: The -> operator
+title_html: The <code>-></code> operator
+level: lambda
+features: run step instructions console vars
+under_construction: true
+yellow:
+- code: |
+    f = ->x{ x + 1 }
+    p f.call(2)
+    p f.call(4)
+blue:
+- code: |
+    f = ->x{ x * 2 }
+    p f.call(3)
+    p f.call("3")
+  cases:
+  - expected_output: |
+      6
+      "33"
+red:
+- code: |
+    f = ->{ x + 2 }
+    p f.call(3)     #
+    p f.call(4)     #
+  cases:
+  - expected_output: |
+      5
+      6
+green:
+- code: |
+    puts f.call(7) #
+    puts f.call(8) #
+  cases:
+  - expected_output: |
+      7 7
+      8 8
+- code: |
+    print "a"   #
+    f.call("b") #
+    f.call("c") #
+  cases:
+  - expected_output: "abc"
+- code: |
+    print "a"   #
+    f.call("b") #
+    f.call("c") #
+  cases:
+  - expected_output: "a"
+- code: |
+    p 1         #
+    p f.call(2) #
+    p f.call(3) #
+  cases:
+  - expected_output: |
+      1
+      2
+      22
+      3
+      33
+- code: |
+    p 1       #
+    f.call(2) #
+    f.call(3) #
+  cases:
+  - expected_output: |
+      1
+      2
+      22
+      3
+      33
+- code: |
+    p f.call(->x{ x })     #
+    p f.call(->x{ x + 1 }) #
+    p f.call(->x{ x * 2 }) #
+  cases:
+  - expected_output: |
+      10
+      12
+      40

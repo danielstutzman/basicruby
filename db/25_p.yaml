@@ -8,9 +8,11 @@ yellow:
     puts 1
     puts "1"
     puts "\\"
+    puts "\""
     p 1
     p "1"
     p "\\"
+    p "\""
 blue:
 - code: |
     print 1
@@ -32,3 +34,19 @@ blue:
 
   cases:
   - expected_output: "12\n3\n12\n\"3\"\n12\n\"12\"\n3\n3\n11\n\"11\"\n2\n2\n"
+- code: |
+    puts "\\"
+    p    "\\"
+    puts "\""
+    p    "\""
+  cases:
+  - expected_output: |
+      \
+      "\\"
+      "
+      "\""
+green:
+- code: |
+    puts 
+    p \ #
+      3

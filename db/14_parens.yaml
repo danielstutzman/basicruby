@@ -59,3 +59,19 @@ blue:
             f")
   cases:
   - expected_output: "\n  ab d e\n        f"
+red:
+- code: |
+    print        #
+    ("a")
+    print("b")   #
+    print(       #
+     "c"
+    )            #
+  cases:
+  - expected_output: "ab c"
+green:
+- code: |
+
+    print "c" #
+  cases:
+  - expected_output: "a\n  b c"
