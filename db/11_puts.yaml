@@ -1,0 +1,86 @@
+title_html: <code>puts</code> method; number literals
+yellow:
+- # difference between puts and blank line
+  code: |
+    puts 2
+    puts
+    puts 3
+
+    puts 4
+blue:
+- # notice blank line
+  code: |
+    puts
+    puts 4
+
+    puts 1
+  assigned_output: "\n4\n1\n"
+- # tedious counting of blank lines
+  code: |
+    puts
+
+
+    puts 0
+    puts 0
+
+    puts
+    puts
+    puts
+
+    puts 0
+    puts
+
+
+    puts
+    puts
+    puts
+
+    puts
+    puts 0
+  assigned_output: |
+
+    0
+    0
+    
+    
+    
+    0
+    
+    
+    
+    
+    
+    0
+red:
+- # misspelled puts
+  code: |
+    puts 3
+    puts 4
+    put5 5
+  assigned_output: |
+    3
+    4
+    5
+- # forgot the puts
+  code: |
+    3
+  assigned_output: |
+    3
+- # puts not blank line
+  code: |
+    puts 3
+
+    puts 4
+  assigned_output: |
+    3
+
+    4
+green:
+- # write more puts
+  code: |
+    puts 7
+    #TODO
+  assigned_output: |
+    7
+
+    8

@@ -8,7 +8,7 @@ Exercise.transaction do
 
   nickname2count = {}
   Dir.glob("#{dir}/*.yaml").each do |path|
-    match = path.match(/\/([0-9]+)_(.*).yaml$/) or raise "Filename doesn't match regex: #{path}"
+    match = path.match(/\/([0-9a-f]+)_(.*).yaml$/) or raise "Filename doesn't match regex: #{path}"
     nickname = match[2]
     nickname2count[nickname] ||= 0
     nickname2count[nickname] += 1
@@ -19,20 +19,20 @@ Exercise.transaction do
   Dir.glob("#{dir}/*.yaml").sort.each do |path|
     puts path
     yaml = YAML.load_file(path)
-    match = path.match(/\/([0-9]+)_(.*).yaml$/)
+    match = path.match(/\/([0-9a-f]+)_(.*).yaml$/)
     nickname = match[2]
 
     # update old topic so foreign keys aren't broken
     topic = Topic.find_by(nickname: nickname) ||
       Topic.new(nickname: nickname)
     topic.num        = topic_num
-    topic.title      = yaml['title']
+    topic.title      = yaml['title'] || yaml['title_html'].gsub('<code>', '').gsub('</code>', '')
     topic.title_html = yaml['title_html'] || yaml['title']
-    topic.level      = yaml['level']
-    topic.features   = yaml['features']
+    topic.level      = yaml['level'] || 'outputting_strings'
+    topic.features   = yaml['features'] || 'run step instructions console'
     topic.youtube_id = yaml['purple'] && yaml['purple'][0] &&
                        yaml['purple'][0]['youtube_id']
-    topic.under_construction = yaml['under_construction']
+    topic.under_construction = yaml['under_construction'] || false
     topic.save!
 
     %w[purple yellow blue red green orange].each do |color|
@@ -40,6 +40,11 @@ Exercise.transaction do
       next if exercises.nil? # just for unfinished topics
 
       exercises.each_with_index do |exercise_from_yaml, rep_num0|
+        if exercise_from_yaml['assigned_output']
+          exercise_from_yaml['cases'] =
+            [{ 'expected_output' => exercise_from_yaml['assigned_output'] }]
+        end
+
         rep_num = rep_num0 + 1
 
         # update old exercise so foreign keys aren't broken

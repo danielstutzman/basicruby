@@ -1,0 +1,93 @@
+title_html: <code>def</code> and <code>return</code>
+yellow:
+- code: |
+    def f(x)
+      return x + 1
+    end
+    puts f(3)
+    puts f(5)
+blue:
+- # f is applied first, not g
+  code: |
+    def g(x)
+      return f(x) * 2
+    end
+    def f(x)
+      return x + 1
+    end
+    puts f(2)
+    puts g(3)
+  assigned_output: |
+    3
+    8
+red:
+- # use before definition
+  code: |
+    puts h(3)
+    def h(x)
+      x + 4
+    end
+  num_lines_to_change: 2
+  assigned_output: |
+    7
+green:
+- code: |
+    #TODO
+    puts f(1)
+    puts f(2)
+    puts f(3)
+  assigned_output: |
+    3
+    6
+    9
+- code: |
+    #TODO
+    puts f(1)
+    puts f(2)
+    puts f(3)
+  assigned_output: |
+    4
+    5
+    6
+- code: |
+    #TODO
+    puts f(1)
+    puts f(2)
+    puts f(3)
+  assigned_output: |
+    1
+    2
+    3
+- code: |
+    #TODO
+    puts f(1)
+    puts f(2)
+    puts f(3)
+  assigned_output: |
+    4
+    4
+    4
+- code: |
+    #TODO
+    def g(x)
+      return f(x) * 2
+    end
+    puts g(2)
+    puts g(3)
+    puts g(4)
+  assigned_output: |
+    2
+    4
+    6
+- code: |
+    #TODO
+    def g(x)
+      return f(x) * 2
+    end
+    puts f(2)
+    puts f(3)
+    puts f(4)
+  assigned_output: |
+    2
+    4
+    6

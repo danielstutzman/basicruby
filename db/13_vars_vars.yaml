@@ -1,0 +1,63 @@
+title_html: assigning variables to variables
+yellow:
+- color: yellow
+  code: |
+    x = 3
+    y = x
+    x = 4
+    puts y
+blue:
+- # set x = y then change y and expect x to change
+  code: |
+    y = 8
+    x = y
+    y = 4
+    puts y
+    puts x
+  assigned_output: |
+    4
+    8
+blue:
+- # failed swap
+  code: |
+    x = 2
+    y = 5
+    x = y
+    y = x
+    puts x
+    puts y
+  assigned_output: |
+    5
+    5
+- # more complicated; might require tracking with pen and paper
+  code: |
+    w = 4
+    x = w
+    w = 3
+    y = w
+    y = x
+    puts y
+  assigned_output: |
+    4
+- code: |
+    b = 1
+    c = b
+    b = 2
+    a = c
+    c = 3
+    a = c
+    c = b
+    puts a
+    puts c
+    puts b
+  # b = 1 -> - 1 -
+  # c = b -> - 1 1
+  # b = 2 -> - 2 1
+  # a = c -> 1 2 1
+  # c = 3 -> 1 2 3
+  # a = c -> 3 2 3
+  # c = b -> 3 2 2
+  assigned_output: |
+    3
+    2
+    2

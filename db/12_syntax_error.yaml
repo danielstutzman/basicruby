@@ -1,9 +1,0 @@
-title: SyntaxError
-title_html: "<code>SyntaxError</code>"
-level: outputting_strings
-features: run step instructions console
-under_construction: false
-yellow:
-- code: |
-    print("a")
-    print("b"

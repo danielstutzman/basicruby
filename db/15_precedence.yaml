@@ -1,0 +1,34 @@
+title_html: <code>*</code> operator;<br>parens; precedence
+yellow:
+- code: |
+    puts 1 + 2 * 3
+    puts  1+2  * 3
+    puts (1+2) * 3
+
+    x = 1 + 2
+    puts x * 3
+blue:
+- code: |
+    x = 1 + 2
+    puts x * 2
+
+    y = x * 2 + 3
+    puts y
+  assigned_output: |
+    6
+    9
+red:
+- code: |
+    x = 3
+    x = 1 + x * 2
+    puts x
+  assigned_output: |
+    8
+green:
+- code: |
+    x = 2
+    #TODO
+    z = 2
+    puts x + y * z
+  assigned_output: |
+    8

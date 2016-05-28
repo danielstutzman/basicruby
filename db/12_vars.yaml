@@ -1,0 +1,106 @@
+title_html: variables
+yellow:
+- code: |
+    x = 2
+    y = 3
+    x = 4
+    puts y
+    puts x
+blue:
+- code: |
+    c = 2
+    b = 9
+    a = 4
+    puts a
+    b = 8
+    puts b
+    puts c
+  assigned_output: |
+    4
+    8
+    2
+- # lots of vars
+  code: |
+    a = 0
+    b = 1
+    c = 1
+    d = 0
+    puts d
+    puts a
+    puts a
+    puts b
+    puts d
+    puts c
+    puts b
+    puts c
+    puts d
+    puts a
+    puts a
+    puts d
+    puts c
+  assigned_output: |
+    0
+    0
+    0
+    1
+    0
+    1
+    1
+    1
+    0
+    0
+    0
+    0
+    1
+- # lots of reassignments
+  code: |
+    x = 7
+    y = 2
+    z = 1
+    x = 5
+    puts y
+    z = 2
+    y = 1
+    puts x
+    puts y
+    x = 7
+    y = 2
+    puts y
+    puts z
+    z = 1
+    puts x
+  assigned_output: |
+    2
+    5
+    1
+    2
+    2
+    7
+red:
+- code: |
+    3 = y
+    puts y
+  assigned_output: |
+    3
+- # use before assign
+  code: |
+    puts x
+    x = 4
+  assigned_output: |
+    4
+- # use before assign again
+  code: |
+    x = y
+    y = 2
+    puts x
+  assigned_output: |
+    2
+green:
+- # fill in the right values
+  code: |
+    #TODO
+    puts y
+    puts z
+  assigned_output: |
+    7
+    5

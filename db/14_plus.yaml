@@ -1,0 +1,58 @@
+title_html: <code>+</code> and <code>-</code> operators
+yellow:
+- code: |
+    x = 3
+    puts x
+    x = x + 1
+    puts x
+    puts x + 4
+blue:
+- code: |
+    y = 3
+    x = 4
+    y = x + 2
+    puts y - 1
+  assigned_output: |
+    5
+- code: |
+    x = 5
+    puts x + 4
+    y = x + 2
+    puts y - 3
+    puts 1 + x
+    puts 1 + y
+    puts x - 3
+    puts
+  # x = 5
+  # puts 5 + 4 = 9
+  # y = 5 + 2 = 7
+  # puts 7 - 3 = 4
+  # puts 1 + x = 6
+  # puts 1 + y = 8
+  # puts x - 3 = 2
+  assigned_output: |
+    9
+    4
+    6
+    8
+    2
+red:
+- code: |
+    z = 4
+    z + 1 = z
+    puts z
+  assigned_output: |
+    5
+- code: |
+    a = 9
+    a - 1
+    puts a
+  assigned_output: |
+    8
+green:
+- code: |
+    #TODO
+    b = b - 1
+    puts b + 4
+  assigned_output: |
+    9
