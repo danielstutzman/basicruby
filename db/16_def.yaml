@@ -3,7 +3,7 @@ title_html: <code>def f(x)</code>
 yellow:
 - code: |
     def f(x)
-      return x + 1
+      x + 1
     end
     puts f(3)
     puts f(5)
@@ -11,10 +11,10 @@ blue:
 - # f is applied first, not g
   code: |
     def g(x)
-      return f(x) * 2
+      f(x) * 2
     end
     def f(x)
-      return x + 1
+      x + 1
     end
     puts f(2)
     puts g(3)
@@ -71,7 +71,7 @@ green:
 - code: |
     #TODO
     def g(x)
-      return f(x) * 2
+      f(x) * 2
     end
     puts g(2)
     puts g(3)
@@ -83,7 +83,7 @@ green:
 - code: |
     #TODO
     def g(x)
-      return f(x) * 2
+      f(x) * 2
     end
     puts f(2)
     puts f(3)
