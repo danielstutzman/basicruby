@@ -1,4 +1,5 @@
-title_html: <code>puts</code> method; number literals
+level: variables and methods
+title_html: <code>puts 3</code>
 yellow:
 - # difference between puts and blank line
   code: |

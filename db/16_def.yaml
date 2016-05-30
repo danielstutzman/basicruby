@@ -1,4 +1,5 @@
-title_html: <code>def</code> and <code>return</code>
+level: variables and methods
+title_html: <code>def f(x)</code>
 yellow:
 - code: |
     def f(x)

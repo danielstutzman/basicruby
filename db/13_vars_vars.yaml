@@ -1,4 +1,5 @@
-title_html: assigning variables to variables
+level: variables and methods
+title_html: <code>x = y</code>
 yellow:
 - color: yellow
   code: |

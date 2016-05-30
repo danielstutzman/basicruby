@@ -1,4 +1,5 @@
-title_html: variables
+level: variables and methods
+title_html: <code>x = 3</code>
 yellow:
 - code: |
     x = 2

@@ -1,4 +1,5 @@
-title_html: <code>*</code> operator;<br>parens; precedence
+level: variables and methods
+title_html: <code>2 + x * 3</code>
 yellow:
 - code: |
     puts 1 + 2 * 3
