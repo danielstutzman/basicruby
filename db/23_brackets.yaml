@@ -1,0 +1,45 @@
+level: strings
+title_html: <code>"abc"[0]</code>
+yellow:
+- code: |
+    x = "732"
+    puts x[0]
+    puts x[1]
+    puts x[2]
+    puts x[2] + x[1] + x[0]
+blue:
+- code: |
+    x = 1
+    puts "328"[0]
+    puts "251"[2]
+    puts "091"[x]
+  assigned_output: |
+    3
+    1
+    9
+red:
+- code: |
+    x = "grape"
+    y = 3
+    puts x[y]
+  assigned_output: |
+    a
+green:
+- code: |
+    #TODO
+    puts f("abcd")
+    puts f("fred")
+    puts f("loop")
+  assigned_output: |
+    c
+    e
+    o
+- code: |
+    #TODO
+    puts f("abcd")
+    puts f("fred")
+    puts f("loop")
+  assigned_output: |
+    cd
+    ed
+    op

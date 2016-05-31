@@ -1,0 +1,50 @@
+level: strings
+title_html: <code>"abc".length</code>
+yellow:
+- code: |
+    x = "3155"
+    puts x.length + 1
+blue:
+- code: |
+    puts "x".length
+    puts "abc".length
+    puts ("" + "a").length
+  assigned_output: |
+    1
+    3
+    1
+red:
+- code: |
+    x = "abc"
+    puts x.length
+    y = "defg"
+    puts y.length
+    puts x + y.length
+  assigned_output: |
+    3
+    4
+    7
+green:
+- code: |
+    #TODO
+    puts f("abc")
+    puts f("d")
+  assigned_output: |
+    3
+    1
+- code: |
+    #TODO
+    puts f("abc")
+    puts f("d")
+  assigned_output: |
+    c
+    d
+- code: |
+    #TODO
+    puts f("do")
+    puts f("gear")
+    puts f("column")
+  assigned_output: |
+    o
+    a
+    u

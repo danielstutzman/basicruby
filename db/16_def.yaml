@@ -3,92 +3,55 @@ title_html: <code>def f(x)</code>
 yellow:
 - code: |
     def f(x)
-      x + 1
+      x * 2
     end
-    puts f(3)
-    puts f(5)
+    z = 2
+    puts f(z)
+    puts f(z - 1)
+    puts f(z) - 1
 blue:
-- # f is applied first, not g
-  code: |
-    def g(x)
-      f(x) * 2
-    end
+- code: |
     def f(x)
-      x + 1
+      x - 1
     end
-    puts f(2)
-    puts g(3)
+    y = 2
+    puts f(y) * 3
+    puts f(y * 3)
   assigned_output: |
     3
-    8
-red:
-- # use before definition
-  code: |
-    puts h(3)
-    def h(x)
-      x + 4
-    end
-  num_lines_to_change: 2
-  assigned_output: |
-    7
+    5
 green:
 - code: |
-    #TODO
-    puts f(1)
-    puts f(2)
-    puts f(3)
+    def f(x)
+      #TODO
+    end
+    z = 1
+    puts f(z)
+    puts f(z + 1)
+    puts f(z + 2)
   assigned_output: |
     3
     6
     9
 - code: |
-    #TODO
-    puts f(1)
-    puts f(2)
-    puts f(3)
+    def f(y)
+      #TODO
+    end
+    puts f(1) + 1
+    puts f(2) + 1
+    puts f(3) + 1
   assigned_output: |
     4
     5
     6
 - code: |
-    #TODO
-    puts f(1)
-    puts f(2)
-    puts f(3)
+    def f(x)
+      #TODO
+    end
+    puts f(1) / 2
+    puts f(2) / 2
+    puts f(3) / 2
   assigned_output: |
     1
     2
     3
-- code: |
-    #TODO
-    puts f(1)
-    puts f(2)
-    puts f(3)
-  assigned_output: |
-    4
-    4
-    4
-- code: |
-    #TODO
-    def g(x)
-      f(x) * 2
-    end
-    puts g(2)
-    puts g(3)
-    puts g(4)
-  assigned_output: |
-    2
-    4
-    6
-- code: |
-    #TODO
-    def g(x)
-      f(x) * 2
-    end
-    puts f(2)
-    puts f(3)
-    puts f(4)
-  assigned_output: |
-    2
-    4
-    6

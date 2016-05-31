@@ -1,0 +1,47 @@
+level: strings
+title_html: <code>"abc"</code>
+yellow:
+- code: |
+    x = "abc"
+    puts x
+
+    y = ""
+    puts y
+
+    puts "3"
+blue:
+- code: |
+    x = "f"
+    y = "2"
+    z = "f"
+    puts y
+    puts z
+    puts y
+    puts x
+  assigned_output: |
+    2
+    f
+    2
+    f
+red:
+- code: |
+    puts abc
+  assigned_output: |
+    abc
+- code: |
+    x = "4bc"
+    puts "x"
+  assigned_output: |
+    4bc
+green:
+- code: |
+    #TODO
+    puts x
+    puts y
+    puts y
+    puts x
+  assigned_output: |
+    a
+
+
+    a

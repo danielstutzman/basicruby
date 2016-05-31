@@ -28,7 +28,7 @@ Exercise.transaction do
     topic.num        = topic_num
     topic.title      = yaml['title'] || yaml['title_html'].gsub('<code>', '').gsub('</code>', '')
     topic.title_html = yaml['title_html'] || yaml['title']
-    topic.level      = yaml['level'] || 'outputting_strings'
+    topic.level      = yaml['level']
     topic.features   = yaml['features'] || 'run step instructions console'
     topic.youtube_id = yaml['purple'] && yaml['purple'][0] &&
                        yaml['purple'][0]['youtube_id']

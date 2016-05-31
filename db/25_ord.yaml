@@ -1,0 +1,75 @@
+level: strings
+title_html: <code>"a".ord</code>
+yellow:
+- code: |
+    puts "1".ord
+
+    x = "2"
+    puts x.ord
+
+    y = "3".ord
+    puts y
+- code: |
+    puts "a".ord.chr
+    puts 97.chr.ord
+blue:
+- code: |
+    x = "231"
+    puts x[2].ord
+    puts x[0].ord
+    puts x[1].ord
+  assigned_output: |
+    49
+    50
+    51
+- code: |
+    x = "great"
+    y = "4231"
+    puts y[0].ord - 48
+    puts y[1].ord - 48
+    puts y[2].ord - 48
+    puts y[3].ord - 48
+    puts x[y[0].ord - 48]
+    puts x[y[1].ord - 48]
+    puts x[y[2].ord - 48]
+    puts x[y[3].ord - 48]
+  assigned_output: |
+    4
+    2
+    3
+    1
+    t
+    e
+    a
+    r
+red:
+- code: |
+    def f(x)
+      x.ord
+    end
+    puts f("1")
+    puts f("2")
+    puts f("3")
+  assigned_output: |
+    1
+    2
+    3
+green:
+- code: |
+    #TODO
+    puts f("a")
+    puts f("b")
+    puts f("c")
+  assigned_output: |
+    1
+    2
+    3
+- code: |
+    #TODO
+    puts f("ba")
+    puts f("bb")
+    puts f("bc")
+  assigned_output: |
+    1
+    2
+    3

@@ -1,0 +1,97 @@
+level: variables and methods
+title_html: call <code>g</code> from <code>f</code>
+yellow:
+- code: |
+    def f(x)
+      x * 2
+    end
+    def g(x)
+      f(x + 1) + 1
+    end
+    puts g(1)
+    puts g(2)
+    puts g(3)
+blue:
+- code: |
+    def g(x)
+      f(x) * 2
+    end
+    def f(x)
+      x + 1
+    end
+    puts f(2)
+    puts g(3)
+  assigned_output: |
+    3
+    8
+- code: |
+    def f(x)
+      x * 2
+    end
+    def g(x)
+      f(x + 2) + f(x + 1)
+    end
+    puts g(1)
+    puts g(2)
+    puts g(3)
+  assigned_output: |
+    10
+    14
+    18
+green:
+- code: |
+    def g(x)
+      #TODO
+    end
+    def f(x)
+      g(x - 1)
+    end
+    puts f(2)
+    puts f(3)
+    puts f(4)
+  assigned_output: |
+    2
+    4
+    6
+- code: |
+    def g(x)
+      #TODO
+    end
+    def f(x)
+      g(x + 1) - 1
+    end
+    puts f(1)
+    puts f(2)
+    puts f(3)
+  assigned_output: |
+    2
+    4
+    6
+- code: |
+    def f(x)
+      #TODO
+    end
+    def g(x)
+      f(x) * 2
+    end
+    puts g(2)
+    puts g(3)
+    puts g(4)
+  assigned_output: |
+    2
+    4
+    6
+- code: |
+    def f(x)
+      #TODO
+    end
+    def g(x)
+      f(x) * 2
+    end
+    puts f(2)
+    puts f(3)
+    puts f(4)
+  assigned_output: |
+    2
+    4
+    6

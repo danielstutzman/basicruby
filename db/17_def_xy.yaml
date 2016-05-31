@@ -1,0 +1,50 @@
+level: variables and methods
+title_html: <code>def f(x, y)</code>
+yellow:
+- code: |
+    def f(x, y)
+      y * 2 + x
+    end
+    puts f(2, 3)
+blue:
+- code: |
+    def f(x, y)
+      y + 2
+    end
+    puts f(3, 4)
+  assigned_output: |
+    6
+green:
+- code: |
+    #TODO
+    puts f(1, 1)
+    puts f(2, 2)
+    puts f(1, 2)
+    puts f(2, 1)
+  assigned_output: |
+    2
+    4
+    4
+    2
+- code: |
+    #TODO
+    puts f(1, 1)
+    puts f(2, 2)
+    puts f(1, 2)
+    puts f(2, 1)
+  assigned_output: |
+    2
+    4
+    2
+    4
+- code: |
+    #TODO
+    puts f(1, 1)
+    puts f(2, 2)
+    puts f(1, 2)
+    puts f(2, 1)
+  assigned_output: |
+    3
+    3
+    2
+    4

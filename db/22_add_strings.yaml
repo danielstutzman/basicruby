@@ -1,0 +1,50 @@
+level: strings
+title_html: <code>"ab" + "c"</code>
+yellow:
+- code: |
+    x = "2"
+    y = "3"
+    puts x + y
+    puts y + x
+    puts x + y + x
+    z = x + "d"
+    puts z
+    w = ""
+    puts w + z
+blue:
+- code: |
+    x = "1" + "2"
+    y = "3" + x
+    y = x + y
+    puts x
+    puts y
+  assigned_output: |
+    12312
+red:
+- code: |
+    x = "a"
+    x = x + 3
+    puts x
+  assigned_output: a3
+green:
+- code: |
+    #TODO
+    puts f("3")
+    puts f("4")
+  assigned_output: |
+    b3
+    b4
+- code: |
+    #TODO
+    puts f("a")
+    puts f("b")
+  assigned_output: |
+    c2a
+    c2b
+- code: |
+    #TODO
+    puts f("a")
+    puts f("b")
+  assigned_output: |
+    a2a
+    b2b
