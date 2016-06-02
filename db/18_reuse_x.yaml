@@ -1,5 +1,5 @@
 level: variables and methods
-title_html: scope
+title_html: reuse <code>x</code>
 yellow:
 - code: |
     def f(x)
