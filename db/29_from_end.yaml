@@ -1,0 +1,34 @@
+level: strings
+title_html: <code>"abc"[-1]</code>
+yellow:
+- code: |
+    x = "abcde"
+    puts x[-1]
+    puts x[-2]
+    puts x[-3]
+blue:
+- code: |
+    x = "123"
+    puts x[-1] + x[1] + x[-2] + x[2]
+  assigned_output: |
+    3223
+red:
+- code: |
+    x = 3
+    y = 4
+    z = x * 10 + y
+    puts z[-1]
+  assigned_output: |
+    4
+green:
+- code: |
+    def f(x)
+      #TODO
+    end
+    puts f("grape")
+    puts f("plea")
+    puts f("wear")
+  assigned_output: |
+    epa
+    ael
+    rae

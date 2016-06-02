@@ -1,0 +1,108 @@
+level: recursion
+title_html: recursion
+yellow:
+- code: |
+    def f(x)
+      if x == 0
+        0
+      else
+        f(x - 1) + 2
+      end
+    end
+    puts f(0)
+    puts f(1)
+    puts f(2)
+    puts f(3)
+blue:
+- code: |
+    def f(x)
+      if x == 0
+        1
+      else
+        f(x - 1) * 2
+      end
+    end
+    puts f(0)
+    puts f(1)
+    puts f(2)
+    puts f(3)
+  assigned_output: |
+    1
+    2
+    4
+    8
+red:
+- code: |
+    def f(x)
+      if x == 0
+        0
+      else
+        f(x + 1) + 2
+      end
+    end
+    puts f(0)
+    puts f(1)
+    puts f(2)
+    puts f(3)
+  assigned_output: |
+    0
+    2
+    4
+    6
+green:
+- code: |
+    #TODO
+    puts f(0)
+    puts f(1)
+    puts f(2)
+    puts f(3)
+  assigned_output: |
+
+    a
+    aa
+    aaa
+- code: |
+    #TODO
+    puts f("ear", "a")
+    puts f("tree", "t")
+    puts f("bat", "t")
+  assigned_output: |
+    1
+    0
+    2
+- code: |
+    #TODO
+    puts f("ear")
+    puts f("tree")
+    puts f("bat")
+  assigned_output: |
+    rae
+    eert
+    tab
+- code: |
+    #TODO
+    puts f("ear")
+    puts f("tree")
+    puts f("bat")
+  assigned_output: |
+    e-a-r
+    t-r-e-e
+    b-a-t
+- code: |
+    #TODO
+    puts f("ear")
+    puts f("tree")
+    puts f("bat")
+  assigned_output: |
+    fbs
+    usff
+    cbu
+- code: |
+    #TODO
+    puts f("ear")
+    puts f("tree")
+    puts f("bat")
+  assigned_output: |
+    EAR
+    TREE
+    BAT

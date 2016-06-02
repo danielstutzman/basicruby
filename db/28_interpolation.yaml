@@ -1,0 +1,29 @@
+level: strings
+title_html: <code>"#{2 + 2}"</code>
+yellow:
+- code: |
+    x = 2 + 2
+    puts "a" + (2 + 2).to_s
+    puts "a#{2 + 2}"
+blue:
+- code: |
+    x = 3
+    puts "#{x} #{x + 1}"
+  assigned_output: |
+    3 4
+red:
+- code: |
+    x = "2"
+    puts "2 + 2 = #{x + x}"
+  assigned_output: |
+    2 + 2 = 4
+green:
+- code: |
+    #TODO
+    puts f(1)
+    puts f(2)
+    puts f(3)
+  assigned_output: |
+    1 + 1 = 2
+    2 + 1 = 3
+    3 + 1 = 4
