@@ -1,5 +1,6 @@
 #!/bin/bash -ex
 
+# use port 22 for ssh since haven't changed to port 2222 yet
 tugboat ssh -n basicruby <<EOF
 
 set -ex
@@ -32,5 +33,13 @@ sudo ufw default allow outgoing
 sudo ufw allow ssh
 sudo ufw allow 80
 sudo ufw allow 60000:61000/udp # mosh
+sudo ufw allow 2222
 yes | sudo ufw enable
+
+if [ ! -e /etc/ssh/sshd_config.bak ]; then
+  sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+fi
+cat /etc/ssh/sshd_config.bak | sed "s/Port 22$/Port 2222/" | sudo tee /etc/ssh/sshd_config
+sudo ufw disable ssh
+
 EOF

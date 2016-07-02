@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-tugboat ssh -n basicruby <<"EOF"
+tugboat ssh -p 2222 -n basicruby <<"EOF"
 set -ex
 
 name=deployer group=www-data shell=/bin/bash
