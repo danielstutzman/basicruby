@@ -1,7 +1,19 @@
 #!/bin/bash -ex
 
-tugboat ssh -p 2222 -n basicruby <<"EOF"
+fwknop -s -n basicruby.danstutzman.com
+tugboat ssh -n basicruby <<"EOF"
 set -ex
+
+sudo apt-get install -y ruby2.0 ruby2.0-dev ruby2.0-doc
+gem2.0 install bundler
+sudo rm /usr/bin/ruby /usr/bin/gem /usr/bin/irb /usr/bin/rdoc /usr/bin/erb
+sudo ln -s /usr/bin/ruby2.0 /usr/bin/ruby
+sudo ln -s /usr/bin/gem2.0 /usr/bin/gem
+sudo ln -s /usr/bin/irb2.0 /usr/bin/irb
+sudo ln -s /usr/bin/rdoc2.0 /usr/bin/rdoc
+sudo ln -s /usr/bin/erb2.0 /usr/bin/erb
+
+sudo apt-get install -y npm nodejs nodejs-legacy
 
 name=deployer group=www-data shell=/bin/bash
 id -u deployer &>/dev/null || useradd deployer --gid www-data
@@ -56,24 +68,22 @@ sudo chown www-data:www-data /home/deployer/basicruby/shared/log/production.log
 sudo chmod 0666 /home/deployer/basicruby/shared/log/production.log
 EOF
 
-INSTANCE_IP=`tugboat droplets | grep 'basicruby ' | egrep -oh "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+" || true`
-echo INSTANCE_IP=$INSTANCE_IP
-scp -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null unicorn.initd root@$INSTANCE_IP:/etc/init.d/unicorn
-echo 'sudo mkdir -p /etc/unicorn' | tugboat ssh -n basicruby
-scp -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null basicruby-unicorn.conf root@$INSTANCE_IP:/etc/unicorn/basicruby.conf
-scp -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null basicruby.unicorn.rb root@$INSTANCE_IP:/etc/unicorn/basicruby.unicorn.rb
+scp unicorn.initd root@basicruby.danstutzman.com:/etc/init.d/unicorn
+echo 'sudo mkdir -p /etc/unicorn && sudo update-rc.d unicorn defaults' | tugboat ssh -n basicruby
+scp basicruby-unicorn.conf root@basicruby.danstutzman.com:/etc/unicorn/basicruby.conf
+scp basicruby.unicorn.rb root@basicruby.danstutzman.com:/etc/unicorn/basicruby.unicorn.rb
 if [ ! -e secret_key_base ]; then
   dd if=/dev/urandom bs=1 count=120 2>/dev/null | base64 > secret_key_base
 fi
 SECRET_KEY_BASE=`cat secret_key_base`
-scp -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null secret_key_base root@$INSTANCE_IP:/etc/unicorn/secret_key_base
+scp secret_key_base root@basicruby.danstutzman.com:/etc/unicorn/secret_key_base
 tugboat ssh -n basicruby <<EOF
 tee -a /etc/unicorn/basicruby.unicorn.rb <<EOF2
 ENV["SECRET_KEY_BASE"] = "$SECRET_KEY_BASE"
 EOF2
 EOF
 
-rsync -e "ssh -l deployer -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null" -rv .. root@$INSTANCE_IP:/home/deployer/basicruby/current --exclude vendor --exclude ".*" --exclude tmp --exclude log
+rsync -e "ssh -l deployer" -rv .. root@basicruby.danstutzman.com:/home/deployer/basicruby/current --exclude vendor --exclude ".*" --exclude tmp --exclude log
 
 tugboat ssh -n basicruby <<"EOF"
 set -ex
